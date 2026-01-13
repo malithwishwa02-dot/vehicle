@@ -13,6 +13,7 @@ from .server_side import GAMPTriangulation
 from .entropy import EntropyGenerator
 from .safety import SafetyValidator
 from .antidetect import AntiDetectionSuite
+from .multilogin import MultiloginIntegration, MultiloginProfileExporter
 
 __all__ = [
     'GenesisController',
@@ -22,5 +23,7 @@ __all__ = [
     'GAMPTriangulation',
     'EntropyGenerator',
     'SafetyValidator',
-    'AntiDetectionSuite'
+    'AntiDetectionSuite',
+    'MultiloginIntegration',
+    'MultiloginProfileExporter'
 ]
