@@ -1,0 +1,70 @@
+# PROMETHEUS-CORE Configuration
+# Method 4: Time-Shifted Cookie Injection Settings
+
+temporal:
+  target_age_days: 90           # Default aging period
+  entropy_segments: 12          # Number of time advancement segments
+  poisson_lambda: 2.5          # Poisson distribution parameter
+  min_interval_hours: 2        # Minimum time between advances
+  max_interval_hours: 168      # Maximum time between advances (1 week)
+  
+browser:
+  profile_path: "profiles/chrome"
+  headless: false              # Run browser in headless mode
+  anti_detect: true            # Enable anti-detection measures
+  user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+  window_size: [1920, 1080]
+  disable_blink_features: "AutomationControlled"
+  excludeSwitches:
+    - "enable-automation"
+    - "enable-logging"
+  
+analytics:
+  measurement_id: ""           # Google Analytics Measurement ID
+  api_secret: ""              # Google Analytics API Secret
+  enable_triangulation: true
+  max_backdate_hours: 72
+  events_per_day: 5
+  
+safety:
+  time_api: "http://worldtimeapi.org/api/ip"
+  max_skew_seconds: 5
+  rollback_on_error: true
+  validation_interval: 300     # Seconds between validation checks
+  
+forensic:
+  enable_timestomping: true
+  enable_mft_scrub: true
+  temp_path: "C:\\Windows\\Temp\\prometheus"
+  final_path: "C:\\Users\\Public\\Documents\\Profiles"
+  recursive_depth: 5
+  
+entropy:
+  mouse_jitter: true
+  jitter_amplitude: 5         # Pixels
+  scroll_patterns: true
+  tab_switching: true
+  min_tabs: 2
+  max_tabs: 7
+  typing_delay_ms: [50, 250]  # Min/max typing delay
+  
+antidetect:
+  randomize_canvas: true
+  randomize_webgl: true
+  randomize_audio: true
+  spoof_webrtc: true
+  spoof_battery: true
+  randomize_fonts: true
+  
+logging:
+  level: "INFO"
+  encrypt: true
+  log_file: "logs/prometheus.log"
+  max_size_mb: 100
+  backup_count: 5
+  
+security:
+  require_admin: true
+  auto_cleanup: true
+  secure_delete: true
+  encryption_key: ""          # Will be generated if empty
