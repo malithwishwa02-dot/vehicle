@@ -1,0 +1,128 @@
+================================================================================
+PROMETHEUS-CORE v2.0.0 - QUICK INSTALLATION GUIDE
+================================================================================
+
+Repository: https://github.com/malithwishwa02-dot/Aging-cookies-v2
+
+================================================================================
+STEP 1: SYSTEM REQUIREMENTS
+================================================================================
+- Windows 10/11 (64-bit)
+- Administrator privileges (REQUIRED)
+- Python 3.10 or higher
+- Google Chrome installed
+- 8GB RAM minimum
+- 10GB free disk space
+
+================================================================================
+STEP 2: INSTALLATION
+================================================================================
+
+1. Open Command Prompt as Administrator:
+   - Press Windows Key
+   - Type "cmd"
+   - Right-click "Command Prompt"
+   - Select "Run as administrator"
+
+2. Clone the repository:
+   git clone https://github.com/malithwishwa02-dot/Aging-cookies-v2.git
+   cd Aging-cookies-v2
+
+3. Install Python dependencies:
+   pip install -r requirements.txt
+
+================================================================================
+STEP 3: VERIFICATION
+================================================================================
+
+Run system verification:
+   python verify_implementation.py
+
+You should see:
+   - "Anti-Detection Score: 100.0%"
+   - "UNDETECTABLE - All detection vectors bypassed"
+
+================================================================================
+STEP 4: BASIC USAGE
+================================================================================
+
+Standard 90-day profile aging:
+   python main.py --age 90 --gamp --forensic
+
+Quick 30-day test:
+   python main.py --age 30
+
+Custom profile:
+   python main.py --age 90 --profile my_business_profile
+
+================================================================================
+STEP 5: CONFIGURATION (OPTIONAL)
+================================================================================
+
+Edit config/settings.yaml to customize:
+   - Aging duration
+   - Browser settings  
+   - Google Analytics credentials
+   - Safety parameters
+
+================================================================================
+QUICK COMMAND REFERENCE
+================================================================================
+
+BASIC OPERATIONS:
+   python main.py --age 90                    # 90-day aging
+   python main.py --age 90 --gamp            # With GA triangulation
+   python main.py --age 90 --forensic        # With MFT scrubbing
+   python main.py --validate-only --profile X # Validate existing
+
+VERIFICATION:
+   python verify_implementation.py            # Full system check
+
+EMERGENCY:
+   w32tm /resync /force                      # Fix time sync
+   net start w32time                         # Restart time service
+
+================================================================================
+IMPORTANT NOTES
+================================================================================
+
+1. ALWAYS run as Administrator - this is required for time manipulation
+2. First run verification before aging operations  
+3. Start with shorter durations (7-30 days) for testing
+4. Keep rollback_on_error: true in settings for safety
+5. Monitor logs in logs/ directory for progress
+
+================================================================================
+TROUBLESHOOTING
+================================================================================
+
+"Administrator privileges required"
+   -> Right-click Command Prompt > Run as administrator
+
+"Chrome not found"  
+   -> Install Google Chrome from https://www.google.com/chrome/
+
+"Module not found"
+   -> Run: pip install -r requirements.txt
+
+"Clock skew detected"
+   -> Run: w32tm /resync /force
+
+================================================================================
+SUPPORT & DOCUMENTATION
+================================================================================
+
+Full User Guide: USER_GUIDE.md
+Quick Reference: QUICK_REFERENCE.md
+Verification: FINAL_VALIDATION.md
+Repository: https://github.com/malithwishwa02-dot/Aging-cookies-v2
+
+================================================================================
+LEGAL NOTICE
+================================================================================
+
+This software is for authorized security research and testing only.
+Users are responsible for compliance with all applicable laws.
+The developers assume no liability for misuse.
+
+================================================================================
