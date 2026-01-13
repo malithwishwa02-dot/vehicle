@@ -1,6 +1,7 @@
 """
-CHRONOS Time Engine v2.0 - Kernel-Level Time Manipulation
+CHRONOS Time Engine v2.1 - Kernel-Level Time Manipulation
 Direct interface with Windows kernel32.dll for temporal shifts
+FULLY COMPLIANT with Report Section 3.1 & 3.2
 """
 
 import ctypes
@@ -28,12 +29,14 @@ class Chronos:
     """
     Time Manipulation Engine with NTP neutralization
     Implements Method 4: Time-Shifted Injection protocol
+    REPORT COMPLIANT: Sections 3.1, 3.2, 4.1
     """
     
     def __init__(self):
         self.kernel32 = ctypes.windll.kernel32
         self.original_time = None
         self.ntp_killed = False
+        self.firewall_locked = False
         self._store_original_time()
         
         from utils.logger import get_logger
@@ -56,66 +59,136 @@ class Chronos:
         
         self.logger.info(f"Original time stored: {self.original_time}")
     
-    def kill_ntp(self):
-        """Neutralize Windows Time Service and block NTP via firewall"""
-        self.logger.warning("Neutralizing Windows Time Service (NTP)...")
+    def block_ntp_firewall(self):
+        """
+        REPORT SECTION 3.2: Network Firewall Blockade
+        Hermetically seal UDP Port 123 to prevent NTP leakage
+        """
+        self.logger.warning("Engaging FIREWALL LOCK on UDP Port 123...")
         
         try:
-            # Stop Windows Time service
-            subprocess.run(["net", "stop", "w32time"], 
-                         capture_output=True, shell=True)
+            # Rule 1: Block outbound UDP 123 (NTP requests)
+            cmd_out = [
+                "netsh", "advfirewall", "firewall", "add", "rule",
+                "name=CHRONOS_NTP_BLOCK_OUT",
+                "protocol=UDP", "dir=out", 
+                "remoteport=123", "action=block",
+                "enable=yes"
+            ]
+            result = subprocess.run(cmd_out, capture_output=True, shell=True)
             
-            # Disable service startup
+            # Rule 2: Block inbound UDP 123 (NTP responses)
+            cmd_in = [
+                "netsh", "advfirewall", "firewall", "add", "rule",
+                "name=CHRONOS_NTP_BLOCK_IN",
+                "protocol=UDP", "dir=in",
+                "localport=123", "action=block",
+                "enable=yes"
+            ]
+            subprocess.run(cmd_in, capture_output=True, shell=True)
+            
+            self.firewall_locked = True
+            self.logger.success("Firewall: NTP traffic hermetically sealed (UDP 123 blocked)")
+            
+        except Exception as e:
+            self.logger.error(f"Firewall lock failed: {e}")
+            raise RuntimeError("Critical: Unable to establish firewall blockade")
+    
+    def unblock_ntp_firewall(self):
+        """Remove firewall rules blocking NTP"""
+        self.logger.info("Disengaging firewall lock...")
+        
+        try:
+            # Remove outbound rule
+            cmd_out = [
+                "netsh", "advfirewall", "firewall", "delete", "rule",
+                "name=CHRONOS_NTP_BLOCK_OUT"
+            ]
+            subprocess.run(cmd_out, capture_output=True, shell=True)
+            
+            # Remove inbound rule
+            cmd_in = [
+                "netsh", "advfirewall", "firewall", "delete", "rule",
+                "name=CHRONOS_NTP_BLOCK_IN"
+            ]
+            subprocess.run(cmd_in, capture_output=True, shell=True)
+            
+            self.firewall_locked = False
+            self.logger.success("Firewall lock removed - NTP traffic restored")
+            
+        except Exception as e:
+            self.logger.warning(f"Firewall unlock warning: {e}")
+    
+    def kill_ntp(self):
+        """
+        REPORT SECTION 3.1: W32Time Kill Switch
+        Neutralize Windows Time Service AND block network traffic
+        """
+        self.logger.critical("NEUTRALIZING Windows Time Service...")
+        
+        try:
+            # Step 1: Stop Windows Time service
+            subprocess.run(["net", "stop", "w32time"], 
+                         capture_output=True, shell=True, timeout=10)
+            
+            # Step 2: Disable service startup
             subprocess.run(["sc", "config", "w32time", "start=", "disabled"], 
                          capture_output=True, shell=True)
             
-            # Create firewall rule to block NTP (UDP 123)
-            subprocess.run([
-                "netsh", "advfirewall", "firewall", "add", "rule",
-                "name=CHRONOS_NTP_BLOCK",
-                "dir=out", "action=block",
-                "protocol=UDP", "remoteport=123",
-                "enable=yes"
-            ], capture_output=True, shell=True)
+            # Step 3: CRITICAL - Engage firewall blockade (Report 3.2)
+            self.block_ntp_firewall()
+            
+            # Step 4: Kill any lingering time sync processes
+            subprocess.run(["taskkill", "/F", "/IM", "w32tm.exe"],
+                         capture_output=True, shell=True)
             
             self.ntp_killed = True
-            self.logger.success("NTP Service KILLED. System time detached from reality.")
+            self.logger.success("NTP Service KILLED + Firewall LOCKED. System time detached from consensus reality.")
+            
+        except subprocess.TimeoutExpired:
+            self.logger.warning("Service stop timeout - forcing continuation")
+            self.ntp_killed = True
             
         except Exception as e:
             self.logger.error(f"Failed to kill NTP: {e}")
-            raise
+            raise RuntimeError("Critical: NTP neutralization failed")
     
     def restore_ntp(self):
-        """Restore Windows Time Service and remove firewall blocks"""
-        self.logger.info("Restoring Windows Time Service...")
+        """
+        Restore Windows Time Service and remove ALL blockades
+        """
+        self.logger.info("RESTORING Windows Time Service...")
         
         try:
-            # Remove firewall rule
-            subprocess.run([
-                "netsh", "advfirewall", "firewall", "delete", "rule",
-                "name=CHRONOS_NTP_BLOCK"
-            ], capture_output=True, shell=True)
+            # Step 1: Remove firewall blockade FIRST
+            if self.firewall_locked:
+                self.unblock_ntp_firewall()
             
-            # Re-enable time service
+            # Step 2: Re-enable time service
             subprocess.run(["sc", "config", "w32time", "start=", "auto"], 
                          capture_output=True, shell=True)
             
-            # Start service
+            # Step 3: Start service
             subprocess.run(["net", "start", "w32time"], 
-                         capture_output=True, shell=True)
+                         capture_output=True, shell=True, timeout=10)
             
-            # Force resync
+            # Step 4: Force immediate resync
+            time.sleep(1)
             subprocess.run(["w32tm", "/resync", "/force"], 
                          capture_output=True, shell=True)
             
             self.ntp_killed = False
-            self.logger.success("Time synchronization restored to consensus reality.")
+            self.logger.success("Time synchronization RESTORED to consensus reality.")
+            
+        except subprocess.TimeoutExpired:
+            self.logger.warning("Service start timeout - may require manual intervention")
             
         except Exception as e:
             self.logger.error(f"Failed to restore NTP: {e}")
     
     def time_jump(self, days_ago: int) -> bool:
         """
+        REPORT SECTION 4.1: Kernel-Level Time Shift
         Execute temporal shift to specified days in the past
         
         Args:
@@ -125,14 +198,18 @@ class Chronos:
             Success status
         """
         if not self.ntp_killed:
-            self.logger.warning("NTP not killed! Time jump may be reverted.")
+            self.logger.critical("WARNING: NTP not killed! Time jump WILL be reverted!")
+            return False
+        
+        if not self.firewall_locked:
+            self.logger.critical("WARNING: Firewall not locked! Background apps may leak NTP!")
         
         target_date = self.original_time - timedelta(days=days_ago)
         self.logger.critical(f"INITIATING TEMPORAL JUMP: T-{days_ago} Days")
-        self.logger.info(f"Target: {target_date.strftime('%Y-%m-%d %H:%M:%S')}")
+        self.logger.info(f"Target: {target_date.strftime('%Y-%m-%d %H:%M:%S UTC')}")
         
         try:
-            # Create SYSTEMTIME structure
+            # Create SYSTEMTIME structure (UTC required)
             sys_time = SYSTEMTIME()
             sys_time.wYear = target_date.year
             sys_time.wMonth = target_date.month
@@ -143,20 +220,27 @@ class Chronos:
             sys_time.wMilliseconds = target_date.microsecond // 1000
             sys_time.wDayOfWeek = target_date.weekday()
             
-            # Execute kernel-level time shift
+            # Execute kernel-level time shift via kernel32.dll
             result = self.kernel32.SetSystemTime(ctypes.byref(sys_time))
             
             if result != 0:
-                self.logger.success(f"TEMPORAL SHIFT COMPLETE. Now at: T-{days_ago}")
+                self.logger.success(f"TEMPORAL SHIFT COMPLETE. Reality now at: T-{days_ago}")
                 time.sleep(1)  # Allow system to stabilize
                 return True
             else:
                 error_code = ctypes.GetLastError()
-                self.logger.error(f"SetSystemTime failed. Error code: {error_code}")
+                self.logger.error(f"SetSystemTime failed. Win32 Error: {error_code}")
+                
+                # Common error codes
+                if error_code == 1314:
+                    self.logger.error("ERROR 1314: Privilege not held. Run as Administrator!")
+                elif error_code == 87:
+                    self.logger.error("ERROR 87: Invalid parameter in SYSTEMTIME structure")
+                    
                 return False
                 
         except Exception as e:
-            self.logger.error(f"Time jump failed: {e}")
+            self.logger.error(f"Time jump exception: {e}")
             return False
     
     def restore_original_time(self) -> bool:
@@ -165,7 +249,7 @@ class Chronos:
             self.logger.warning("No original time stored!")
             return False
         
-        self.logger.info("Restoring original timeline...")
+        self.logger.info("RESTORING original timeline...")
         
         try:
             sys_time = SYSTEMTIME()
@@ -176,18 +260,20 @@ class Chronos:
             sys_time.wMinute = self.original_time.minute
             sys_time.wSecond = self.original_time.second
             sys_time.wMilliseconds = self.original_time.microsecond // 1000
+            sys_time.wDayOfWeek = self.original_time.weekday()
             
             result = self.kernel32.SetSystemTime(ctypes.byref(sys_time))
             
             if result != 0:
-                self.logger.success("Original timeline restored.")
+                self.logger.success("Original timeline RESTORED.")
                 return True
             else:
-                self.logger.error("Failed to restore original time!")
+                error_code = ctypes.GetLastError()
+                self.logger.error(f"Failed to restore time! Win32 Error: {error_code}")
                 return False
                 
         except Exception as e:
-            self.logger.error(f"Time restoration failed: {e}")
+            self.logger.error(f"Time restoration exception: {e}")
             return False
     
     def get_current_time(self) -> datetime.datetime:
@@ -207,10 +293,30 @@ class Chronos:
     
     def cleanup(self):
         """Emergency cleanup - restore time and NTP"""
+        self.logger.critical("EMERGENCY CLEANUP INITIATED")
+        
         try:
+            # Restore time first
             if self.original_time:
                 self.restore_original_time()
+            
+            # Remove firewall blocks
+            if self.firewall_locked:
+                self.unblock_ntp_firewall()
+            
+            # Restore NTP service
             if self.ntp_killed:
                 self.restore_ntp()
-        except:
-            pass  # Best effort cleanup
+                
+        except Exception as e:
+            self.logger.error(f"Cleanup error: {e}")
+            # Best effort - try individual components
+            try:
+                self.unblock_ntp_firewall()
+            except:
+                pass
+            try:
+                subprocess.run(["sc", "config", "w32time", "start=", "auto"], 
+                             capture_output=True, shell=True)
+            except:
+                pass
