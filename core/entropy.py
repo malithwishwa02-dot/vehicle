@@ -1,0 +1,328 @@
+"""
+Entropy Generator: Advanced temporal entropy generation with Poisson distribution.
+Creates realistic browsing patterns and time advancement strategies.
+"""
+
+import numpy as np
+from scipy import stats
+import random
+from datetime import datetime, timedelta
+from typing import List, Dict, Any, Tuple
+import logging
+
+
+class EntropyGenerator:
+    """
+    Generates temporal entropy using Poisson distribution for realistic aging patterns.
+    Simulates organic user behavior over extended time periods.
+    """
+    
+    def __init__(self, config: Optional[Dict[str, Any]] = None):
+        """Initialize Entropy Generator with configuration."""
+        self.config = config or {}
+        self.logger = logging.getLogger(__name__)
+        
+        # Configuration
+        self.poisson_lambda = self.config.get('poisson_lambda', 2.5)
+        self.min_interval = self.config.get('min_interval_hours', 2)
+        self.max_interval = self.config.get('max_interval_hours', 168)
+        
+        # Seed for reproducibility
+        self.random_seed = self.config.get('random_seed', None)
+        if self.random_seed:
+            random.seed(self.random_seed)
+            np.random.seed(self.random_seed)
+    
+    def generate_segments(self, total_days: int, num_segments: Optional[int] = None) -> List[Dict]:
+        """
+        Generate time advancement segments using Poisson distribution.
+        
+        Args:
+            total_days: Total number of days to age
+            num_segments: Number of segments (auto-calculated if None)
+            
+        Returns:
+            List of segment dictionaries with timing information
+        """
+        if num_segments is None:
+            num_segments = self.config.get('entropy_segments', 12)
+        
+        total_hours = total_days * 24
+        segments = []
+        
+        # Generate Poisson-distributed intervals
+        intervals = self._generate_poisson_intervals(num_segments, total_hours)
+        
+        current_time = 0
+        base_date = datetime.utcnow() - timedelta(days=total_days)
+        
+        for i, interval in enumerate(intervals):
+            # Activity level based on time of day
+            segment_date = base_date + timedelta(hours=current_time)
+            activity_level = self._calculate_activity_level(segment_date)
+            
+            segment = {
+                'index': i,
+                'advance_hours': interval,
+                'cumulative_hours': current_time + interval,
+                'timestamp': segment_date + timedelta(hours=interval),
+                'activity_level': activity_level,
+                'checkpoint': i % 3 == 0,  # GAMP checkpoint every 3rd segment
+                'is_weekend': segment_date.weekday() >= 5,
+                'hour_of_day': segment_date.hour,
+                'actions': self._generate_segment_actions(activity_level)
+            }
+            
+            segments.append(segment)
+            current_time += interval
+        
+        return segments
+    
+    def _generate_poisson_intervals(self, num_segments: int, total_hours: float) -> List[float]:
+        """Generate Poisson-distributed time intervals."""
+        
+        # Generate raw Poisson values
+        raw_intervals = np.random.poisson(self.poisson_lambda, num_segments)
+        
+        # Scale to hours
+        scale_factor = 24  # Base scale for daily patterns
+        intervals = raw_intervals * scale_factor
+        
+        # Apply constraints
+        intervals = np.clip(intervals, self.min_interval, self.max_interval)
+        
+        # Normalize to fit total time
+        current_total = np.sum(intervals)
+        if current_total > 0:
+            intervals = intervals * (total_hours / current_total)
+        
+        # Add some noise
+        noise = np.random.normal(0, 0.1, num_segments)
+        intervals = intervals * (1 + noise)
+        
+        # Final constraint check
+        intervals = np.maximum(intervals, self.min_interval)
+        
+        return intervals.tolist()
+    
+    def _calculate_activity_level(self, timestamp: datetime) -> str:
+        """Calculate activity level based on time patterns."""
+        
+        hour = timestamp.hour
+        is_weekend = timestamp.weekday() >= 5
+        
+        # Weekend patterns
+        if is_weekend:
+            if 10 <= hour <= 22:
+                return 'high'
+            elif 8 <= hour <= 23:
+                return 'medium'
+            else:
+                return 'low'
+        
+        # Weekday patterns
+        else:
+            if 9 <= hour <= 11 or 14 <= hour <= 16 or 19 <= hour <= 21:
+                return 'high'
+            elif 7 <= hour <= 22:
+                return 'medium'
+            else:
+                return 'low'
+    
+    def _generate_segment_actions(self, activity_level: str) -> List[str]:
+        """Generate list of actions for a segment based on activity level."""
+        
+        action_pools = {
+            'high': [
+                'browse_products', 'add_to_cart', 'search', 'watch_video',
+                'read_article', 'click_ads', 'form_submission', 'download',
+                'share_social', 'comment', 'review', 'purchase'
+            ],
+            'medium': [
+                'browse_homepage', 'read_article', 'search', 'scroll',
+                'click_link', 'view_image', 'check_email', 'update_profile'
+            ],
+            'low': [
+                'idle', 'scroll', 'refresh', 'check_notifications'
+            ]
+        }
+        
+        pool = action_pools.get(activity_level, action_pools['medium'])
+        
+        # Number of actions based on activity level
+        num_actions_map = {'high': (5, 15), 'medium': (3, 8), 'low': (1, 3)}
+        min_actions, max_actions = num_actions_map.get(activity_level, (3, 8))
+        
+        num_actions = random.randint(min_actions, max_actions)
+        
+        return [random.choice(pool) for _ in range(num_actions)]
+    
+    def generate_actions(self, activity_level: str) -> List[Dict]:
+        """
+        Generate detailed action specifications for browser automation.
+        
+        Args:
+            activity_level: Level of activity (high/medium/low)
+            
+        Returns:
+            List of action dictionaries with parameters
+        """
+        actions = []
+        base_actions = self._generate_segment_actions(activity_level)
+        
+        for action_type in base_actions:
+            action = self._create_action_spec(action_type)
+            actions.append(action)
+        
+        return actions
+    
+    def _create_action_spec(self, action_type: str) -> Dict:
+        """Create detailed action specification."""
+        
+        action = {
+            'type': action_type,
+            'timestamp': datetime.utcnow(),
+            'parameters': {}
+        }
+        
+        if action_type == 'scroll':
+            action['parameters'] = {
+                'direction': random.choice(['down', 'up']),
+                'amount': random.randint(100, 800),
+                'duration': random.uniform(0.5, 2.0)
+            }
+        
+        elif action_type == 'click_link':
+            action['parameters'] = {
+                'selector': random.choice(['a', 'button', '.btn', '[role="button"]']),
+                'index': random.randint(0, 10),
+                'wait_after': random.uniform(1, 3)
+            }
+        
+        elif action_type == 'search':
+            action['parameters'] = {
+                'query': self._generate_search_query(),
+                'submit_delay': random.uniform(0.5, 2),
+                'typing_speed': random.uniform(0.05, 0.15)
+            }
+        
+        elif action_type == 'mouse_movement':
+            action['parameters'] = {
+                'pattern': random.choice(['bezier', 'linear', 'random']),
+                'duration': random.uniform(0.3, 1.5),
+                'points': self._generate_mouse_path()
+            }
+        
+        elif action_type == 'form_submission':
+            action['parameters'] = {
+                'fields': random.randint(2, 6),
+                'typing_delays': [random.uniform(0.05, 0.2) for _ in range(6)],
+                'submit_delay': random.uniform(1, 3)
+            }
+        
+        return action
+    
+    def _generate_search_query(self) -> str:
+        """Generate realistic search query."""
+        
+        query_templates = [
+            "best {} 2024",
+            "how to {}",
+            "{} reviews",
+            "{} vs {}",
+            "cheap {}",
+            "{} near me",
+            "{} tutorial",
+            "buy {} online"
+        ]
+        
+        topics = [
+            "laptop", "phone", "shoes", "restaurant", "hotel",
+            "camera", "headphones", "watch", "book", "course",
+            "software", "game", "movie", "recipe", "workout"
+        ]
+        
+        template = random.choice(query_templates)
+        
+        if '{}' in template:
+            if template.count('{}') == 2:
+                return template.format(random.choice(topics), random.choice(topics))
+            else:
+                return template.format(random.choice(topics))
+        
+        return template
+    
+    def _generate_mouse_path(self) -> List[Tuple[int, int]]:
+        """Generate realistic mouse movement path."""
+        
+        num_points = random.randint(3, 8)
+        points = []
+        
+        for _ in range(num_points):
+            x = random.randint(100, 1800)
+            y = random.randint(100, 900)
+            points.append((x, y))
+        
+        return points
+    
+    def generate_circadian_pattern(self, days: int) -> List[Dict]:
+        """
+        Generate activity pattern following circadian rhythm.
+        
+        Args:
+            days: Number of days to generate pattern for
+            
+        Returns:
+            List of activity windows with timing
+        """
+        pattern = []
+        
+        for day in range(days):
+            base_date = datetime.utcnow() - timedelta(days=days-day)
+            
+            # Morning activity (6-9 AM)
+            morning_start = base_date.replace(hour=random.randint(6, 7), 
+                                             minute=random.randint(0, 59))
+            morning_duration = random.uniform(0.5, 2)
+            
+            # Midday activity (11 AM - 2 PM)
+            midday_start = base_date.replace(hour=random.randint(11, 12),
+                                            minute=random.randint(0, 59))
+            midday_duration = random.uniform(1, 2.5)
+            
+            # Evening activity (6-10 PM)
+            evening_start = base_date.replace(hour=random.randint(18, 20),
+                                             minute=random.randint(0, 59))
+            evening_duration = random.uniform(1.5, 3)
+            
+            # Add some days with night activity
+            if random.random() < 0.2:  # 20% chance
+                night_start = base_date.replace(hour=random.randint(22, 23),
+                                               minute=random.randint(0, 59))
+                night_duration = random.uniform(0.5, 1.5)
+                
+                pattern.append({
+                    'day': day,
+                    'date': base_date,
+                    'period': 'night',
+                    'start': night_start,
+                    'duration': night_duration,
+                    'intensity': 'low'
+                })
+            
+            # Add regular periods
+            for period, start, duration in [
+                ('morning', morning_start, morning_duration),
+                ('midday', midday_start, midday_duration),
+                ('evening', evening_start, evening_duration)
+            ]:
+                pattern.append({
+                    'day': day,
+                    'date': base_date,
+                    'period': period,
+                    'start': start,
+                    'duration': duration,
+                    'intensity': 'high' if period == 'evening' else 'medium'
+                })
+        
+        return pattern
