@@ -1,209 +1,166 @@
 """
-System validators and privilege checks
-Ensures environment meets requirements for CHRONOS operations
+System validators and environment checks for CHRONOS-MULTILOGIN v2.0
+Ensures operational safety and prerequisites
 """
 
 import ctypes
 import platform
 import sys
 import subprocess
+import requests
 from typing import Tuple, Dict, Any
-import logging
 
-logger = logging.getLogger(__name__)
+def is_admin() -> bool:
+    """Check if script has Administrator privileges"""
+    try:
+        return ctypes.windll.shell32.IsUserAnAdmin() != 0
+    except AttributeError:
+        return False
 
+def check_mla_connection() -> bool:
+    """Verify Multilogin Local API is accessible"""
+    from config.settings import Config
+    from utils.logger import log
+    
+    try:
+        # Try v2 API first
+        resp = requests.get(f"http://127.0.0.1:{Config.MLA_PORT}/api/v2/profile", timeout=3)
+        if resp.status_code in [200, 401]:
+            log("Multilogin Connection: ACTIVE (v2 API)", "SUCCESS")
+            return True
+        
+        # Fallback to v1 API
+        resp = requests.get(f"http://127.0.0.1:{Config.MLA_PORT}/api/v1/profile/list", timeout=3)
+        if resp.status_code == 200:
+            log("Multilogin Connection: ACTIVE (v1 API)", "SUCCESS")
+            return True
+        
+        log(f"Multilogin returned status: {resp.status_code}", "ERROR")
+        return False
+    except requests.ConnectionError:
+        log("Multilogin is NOT running. Please start the application.", "ERROR")
+        return False
+    except Exception as e:
+        log(f"MLA connection check failed: {str(e)}", "ERROR")
+        return False
 
-class SystemValidator:
-    """Validates system requirements and privileges"""
+def check_windows_version() -> Tuple[bool, str]:
+    """Verify Windows version compatibility"""
+    if platform.system() != "Windows":
+        return False, f"Unsupported OS: {platform.system()}"
     
-    @staticmethod
-    def check_os() -> Tuple[bool, str]:
-        """
-        Check if running on supported Windows version
-        
-        Returns:
-            Tuple of (is_valid, os_info)
-        """
-        system = platform.system()
-        version = platform.version()
-        
-        if system != "Windows":
-            return False, f"Unsupported OS: {system}. Windows 10/11 required."
-        
-        # Parse Windows version
-        try:
-            major_version = int(version.split('.')[0])
-            build_number = int(version.split('.')[2])
-            
-            # Windows 10: build 10240+
-            # Windows 11: build 22000+
-            if build_number >= 10240:
-                os_name = "Windows 11" if build_number >= 22000 else "Windows 10"
-                return True, f"{os_name} (Build {build_number})"
-            else:
-                return False, f"Windows version too old: Build {build_number}"
-                
-        except Exception as e:
-            logger.error(f"Failed to parse Windows version: {str(e)}")
-            return False, f"Unknown Windows version: {version}"
+    version = platform.version()
+    try:
+        build = int(version.split('.')[2])
+        if build >= 10240:  # Windows 10 minimum
+            os_name = "Windows 11" if build >= 22000 else "Windows 10"
+            return True, f"{os_name} (Build {build})"
+        return False, f"Windows version too old: Build {build}"
+    except:
+        return False, f"Unknown Windows version: {version}"
+
+def check_python_version() -> Tuple[bool, str]:
+    """Verify Python version meets requirements"""
+    version = sys.version_info
+    version_str = f"{version.major}.{version.minor}.{version.micro}"
     
-    @staticmethod
-    def check_admin_privileges() -> bool:
-        """
-        Check if script has Administrator privileges
+    if version.major == 3 and version.minor >= 10:
+        return True, version_str
+    return False, f"Python {version_str} (3.10+ required)"
+
+def check_time_service() -> Dict[str, Any]:
+    """Check Windows Time Service status"""
+    try:
+        result = subprocess.run(
+            ["sc", "query", "W32Time"],
+            capture_output=True,
+            text=True,
+            shell=True
+        )
         
-        Returns:
-            True if running as Administrator
-        """
-        try:
-            return ctypes.windll.shell32.IsUserAnAdmin() != 0
-        except AttributeError:
-            return False
-    
-    @staticmethod
-    def check_python_version() -> Tuple[bool, str]:
-        """
-        Verify Python version meets requirements
-        
-        Returns:
-            Tuple of (is_valid, version_string)
-        """
-        version_info = sys.version_info
-        version_string = f"{version_info.major}.{version_info.minor}.{version_info.micro}"
-        
-        if version_info.major == 3 and version_info.minor >= 10:
-            return True, version_string
-        else:
-            return False, f"Python {version_string} (3.10+ required)"
-    
-    @staticmethod
-    def check_multilogin_api() -> Tuple[bool, str]:
-        """
-        Check if Multilogin Local API is accessible
-        
-        Returns:
-            Tuple of (is_accessible, status_message)
-        """
-        try:
-            import requests
-            
-            response = requests.get(
-                "http://127.0.0.1:35000/api/v2/profile",
-                timeout=3
-            )
-            
-            if response.status_code in [200, 401]:
-                return True, "Multilogin API accessible"
-            else:
-                return False, f"API returned status {response.status_code}"
-                
-        except requests.ConnectionError:
-            return False, "Multilogin not running or API disabled"
-        except Exception as e:
-            return False, f"API check failed: {str(e)}"
-    
-    @staticmethod
-    def check_time_service_status() -> Dict[str, Any]:
-        """
-        Check Windows Time Service status
-        
-        Returns:
-            Dict with service status information
-        """
-        try:
-            # Query Windows Time service
-            result = subprocess.run(
-                ["sc", "query", "W32Time"],
-                capture_output=True,
-                text=True,
-                shell=True
-            )
-            
-            status = {
-                "service_exists": "STATE" in result.stdout,
-                "is_running": "RUNNING" in result.stdout,
-                "raw_output": result.stdout
-            }
-            
-            return status
-            
-        except Exception as e:
-            logger.error(f"Failed to check time service: {str(e)}")
-            return {"service_exists": False, "is_running": False, "error": str(e)}
-    
-    @staticmethod
-    def validate_all() -> Dict[str, Any]:
-        """
-        Run all validation checks
-        
-        Returns:
-            Dict with all validation results
-        """
-        results = {}
-        
-        # OS Check
-        os_valid, os_info = SystemValidator.check_os()
-        results["os"] = {
-            "valid": os_valid,
-            "info": os_info
+        return {
+            "exists": "STATE" in result.stdout,
+            "running": "RUNNING" in result.stdout,
+            "status": "Running" if "RUNNING" in result.stdout else "Stopped"
         }
-        
-        # Admin privileges
-        results["admin"] = {
-            "valid": SystemValidator.check_admin_privileges(),
-            "info": "Administrator" if SystemValidator.check_admin_privileges() else "Standard User"
-        }
-        
-        # Python version
-        py_valid, py_version = SystemValidator.check_python_version()
-        results["python"] = {
-            "valid": py_valid,
-            "info": py_version
-        }
-        
-        # Multilogin API
-        mla_valid, mla_status = SystemValidator.check_multilogin_api()
-        results["multilogin"] = {
-            "valid": mla_valid,
-            "info": mla_status
-        }
-        
-        # Time service
-        results["time_service"] = SystemValidator.check_time_service_status()
-        
-        # Overall validation
-        results["all_valid"] = all([
-            results["os"]["valid"],
-            results["admin"]["valid"],
-            results["python"]["valid"],
-            results["multilogin"]["valid"]
-        ])
-        
-        return results
+    except Exception as e:
+        return {"exists": False, "running": False, "error": str(e)}
+
+def check_dependencies() -> Dict[str, bool]:
+    """Check required Python packages"""
+    dependencies = {
+        "requests": False,
+        "selenium": False,
+        "pywin32": False
+    }
     
-    @staticmethod
-    def print_validation_report(results: Dict[str, Any]) -> None:
-        """Print formatted validation report"""
-        print("=" * 60)
-        print("CHRONOS SYSTEM VALIDATION REPORT")
-        print("=" * 60)
-        
-        for key, value in results.items():
-            if key == "all_valid":
-                continue
-            
-            if isinstance(value, dict) and "valid" in value:
-                status = "✓" if value["valid"] else "✗"
-                print(f"{status} {key.upper()}: {value.get('info', 'N/A')}")
-            elif key == "time_service":
-                status = "✓" if value.get("is_running") else "✗"
-                print(f"{status} TIME SERVICE: {'Running' if value.get('is_running') else 'Stopped'}")
-        
-        print("=" * 60)
-        
-        if results["all_valid"]:
-            print("✓ All checks passed - System ready for CHRONOS operations")
-        else:
-            print("✗ Some checks failed - Please resolve issues before proceeding")
-        
-        print("=" * 60)
+    for package in dependencies:
+        try:
+            __import__(package.replace("pywin32", "win32api"))
+            dependencies[package] = True
+        except ImportError:
+            dependencies[package] = False
+    
+    return dependencies
+
+def validate_environment() -> Dict[str, Any]:
+    """Run all validation checks"""
+    from utils.logger import get_logger
+    logger = get_logger()
+    
+    results = {
+        "admin": is_admin(),
+        "multilogin": check_mla_connection(),
+        "windows": check_windows_version(),
+        "python": check_python_version(),
+        "time_service": check_time_service(),
+        "dependencies": check_dependencies()
+    }
+    
+    # Print validation report
+    print("\n" + "="*60)
+    print("   CHRONOS-MULTILOGIN v2.0 | SYSTEM VALIDATION")
+    print("="*60)
+    
+    status = "✓" if results["admin"] else "✗"
+    print(f"{status} Administrator Privileges: {'Granted' if results['admin'] else 'Required'}")
+    
+    status = "✓" if results["multilogin"] else "✗"
+    print(f"{status} Multilogin API: {'Connected' if results['multilogin'] else 'Offline'}")
+    
+    os_valid, os_info = results["windows"]
+    status = "✓" if os_valid else "✗"
+    print(f"{status} Operating System: {os_info}")
+    
+    py_valid, py_info = results["python"]
+    status = "✓" if py_valid else "✗"
+    print(f"{status} Python Version: {py_info}")
+    
+    time_svc = results["time_service"]
+    status = "✓" if time_svc.get("exists") else "✗"
+    print(f"{status} Time Service: {time_svc.get('status', 'Unknown')}")
+    
+    print("\nDependencies:")
+    for pkg, installed in results["dependencies"].items():
+        status = "✓" if installed else "✗"
+        print(f"  {status} {pkg}: {'Installed' if installed else 'Missing'}")
+    
+    print("="*60)
+    
+    # Overall status
+    all_valid = (
+        results["admin"] and 
+        results["multilogin"] and 
+        results["windows"][0] and 
+        results["python"][0] and
+        all(results["dependencies"].values())
+    )
+    
+    if all_valid:
+        print("✓ SYSTEM READY: All checks passed")
+    else:
+        print("✗ SYSTEM NOT READY: Resolve issues above")
+    
+    print("="*60 + "\n")
+    
+    return {"all_valid": all_valid, "details": results}

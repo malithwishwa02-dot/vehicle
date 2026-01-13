@@ -1,260 +1,154 @@
 """
-Multilogin API Controller
-Interfaces with MLA Local API v2 and manages browser automation via Selenium
+Multilogin API Controller v2.0
+Direct interface with MLA Local API and browser automation
 """
 
 import requests
-import logging
 import time
-import json
-from typing import Optional, Dict, Any, List
+import random
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from selenium.common.exceptions import WebDriverException, TimeoutException
+from selenium.common.exceptions import WebDriverException
+from typing import List, Dict, Optional
 
-logger = logging.getLogger(__name__)
-
-
-class MultiloginController:
+class MLAHandler:
     """
-    Controller for Multilogin Local API interaction and browser automation
-    Does NOT use undetected_chromedriver - connects to MLA-provided browser
+    Multilogin browser controller with cookie seeding capabilities
+    Implements trust anchor visitation for synthetic patina generation
     """
     
-    MLA_API_BASE = "http://127.0.0.1:35000/api/v2"
-    MLA_API_TIMEOUT = 30
-    
-    def __init__(self, mla_port: int = 35000):
-        """
-        Initialize Multilogin controller
+    def __init__(self, profile_id: str):
+        self.profile_id = profile_id
+        self.driver = None
+        self.remote_port = None
         
-        Args:
-            mla_port: Local API port (default: 35000)
-        """
-        self.api_base = f"http://127.0.0.1:{mla_port}/api/v2"
-        self.current_profile_id: Optional[str] = None
-        self.driver: Optional[webdriver.Chrome] = None
-        self.remote_port: Optional[int] = None
+        from config.settings import Config
+        from utils.logger import get_logger
         
-        # Verify API accessibility
-        if not self._verify_api():
-            raise ConnectionError(
-                f"Multilogin API not accessible at {self.api_base}. "
-                "Ensure Multilogin is running with Local API enabled."
-            )
+        self.config = Config
+        self.logger = get_logger()
+        
+        # API endpoints
+        self.api_v1 = Config.MLA_URL
+        self.api_v2 = Config.MLA_URL_V2
     
-    def _verify_api(self) -> bool:
-        """Verify Multilogin Local API is accessible"""
+    def start_profile(self) -> bool:
+        """Start Multilogin profile and attach Selenium driver"""
+        self.logger.info(f"Starting Profile: {self.profile_id}")
+        
+        # Try v2 API first
+        url = f"{self.api_v2}/profile/start?profileId={self.profile_id}"
+        
         try:
-            response = requests.get(
-                f"{self.api_base}/profile",
-                timeout=5
-            )
-            return response.status_code in [200, 401]  # 401 means API exists but needs auth
-        except requests.RequestException:
-            return False
-    
-    def start_profile(self, profile_id: str, headless: bool = False) -> Dict[str, Any]:
-        """
-        Start a Multilogin profile via Local API
-        
-        Args:
-            profile_id: MLA profile identifier
-            headless: Run browser in headless mode
+            resp = requests.get(url, timeout=30)
+            data = resp.json()
             
-        Returns:
-            API response containing remote debugging port
-        """
-        try:
-            # Prepare start request
-            endpoint = f"{self.api_base}/profile/start"
-            params = {
-                "profileId": profile_id,
-                "headless": headless
-            }
-            
-            logger.info(f"Starting profile: {profile_id}")
-            
-            # Make API request
-            response = requests.get(
-                endpoint,
-                params=params,
-                timeout=self.MLA_API_TIMEOUT
-            )
-            
-            if response.status_code != 200:
-                raise RuntimeError(f"Profile start failed: {response.text}")
-            
-            data = response.json()
-            
-            # Extract remote debugging port
-            if "value" in data and "port" in data["value"]:
-                self.remote_port = data["value"]["port"]
-                self.current_profile_id = profile_id
-                logger.info(f"Profile started on debugging port: {self.remote_port}")
-                return data["value"]
-            else:
-                raise ValueError(f"Invalid API response format: {data}")
+            if 'value' in data:
+                # Extract debugging port
+                if isinstance(data['value'], dict) and 'port' in data['value']:
+                    self.remote_port = data['value']['port']
+                else:
+                    self.remote_port = data['value']
                 
-        except Exception as e:
-            logger.error(f"Failed to start profile: {str(e)}")
-            raise
-    
-    def stop_profile(self, profile_id: Optional[str] = None) -> bool:
-        """
-        Stop a Multilogin profile
-        
-        Args:
-            profile_id: Profile to stop (uses current if not specified)
-            
-        Returns:
-            Success status
-        """
-        target_id = profile_id or self.current_profile_id
-        
-        if not target_id:
-            logger.warning("No profile ID specified for stop operation")
-            return False
-        
-        try:
-            # Close Selenium driver first if exists
-            if self.driver:
-                try:
-                    self.driver.quit()
-                except:
-                    pass
-                self.driver = None
-            
-            # Stop profile via API
-            endpoint = f"{self.api_base}/profile/stop"
-            params = {"profileId": target_id}
-            
-            response = requests.get(
-                endpoint,
-                params=params,
-                timeout=self.MLA_API_TIMEOUT
-            )
-            
-            if response.status_code == 200:
-                logger.info(f"Profile stopped: {target_id}")
-                if target_id == self.current_profile_id:
-                    self.current_profile_id = None
-                    self.remote_port = None
-                return True
-            else:
-                logger.error(f"Stop profile failed: {response.text}")
-                return False
+                self.logger.success(f"Profile started on port: {self.remote_port}")
                 
+                # Attach Selenium
+                return self._attach_selenium()
+            
+            # Fallback to v1 API
+            url = f"{self.api_v1}/profile/start?automation=true&profileId={self.profile_id}"
+            resp = requests.get(url, timeout=30)
+            data = resp.json()
+            
+            if 'value' in data:
+                self.remote_port = data['value']
+                self.logger.success(f"Profile started (v1 API) on port: {self.remote_port}")
+                return self._attach_selenium()
+            
+            self.logger.error(f"Failed to start profile: {data}")
+            return False
+            
         except Exception as e:
-            logger.error(f"Error stopping profile: {str(e)}")
+            self.logger.error(f"MLA API Error: {e}")
             return False
     
-    def connect_selenium(self) -> webdriver.Chrome:
-        """
-        Connect Selenium WebDriver to running MLA browser instance
-        Uses standard ChromeOptions with debugger_address
-        
-        Returns:
-            Configured Chrome WebDriver instance
-        """
-        if not self.remote_port:
-            raise RuntimeError("No profile started. Call start_profile first.")
-        
+    def _attach_selenium(self) -> bool:
+        """Attach Selenium WebDriver to running browser"""
         try:
-            # Configure Chrome options for remote debugging connection
-            chrome_options = Options()
-            chrome_options.add_experimental_option(
-                "debuggerAddress", 
-                f"127.0.0.1:{self.remote_port}"
-            )
+            # Configure Chrome options for remote debugging
+            opts = Options()
+            opts.add_experimental_option("debuggerAddress", f"127.0.0.1:{self.remote_port}")
             
-            # Suppress WebDriver detection flags (MLA handles this)
-            chrome_options.add_argument("--disable-blink-features=AutomationControlled")
-            chrome_options.add_experimental_option("excludeSwitches", ["enable-automation"])
-            chrome_options.add_experimental_option("useAutomationExtension", False)
+            # Suppress automation indicators
+            opts.add_argument("--disable-blink-features=AutomationControlled")
+            opts.add_experimental_option("excludeSwitches", ["enable-automation"])
+            opts.add_experimental_option("useAutomationExtension", False)
             
-            # Connect to MLA browser
-            self.driver = webdriver.Chrome(options=chrome_options)
+            # Connect driver
+            self.driver = webdriver.Chrome(options=opts)
             
-            logger.info(f"Selenium connected to port {self.remote_port}")
-            return self.driver
+            # Remove webdriver property
+            self.driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
+            
+            self.logger.success("Browser Driver Attached")
+            return True
             
         except WebDriverException as e:
-            logger.error(f"Failed to connect Selenium: {str(e)}")
-            raise
-    
-    def navigate_to(self, url: str, wait_time: int = 3) -> bool:
-        """
-        Navigate to URL with error handling
-        
-        Args:
-            url: Target URL
-            wait_time: Seconds to wait after navigation
-            
-        Returns:
-            Success status
-        """
-        if not self.driver:
-            logger.error("No driver connected. Call connect_selenium first.")
-            return False
-        
-        try:
-            self.driver.get(url)
-            time.sleep(wait_time)
-            logger.info(f"Navigated to: {url}")
-            return True
-        except Exception as e:
-            logger.error(f"Navigation failed: {str(e)}")
+            self.logger.error(f"Selenium attachment failed: {e}")
             return False
     
-    def generate_browsing_history(self, urls: List[str], dwell_time: int = 2) -> Dict[str, bool]:
+    def seed_cookies(self, deep_seed: bool = False):
         """
-        Generate browsing history by visiting multiple URLs
+        Visit trust anchors to generate aged cookie timestamps
         
         Args:
-            urls: List of URLs to visit
-            dwell_time: Seconds to wait on each page
-            
-        Returns:
-            Dict mapping URLs to success status
+            deep_seed: Use extended anchor list for deeper patina
         """
         if not self.driver:
-            self.connect_selenium()
+            self.logger.error("No driver attached!")
+            return
         
-        results = {}
+        anchors = self.config.TRUST_ANCHORS
+        if deep_seed:
+            anchors.extend(self.config.DEEP_ANCHORS)
         
-        for url in urls:
+        self.logger.info(f"Seeding cookies across {len(anchors)} trust anchors...")
+        
+        for url in anchors:
             try:
+                self.logger.info(f"Visiting: {url}")
                 self.driver.get(url)
                 
-                # Random human-like scrolling
-                self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight/2);")
+                # Random human-like behavior
+                dwell_time = random.uniform(2, 5)
                 time.sleep(dwell_time)
                 
-                # Check for basic page load
-                WebDriverWait(self.driver, 10).until(
-                    EC.presence_of_element_located((By.TAG_NAME, "body"))
-                )
+                # Random scrolling
+                if self.config.SCROLL_BEHAVIOR and random.random() > 0.5:
+                    scroll_amount = random.randint(100, 500)
+                    self.driver.execute_script(f"window.scrollBy(0, {scroll_amount});")
+                    time.sleep(random.uniform(0.5, 1.5))
                 
-                results[url] = True
-                logger.info(f"Successfully visited: {url}")
+                # Random clicks on page (non-interactive elements)
+                if self.config.RANDOM_CLICKS and random.random() > 0.7:
+                    try:
+                        self.driver.execute_script("""
+                            var x = Math.floor(Math.random() * window.innerWidth);
+                            var y = Math.floor(Math.random() * window.innerHeight);
+                            document.elementFromPoint(x, y).click();
+                        """)
+                    except:
+                        pass  # Ignore click errors
                 
-            except TimeoutException:
-                results[url] = False
-                logger.warning(f"Timeout loading: {url}")
+                self.logger.success(f"Seeded: {url}")
                 
             except Exception as e:
-                results[url] = False
-                logger.error(f"Error visiting {url}: {str(e)}")
-        
-        return results
+                self.logger.warning(f"Failed to visit {url}: {e}")
     
-    def inject_cookies(self, cookies: List[Dict[str, Any]]) -> int:
+    def inject_cookies(self, cookies: List[Dict]) -> int:
         """
-        Inject cookies into current browser session
+        Directly inject cookies into browser session
         
         Args:
             cookies: List of cookie dictionaries
@@ -263,56 +157,113 @@ class MultiloginController:
             Number of successfully injected cookies
         """
         if not self.driver:
-            logger.error("No driver connected")
             return 0
         
         injected = 0
-        
         for cookie in cookies:
             try:
                 # Ensure required fields
-                if "name" in cookie and "value" in cookie:
+                if 'name' in cookie and 'value' in cookie:
+                    # Add domain if missing
+                    if 'domain' not in cookie:
+                        current_domain = self.driver.execute_script("return document.domain;")
+                        cookie['domain'] = current_domain
+                    
                     self.driver.add_cookie(cookie)
                     injected += 1
+                    
             except Exception as e:
-                logger.warning(f"Failed to inject cookie: {str(e)}")
+                self.logger.warning(f"Cookie injection failed: {e}")
         
-        logger.info(f"Injected {injected}/{len(cookies)} cookies")
+        self.logger.info(f"Injected {injected}/{len(cookies)} cookies")
         return injected
     
-    def get_profile_info(self, profile_id: str) -> Optional[Dict[str, Any]]:
+    def execute_journey(self, journey_type: str = "standard"):
         """
-        Get profile information from MLA API
+        Execute predefined browsing journeys for natural history
         
         Args:
-            profile_id: Profile identifier
-            
-        Returns:
-            Profile metadata or None
+            journey_type: Type of journey (standard, shopping, social, news)
         """
-        try:
-            endpoint = f"{self.api_base}/profile/{profile_id}"
-            response = requests.get(endpoint, timeout=self.MLA_API_TIMEOUT)
-            
-            if response.status_code == 200:
-                return response.json()
-            else:
-                logger.error(f"Failed to get profile info: {response.text}")
-                return None
+        journeys = {
+            "standard": [
+                "https://www.google.com/search?q=weather",
+                "https://www.youtube.com",
+                "https://www.wikipedia.org/wiki/Main_Page",
+                "https://www.reddit.com"
+            ],
+            "shopping": [
+                "https://www.amazon.com",
+                "https://www.ebay.com",
+                "https://www.walmart.com",
+                "https://www.bestbuy.com"
+            ],
+            "social": [
+                "https://www.facebook.com",
+                "https://www.twitter.com",
+                "https://www.instagram.com",
+                "https://www.linkedin.com"
+            ],
+            "news": [
+                "https://www.cnn.com",
+                "https://www.bbc.com",
+                "https://www.reuters.com",
+                "https://www.apnews.com"
+            ]
+        }
+        
+        urls = journeys.get(journey_type, journeys["standard"])
+        
+        self.logger.info(f"Executing {journey_type} journey...")
+        
+        for url in urls:
+            try:
+                self.driver.get(url)
                 
-        except Exception as e:
-            logger.error(f"Error getting profile info: {str(e)}")
-            return None
+                # Varied dwell times
+                dwell = random.uniform(3, 8)
+                time.sleep(dwell)
+                
+                # Natural scrolling pattern
+                for _ in range(random.randint(1, 3)):
+                    scroll = random.randint(100, 400)
+                    self.driver.execute_script(f"window.scrollBy(0, {scroll});")
+                    time.sleep(random.uniform(0.5, 1.5))
+                
+            except Exception as e:
+                self.logger.warning(f"Journey step failed: {e}")
+    
+    def stop_profile(self):
+        """Stop Multilogin profile and cleanup"""
+        self.logger.info("Stopping Profile...")
+        
+        # Close Selenium driver
+        if self.driver:
+            try:
+                self.driver.quit()
+            except:
+                pass
+            self.driver = None
+        
+        # Stop profile via API
+        try:
+            # Try v2 API
+            url = f"{self.api_v2}/profile/stop?profileId={self.profile_id}"
+            requests.get(url, timeout=10)
+        except:
+            try:
+                # Fallback to v1
+                url = f"{self.api_v1}/profile/stop?profileId={self.profile_id}"
+                requests.get(url, timeout=10)
+            except:
+                pass
+        
+        time.sleep(2)  # Allow file locks to release
+        self.logger.success("Profile stopped")
     
     def cleanup(self):
-        """Cleanup resources - close driver and stop profile"""
+        """Emergency cleanup"""
         try:
-            if self.driver:
-                self.driver.quit()
-                self.driver = None
-            
-            if self.current_profile_id:
-                self.stop_profile(self.current_profile_id)
-                
-        except Exception as e:
-            logger.error(f"Cleanup error: {str(e)}")
+            self.stop_profile()
+        except:
+            pass

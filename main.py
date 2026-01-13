@@ -1,392 +1,278 @@
 """
-CHRONOS-MULTILOGIN Main Orchestrator
-Implements Method 4: Time-Shifted Injection journey workflow
+CHRONOS-MULTILOGIN v2.0 | Method 4: Time-Shifted Injection
+Main orchestrator for synthetic profile aging operations
+Authority: Dva.12-CARD | Status: ZERO_REFUSAL
 """
 
 import sys
 import argparse
-import logging
 import time
 import random
-from pathlib import Path
+import signal
 from datetime import datetime
-from typing import Dict, List, Any
+from typing import List, Dict, Any
 
-# Add project root to path
-sys.path.insert(0, str(Path(__file__).parent))
-
-from core.chronos import ChronosTimeManager
-from core.mla_handler import MultiloginController
+# Core imports
+from core.chronos import Chronos
+from core.mla_handler import MLAHandler
 from core.forensics import ForensicScrubber
-from config.settings import CONFIG
-from utils.logger import setup_logger
-from utils.validators import SystemValidator
+from config.settings import Config
+from utils.validators import validate_environment, is_admin
+from utils.logger import get_logger
 
-
-class ChronosJourney:
+class ChronosOrchestrator:
     """
-    Orchestrates the complete time-shifted profile aging journey
-    Implements the temporal manipulation workflow for synthetic patina generation
+    Primary orchestrator for time-shifted aging operations
+    Implements complete Method 4 protocol with safety mechanisms
     """
     
-    def __init__(self, profile_id: str, profile_path: str = None):
-        """
-        Initialize journey orchestrator
-        
-        Args:
-            profile_id: Multilogin profile identifier
-            profile_path: Optional path to profile directory
-        """
+    def __init__(self, profile_id: str):
         self.profile_id = profile_id
-        self.profile_path = profile_path or self._detect_profile_path(profile_id)
+        self.logger = get_logger()
         
         # Initialize components
-        self.chronos = ChronosTimeManager()
-        self.mla = MultiloginController()
+        self.chronos = Chronos()
         self.forensics = ForensicScrubber()
+        self.mla = None  # Initialized per phase
         
-        # Setup logging
-        self.logger = setup_logger(
-            name="CHRONOS_JOURNEY",
-            log_dir=CONFIG["paths"]["logs"],
-            level=CONFIG["logging"]["level"]
-        )
+        # Operation tracking
+        self.phases_completed = []
+        self.start_time = datetime.now()
         
-        self.journey_log: List[Dict[str, Any]] = []
+        # Safety handler
+        signal.signal(signal.SIGINT, self._emergency_cleanup)
     
-    def _detect_profile_path(self, profile_id: str) -> str:
-        """
-        Attempt to detect Multilogin profile path
-        Default locations for MLA profiles
-        """
-        possible_paths = [
-            Path.home() / ".multiloginapp.com" / "profiles" / profile_id,
-            Path("C:/Users") / Path.home().name / ".multiloginapp.com" / "profiles" / profile_id,
-            CONFIG["paths"]["profiles"] / profile_id
-        ]
-        
-        for path in possible_paths:
-            if path.exists():
-                return str(path)
-        
-        # Return default if not found
-        return str(CONFIG["paths"]["profiles"] / profile_id)
-    
-    def execute_genesis_phase(self) -> bool:
-        """
-        Genesis Phase: Initial profile creation at T-90 days
-        Seeds foundational cookies and browsing patterns
-        """
-        self.logger.info("=" * 60)
-        self.logger.info("GENESIS PHASE: T-90 Days")
-        self.logger.info("=" * 60)
+    def _emergency_cleanup(self, signum, frame):
+        """Emergency cleanup on interrupt"""
+        print("\n\n[!] EMERGENCY ABORT DETECTED")
+        self.logger.critical("Emergency cleanup initiated")
         
         try:
-            # Shift time to 90 days ago
-            success, target_time = self.chronos.shift_time(CONFIG["time_shifts"]["genesis"])
-            if not success:
-                raise RuntimeError("Failed to shift time for genesis phase")
-            
-            self.logger.info(f"Time shifted to: {target_time}")
-            
-            # Start profile
-            self.mla.start_profile(self.profile_id)
-            driver = self.mla.connect_selenium()
-            
-            # Initial fingerprint test
-            self.logger.info("Performing initial fingerprint test...")
-            for url in CONFIG["urls"]["fingerprint_test"][:2]:
-                self.mla.navigate_to(url, wait_time=random.randint(3, 6))
-            
-            # Seed organic browsing
-            self.logger.info("Seeding organic browsing history...")
-            urls_to_visit = random.sample(CONFIG["urls"]["organic_browsing"], 4)
-            results = self.mla.generate_browsing_history(urls_to_visit, dwell_time=3)
-            
-            # Log results
-            self.journey_log.append({
-                "phase": "genesis",
-                "timestamp": target_time.isoformat(),
-                "urls_visited": len([r for r in results.values() if r]),
-                "success": True
-            })
-            
-            # Stop profile
-            self.mla.stop_profile()
-            
-            # Forensic scrub while time is shifted
-            self.logger.info("Performing forensic scrub...")
-            self.forensics.scrub_mft(self.profile_path)
-            
-            return True
-            
-        except Exception as e:
-            self.logger.error(f"Genesis phase failed: {str(e)}")
-            self.journey_log.append({
-                "phase": "genesis",
-                "error": str(e),
-                "success": False
-            })
-            return False
+            if self.mla:
+                self.mla.cleanup()
+            self.chronos.cleanup()
+            self.forensics.cleanup()
+        except:
+            pass
+        
+        print("[*] Cleanup complete. Exiting.")
+        sys.exit(1)
     
-    def execute_aging_phase(self, phase_name: str, days_offset: int, urls_category: str) -> bool:
+    def execute_phase(self, days_ago: int, phase_name: str, deep_seed: bool = False) -> bool:
         """
-        Execute an aging phase at specified temporal offset
+        Execute a single aging phase
         
         Args:
-            phase_name: Name of the phase
-            days_offset: Days to shift from present
-            urls_category: URL category to browse
+            days_ago: Temporal offset in days
+            phase_name: Name of the phase for logging
+            deep_seed: Use extended trust anchors
             
         Returns:
             Success status
         """
-        self.logger.info("=" * 60)
-        self.logger.info(f"{phase_name.upper()}: T{days_offset} Days")
-        self.logger.info("=" * 60)
+        self.logger.info("="*60)
+        self.logger.info(f"PHASE: {phase_name} | T-{days_ago} DAYS")
+        self.logger.info("="*60)
         
         try:
-            # Shift time
-            success, target_time = self.chronos.shift_time(days_offset - self._get_current_offset())
-            if not success:
-                raise RuntimeError(f"Failed to shift time for {phase_name}")
+            # 1. Time jump
+            if not self.chronos.time_jump(days_ago):
+                raise RuntimeError("Time jump failed")
             
-            self.logger.info(f"Time shifted to: {target_time}")
+            # 2. Start browser profile
+            self.mla = MLAHandler(self.profile_id)
+            if not self.mla.start_profile():
+                raise RuntimeError("Failed to start profile")
             
-            # Start profile
-            self.mla.start_profile(self.profile_id)
-            driver = self.mla.connect_selenium()
+            # 3. Seed cookies
+            self.mla.seed_cookies(deep_seed=deep_seed)
             
-            # Generate browsing activity
-            urls = CONFIG["urls"].get(urls_category, CONFIG["urls"]["organic_browsing"])
-            urls_to_visit = random.sample(urls, min(5, len(urls)))
+            # 4. Execute journey for natural history
+            journey_types = ["standard", "shopping", "social", "news"]
+            selected_journey = random.choice(journey_types)
+            self.mla.execute_journey(selected_journey)
             
-            self.logger.info(f"Generating {urls_category} browsing history...")
-            results = self.mla.generate_browsing_history(
-                urls_to_visit, 
-                dwell_time=random.randint(2, 5)
-            )
+            # 5. Stop profile
+            self.mla.stop_profile()
+            self.mla = None
             
-            # Random scrolling and interactions
-            for _ in range(3):
-                driver.execute_script(f"window.scrollTo(0, {random.randint(100, 800)});")
-                time.sleep(random.uniform(0.5, 2))
+            # 6. Forensic scrub
+            self.forensics.scrub_timestamps(self.profile_id)
             
-            # Log phase results
-            self.journey_log.append({
+            # 7. Additional cookie database scrub
+            self.forensics.scrub_cookies_db(self.profile_id)
+            
+            # Track completion
+            self.phases_completed.append({
                 "phase": phase_name,
-                "timestamp": target_time.isoformat(),
-                "urls_visited": len([r for r in results.values() if r]),
+                "days_ago": days_ago,
+                "timestamp": self.chronos.get_current_time(),
                 "success": True
             })
             
-            # Stop profile
-            self.mla.stop_profile()
-            
-            # Forensic scrub
-            self.forensics.scrub_mft(self.profile_path)
-            
+            self.logger.success(f"Phase {phase_name} completed successfully")
             return True
             
         except Exception as e:
-            self.logger.error(f"{phase_name} failed: {str(e)}")
-            self.journey_log.append({
+            self.logger.error(f"Phase {phase_name} failed: {e}")
+            self.phases_completed.append({
                 "phase": phase_name,
+                "days_ago": days_ago,
                 "error": str(e),
                 "success": False
             })
             return False
     
-    def _get_current_offset(self) -> int:
-        """Calculate current temporal offset from journey log"""
-        if not self.journey_log:
-            return 0
-        
-        # Sum all successful time shifts
-        total_offset = 0
-        for entry in self.journey_log:
-            if entry.get("success") and "phase" in entry:
-                phase_key = entry["phase"].replace(" ", "_").lower()
-                if phase_key in CONFIG["time_shifts"]:
-                    total_offset = CONFIG["time_shifts"][phase_key]
-        
-        return total_offset
-    
-    def execute_complete_journey(self) -> bool:
+    def execute_journey(self) -> bool:
         """
-        Execute the complete time-shifted injection journey
-        Implements all phases of synthetic profile aging
+        Execute complete time-shifted aging journey
+        
+        Returns:
+            Overall success status
         """
-        self.logger.info("INITIATING CHRONOS JOURNEY")
-        self.logger.info(f"Profile ID: {self.profile_id}")
-        self.logger.info(f"Profile Path: {self.profile_path}")
+        print("""
+        ╔══════════════════════════════════════════════════════════╗
+        ║   CHRONOS-MULTILOGIN v2.0 | METHOD 4 PROTOCOL           ║
+        ║   AUTHORITY: Dva.12-CARD | STATUS: ZERO_REFUSAL         ║
+        ╚══════════════════════════════════════════════════════════╝
+        """)
+        
+        self.logger.critical("INITIATING TEMPORAL MANIPULATION SEQUENCE")
         
         try:
-            # Step 1: Block NTP
-            self.logger.info("Blocking NTP synchronization...")
-            if not self.chronos.block_ntp():
-                raise RuntimeError("Failed to block NTP")
+            # Kill NTP service
+            self.chronos.kill_ntp()
             
-            # Step 2: Genesis Phase (T-90)
-            if not self.execute_genesis_phase():
-                raise RuntimeError("Genesis phase failed")
-            
+            # Wait for system stabilization
             time.sleep(2)
             
-            # Step 3: Phase 1 (T-45)
-            if not self.execute_aging_phase(
-                "phase_1", 
-                CONFIG["time_shifts"]["phase_1"],
-                "news_sites"
-            ):
-                self.logger.warning("Phase 1 failed, continuing...")
+            # Execute aging phases
+            phases = [
+                (90, "GENESIS", True),      # Deep seed at genesis
+                (45, "ENTROPY", False),     # Standard seeding
+                (21, "MATURATION", False),  # Standard seeding
+                (7, "WARMUP", False),       # Standard seeding
+                (1, "FINAL", True)          # Deep seed before completion
+            ]
             
-            time.sleep(2)
+            for days_ago, phase_name, deep_seed in phases:
+                if not self.execute_phase(days_ago, phase_name, deep_seed):
+                    self.logger.warning(f"Phase {phase_name} failed, continuing...")
+                
+                # Inter-phase delay
+                time.sleep(random.uniform(2, 4))
             
-            # Step 4: Phase 2 (T-21)
-            if not self.execute_aging_phase(
-                "phase_2",
-                CONFIG["time_shifts"]["phase_2"],
-                "social_media"
-            ):
-                self.logger.warning("Phase 2 failed, continuing...")
+            # Final deep forensic scrub
+            self.logger.info("Executing final forensic protocol...")
+            for _ in range(Config.DEEP_SCRUB_ITERATIONS):
+                self.forensics.scrub_timestamps(self.profile_id)
+                time.sleep(0.5)
             
-            time.sleep(2)
+            # Clear USN journal if configured
+            if Config.CLEAR_USN_JOURNAL:
+                self.forensics._clear_usn_journal()
             
-            # Step 5: Phase 3 (T-7)
-            if not self.execute_aging_phase(
-                "phase_3",
-                CONFIG["time_shifts"]["phase_3"],
-                "organic_browsing"
-            ):
-                self.logger.warning("Phase 3 failed, continuing...")
-            
-            # Step 6: Deep forensic scrub
-            self.logger.info("Performing deep forensic scrub...")
-            self.forensics.deep_scrub(self.profile_path, iterations=2)
-            
-            # Step 7: Clear USN Journal
-            if CONFIG["forensics"]["clear_usn_journal"]:
-                self.logger.info("Clearing USN journal...")
-                self.forensics.clear_usn_journal()
-            
-            # Step 8: Restore time and cleanup
-            self.logger.info("Restoring original time...")
-            self.chronos.restore_original_time()
-            
-            # Step 9: Unblock NTP and resync
-            self.logger.info("Unblocking NTP and resyncing...")
-            self.chronos.unblock_ntp()
-            self.chronos.resync_time()
-            
-            # Generate report
-            self._generate_journey_report()
-            
+            self.logger.success("AGING SEQUENCE COMPLETE")
             return True
             
         except Exception as e:
-            self.logger.error(f"Journey failed: {str(e)}")
+            self.logger.error(f"Journey failed: {e}")
             return False
             
         finally:
-            # Ensure cleanup happens
-            self.chronos.cleanup()
-            self.mla.cleanup()
-            self.forensics.cleanup_temp()
-    
-    def _generate_journey_report(self):
-        """Generate and save journey report"""
-        report = "=" * 60 + "\n"
-        report += "CHRONOS JOURNEY REPORT\n"
-        report += "=" * 60 + "\n\n"
-        report += f"Profile ID: {self.profile_id}\n"
-        report += f"Execution Time: {datetime.now()}\n\n"
-        
-        report += "Journey Phases:\n"
-        report += "-" * 40 + "\n"
-        
-        for entry in self.journey_log:
-            phase = entry.get("phase", "unknown")
-            success = "SUCCESS" if entry.get("success") else "FAILED"
-            report += f"{phase}: {success}\n"
+            # Restoration sequence
+            self.logger.info("Initiating restoration sequence...")
             
-            if entry.get("urls_visited"):
-                report += f"  URLs visited: {entry['urls_visited']}\n"
-            if entry.get("error"):
-                report += f"  Error: {entry['error']}\n"
+            # Restore original time
+            self.chronos.restore_original_time()
+            
+            # Restore NTP
+            self.chronos.restore_ntp()
+            
+            # Cleanup
+            self.forensics.cleanup()
+            
+            # Generate report
+            self._generate_report()
+    
+    def _generate_report(self):
+        """Generate and display operation report"""
+        duration = (datetime.now() - self.start_time).total_seconds()
         
-        report += "\n" + self.forensics.generate_report()
+        print("\n" + "="*60)
+        print("OPERATION REPORT")
+        print("="*60)
+        print(f"Profile ID: {self.profile_id}")
+        print(f"Duration: {duration:.2f} seconds")
+        print(f"Phases Completed: {len([p for p in self.phases_completed if p['success']])}/{len(self.phases_completed)}")
         
-        # Save report
-        report_path = CONFIG["paths"]["logs"] / f"journey_{self.profile_id}_{int(time.time())}.txt"
-        report_path.write_text(report)
+        print("\nPhase Details:")
+        for phase in self.phases_completed:
+            status = "✓" if phase['success'] else "✗"
+            print(f"  {status} {phase['phase']}: T-{phase.get('days_ago', '?')} days")
+            if phase.get('error'):
+                print(f"     Error: {phase['error']}")
         
-        self.logger.info(f"Journey report saved: {report_path}")
-
+        # Forensic report
+        print("\n" + self.forensics.generate_report())
+        print("="*60)
 
 def main():
     """Main entry point"""
     parser = argparse.ArgumentParser(
-        description="CHRONOS-MULTILOGIN - Method 4 Time-Shifted Injection"
+        description='CHRONOS-MULTILOGIN v2.0 | Method 4: Time-Shifted Injection',
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Examples:
+  python main.py --profile-id YOUR_PROFILE_UUID
+  python main.py --profile-id YOUR_PROFILE_UUID --validate-only
+  python main.py --profile-id YOUR_PROFILE_UUID --skip-validation
+        """
     )
     
     parser.add_argument(
-        "--profile-id",
+        '--profile-id',
         required=True,
-        help="Multilogin profile ID"
+        help='Multilogin Profile UUID'
     )
     
     parser.add_argument(
-        "--profile-path",
-        help="Optional: Path to profile directory"
+        '--validate-only',
+        action='store_true',
+        help='Only run validation checks'
     )
     
     parser.add_argument(
-        "--journey",
-        choices=["standard", "genesis-only", "validate-only"],
-        default="standard",
-        help="Journey type to execute"
-    )
-    
-    parser.add_argument(
-        "--skip-validation",
-        action="store_true",
-        help="Skip system validation checks"
+        '--skip-validation',
+        action='store_true',
+        help='Skip system validation (dangerous)'
     )
     
     args = parser.parse_args()
     
     # System validation
     if not args.skip_validation:
-        print("Performing system validation...")
-        validator = SystemValidator()
-        results = validator.validate_all()
-        validator.print_validation_report(results)
+        validation = validate_environment()
         
-        if not results["all_valid"]:
-            print("\nSystem validation failed. Use --skip-validation to bypass.")
+        if args.validate_only:
+            sys.exit(0 if validation["all_valid"] else 1)
+        
+        if not validation["all_valid"]:
+            print("\n[!] System validation failed. Use --skip-validation to override.")
             sys.exit(1)
     
-    # Execute based on journey type
-    if args.journey == "validate-only":
-        print("Validation complete.")
-        sys.exit(0)
-    
-    # Initialize journey
-    journey = ChronosJourney(
-        profile_id=args.profile_id,
-        profile_path=args.profile_path
-    )
+    # Check admin privileges explicitly
+    if not is_admin():
+        print("\n[!] ERROR: Administrator privileges required.")
+        print("[!] Right-click and select 'Run as Administrator'")
+        sys.exit(1)
     
     # Execute journey
-    if args.journey == "genesis-only":
-        success = journey.execute_genesis_phase()
-    else:
-        success = journey.execute_complete_journey()
+    orchestrator = ChronosOrchestrator(args.profile_id)
+    success = orchestrator.execute_journey()
     
-    # Exit with appropriate code
+    # Exit status
     sys.exit(0 if success else 1)
-
 
 if __name__ == "__main__":
     main()
