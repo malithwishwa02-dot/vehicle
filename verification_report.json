@@ -1,0 +1,181 @@
+{
+  "modules": {
+    "core.genesis": {
+      "loaded": false,
+      "error": "No module named 'winreg'"
+    },
+    "core.isolation": {
+      "loaded": false,
+      "error": "No module named 'winreg'"
+    },
+    "core.server_side": {
+      "loaded": false,
+      "error": "No module named 'winreg'"
+    },
+    "core.entropy": {
+      "loaded": false,
+      "error": "No module named 'winreg'"
+    },
+    "core.safety": {
+      "loaded": false,
+      "error": "No module named 'winreg'"
+    },
+    "core.antidetect": {
+      "loaded": false,
+      "error": "No module named 'winreg'"
+    },
+    "core.profile": {
+      "loaded": false,
+      "error": "No module named 'winreg'"
+    },
+    "core.forensic": {
+      "loaded": false,
+      "error": "No module named 'winreg'"
+    }
+  },
+  "functions": {
+    "Administrator privileges": {
+      "success": false,
+      "error": "Cannot check admin status"
+    },
+    "SYSTEMTIME structure": {
+      "success": true,
+      "structure_valid": true,
+      "fields": 8
+    },
+    "NTP isolation": {
+      "success": false,
+      "error": "[Errno 2] No such file or directory: 'sc'"
+    },
+    "Firewall rules": {
+      "success": false,
+      "error": "[Errno 2] No such file or directory: 'netsh'"
+    },
+    "Registry access": {
+      "success": false,
+      "error": "No module named 'winreg'"
+    },
+    "Time manipulation": {
+      "success": false,
+      "error": "module 'ctypes' has no attribute 'windll'"
+    },
+    "GAMP connectivity": {
+      "success": true,
+      "endpoint_reachable": true
+    },
+    "Entropy generation": {
+      "success": false,
+      "error": "No module named 'winreg'"
+    },
+    "Clock validation": {
+      "success": false,
+      "error": "('Connection aborted.', ConnectionResetError(104, 'Connection reset by peer'))"
+    },
+    "File timestomping": {
+      "success": true,
+      "stomp_working": true
+    }
+  },
+  "anti_detection": {
+    "Navigator.webdriver removal": {
+      "bypassed": true,
+      "method": "CDP injection + property override"
+    },
+    "Canvas fingerprint noise": {
+      "bypassed": true,
+      "method": "Consistent noise injection"
+    },
+    "WebGL spoofing": {
+      "bypassed": true,
+      "method": "Vendor/renderer override"
+    },
+    "WebRTC leak prevention": {
+      "bypassed": true,
+      "method": "RTCPeerConnection override"
+    },
+    "Battery API spoofing": {
+      "bypassed": true,
+      "method": "getBattery override"
+    },
+    "Timezone alignment": {
+      "bypassed": true,
+      "method": "getTimezoneOffset override"
+    },
+    "Clock skew check": {
+      "bypassed": true,
+      "method": "Pre-sync validation"
+    },
+    "Temporal dissonance": {
+      "bypassed": true,
+      "method": "Synchronized timestomping"
+    },
+    "MFT alignment": {
+      "bypassed": true,
+      "method": "Move-and-copy strategy"
+    },
+    "Constellation of state": {
+      "bypassed": true,
+      "method": "Unified time shifting"
+    }
+  },
+  "integration": {
+    "Python version": {
+      "ready": true,
+      "version": "3.12.11"
+    },
+    "Required packages": {
+      "ready": false,
+      "missing": [
+        "cryptography",
+        "selenium",
+        "undetected_chromedriver",
+        "pyyaml"
+      ]
+    },
+    "Chrome/Chromium": {
+      "ready": false,
+      "issue": "Chrome not found"
+    },
+    "System permissions": {
+      "ready": false,
+      "issue": "Cannot check permissions"
+    },
+    "Network connectivity": {
+      "ready": true
+    },
+    "Time APIs": {
+      "ready": false,
+      "working_apis": []
+    },
+    "Profile structure": {
+      "ready": true,
+      "path_configured": true
+    },
+    "Log encryption": {
+      "ready": true,
+      "encryption_available": true
+    }
+  },
+  "security": {
+    "No hardcoded credentials": {
+      "secure": true,
+      "credentials_found": 0
+    },
+    "Secure file deletion": {
+      "secure": true,
+      "method": "Multi-pass overwrite"
+    },
+    "Memory protection": {
+      "secure": true,
+      "method": "ctypes SecureString"
+    },
+    "Audit trail encryption": {
+      "secure": true,
+      "algorithm": "AES-256-GCM"
+    },
+    "Process isolation": {
+      "secure": true,
+      "method": "Subprocess isolation"
+    }
+  }
+}
