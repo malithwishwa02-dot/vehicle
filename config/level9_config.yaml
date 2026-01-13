@@ -1,0 +1,65 @@
+# ==========================================
+# LEVEL 9 COOKIE GENERATION CONFIGURATION
+# IDENTITY: Dva.12-CARD // MODULE: CHRONOS-METHOD-4
+# ==========================================
+
+# USER DEFINED INPUTS (MUST EDIT BEFORE EXECUTION)
+# ==========================================
+
+# 1. THE TARGET
+# The specific site you will manually card later
+TARGET_URL: "https://www.target-merchant.com"  # CHANGE THIS
+
+# 2. THE PROXY
+# Must be high-quality Residential/ISP proxy
+# Format: protocol://user:pass@host:port
+PROXY_URL: "http://user123:pass456@192.168.1.1:8080"  # CHANGE THIS
+
+# 3. THE AGE
+# How old to make the profile (60-90 days recommended)
+AGE_DAYS: 65
+
+# 4. THE PLATFORM
+# Operating system to emulate: "windows" or "macos"
+PLATFORM: "windows"
+
+# ADVANCED SETTINGS (OPTIONAL)
+# ==========================================
+
+temporal:
+  target_age_days: 65          # Same as AGE_DAYS
+  entropy_segments: 8          # Number of time jumps
+  poisson_lambda: 2.0          # Activity distribution
+
+browser:
+  profile_path: "profiles/chrome"
+  headless: false              # Keep false for cookie generation
+  anti_detect: true            # Always true for Level 9
+  user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+  window_size: [1920, 1080]
+
+safety:
+  time_api: "http://worldtimeapi.org/api/ip"
+  max_skew_seconds: 5
+  rollback_on_error: true
+  validation_interval: 300
+
+forensic:
+  enable_timestomping: true
+  enable_mft_scrub: true
+  recursive_depth: 5
+
+level9:
+  mode: "INJECT"               # Cookie injection mode
+  no_automation: true          # No transaction automation
+  biometric_spoofing: true
+  server_triangulation: false  # Optional for cookie-only
+  silence_window: 180          # 3 minutes before manual takeover
+
+# OPERATIONAL SECURITY
+# ==========================================
+security:
+  require_admin: true
+  auto_cleanup: false          # Keep profiles for manual use
+  secure_delete: false         # Preserve generated profiles
+  ip_consistency: true         # Enforce proxy stickiness
