@@ -265,6 +265,7 @@ class Level9Verifier:
     
     def create_ghost_wrapper(self):
         """Create GhostSignalInjector wrapper for compatibility."""
+        from pathlib import Path
         wrapper_code = '''"""
 Ghost Signal Injector - Level 9 Enhancement Wrapper
 Provides backward compatibility with GAMPTriangulation
@@ -313,6 +314,7 @@ class GhostSignalInjector(GAMPTriangulation):
     
     def create_chronos_wrapper(self):
         """Create ChronosTimeMachine wrapper for compatibility."""
+        from pathlib import Path
         wrapper_code = '''"""
 Chronos Time Machine - Level 9 Enhancement Wrapper
 Provides enhanced forensic capabilities
