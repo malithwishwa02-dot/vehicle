@@ -37,33 +37,36 @@ class MLAHandler:
         """Start Multilogin profile and attach Selenium driver"""
         self.logger.info(f"Starting Profile: {self.profile_id}")
         
-        # Try v2 API first
-        url = f"{self.api_v2}/profile/start?profileId={self.profile_id}"
+        # Try v1 API with automation and puppeteer flags (as per specification)
+        url = f"{self.api_v1}/profile/start?automation=true&puppeteer=true&profileId={self.profile_id}"
         
         try:
             resp = requests.get(url, timeout=30)
             data = resp.json()
             
             if 'value' in data:
-                # Extract debugging port
+                # Extract the WebSocket URL or debugging port
                 if isinstance(data['value'], dict) and 'port' in data['value']:
                     self.remote_port = data['value']['port']
                 else:
                     self.remote_port = data['value']
                 
-                self.logger.success(f"Profile started on port: {self.remote_port}")
+                self.logger.success(f"Profile started (v1 API) on port: {self.remote_port}")
                 
                 # Attach Selenium
                 return self._attach_selenium()
             
-            # Fallback to v1 API
-            url = f"{self.api_v1}/profile/start?automation=true&profileId={self.profile_id}"
+            # Fallback to v2 API
+            url = f"{self.api_v2}/profile/start?profileId={self.profile_id}"
             resp = requests.get(url, timeout=30)
             data = resp.json()
             
             if 'value' in data:
-                self.remote_port = data['value']
-                self.logger.success(f"Profile started (v1 API) on port: {self.remote_port}")
+                if isinstance(data['value'], dict) and 'port' in data['value']:
+                    self.remote_port = data['value']['port']
+                else:
+                    self.remote_port = data['value']
+                self.logger.success(f"Profile started (v2 API) on port: {self.remote_port}")
                 return self._attach_selenium()
             
             self.logger.error(f"Failed to start profile: {data}")
@@ -234,32 +237,41 @@ class MLAHandler:
                 self.logger.warning(f"Journey step failed: {e}")
     
     def stop_profile(self):
-        """Stop Multilogin profile and cleanup"""
-        self.logger.info("Stopping Profile...")
+        """Stop Multilogin profile and cleanup - ensures cookies are written to disk/cloud"""
+        self.logger.info("Stopping Profile and syncing cookies...")
         
-        # Close Selenium driver
+        # Close Selenium driver first to ensure all cookies are flushed
         if self.driver:
             try:
+                # Give browser time to write cookies to disk
+                time.sleep(2)
                 self.driver.quit()
             except:
                 pass
             self.driver = None
         
-        # Stop profile via API
+        # Stop profile via API to ensure cloud sync
         try:
-            # Try v2 API
+            # Try v2 API first
             url = f"{self.api_v2}/profile/stop?profileId={self.profile_id}"
-            requests.get(url, timeout=10)
+            resp = requests.get(url, timeout=10)
+            
+            if resp.status_code == 200:
+                self.logger.success("Profile stopped - cookies synced to MLA cloud/disk")
+                time.sleep(2)  # Allow file locks to release
+                return
         except:
-            try:
-                # Fallback to v1
-                url = f"{self.api_v1}/profile/stop?profileId={self.profile_id}"
-                requests.get(url, timeout=10)
-            except:
-                pass
+            pass
+        
+        # Fallback to v1 API
+        try:
+            url = f"{self.api_v1}/profile/stop?profileId={self.profile_id}"
+            requests.get(url, timeout=10)
+            self.logger.success("Profile stopped (v1 API) - cookies synced")
+        except:
+            self.logger.warning("Profile stop API call failed - cookies may not be fully synced")
         
         time.sleep(2)  # Allow file locks to release
-        self.logger.success("Profile stopped")
     
     def cleanup(self):
         """Emergency cleanup"""

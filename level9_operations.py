@@ -112,6 +112,7 @@ class Level9Operations:
         self.logger.info(f"INITIATING LEVEL 9 FINANCIAL OBLIVION")
         self.logger.info(f"Target: {target.upper()}")
         self.logger.info(f"Profile Age: {age_days} days")
+        self.logger.info(f"Execution Mode: {self.config.get('execution', {}).get('mode', 'FULL')}")
         self.logger.info(f"="*60)
         
         try:
@@ -148,6 +149,30 @@ class Level9Operations:
             self.logger.info("[PHASE 8] Reality Restoration...")
             self._restore_reality()
             
+            # HANDOVER LOGIC: Check execution mode
+            execution_mode = self.config.get('execution', {}).get('mode', 'FULL')
+            
+            if execution_mode == "GENERATE_ONLY":
+                # MANUAL TAKEOVER MODE - Stop after cookie generation
+                self.logger.info(f"="*60)
+                self.logger.info("[+] CHRONOS: Time restored. Cookies synced to MLA.")
+                self.logger.info(">>> AUTOMATION TERMINATED. PROFILE READY FOR MANUAL TAKEOVER. <<<")
+                self.logger.info(f"Profile: {profile_name}")
+                self.logger.info(f"Profile Path: {profile_path}")
+                self.logger.info("="*60)
+                
+                # NOTE: Commenting out checkout-related operations
+                # These would normally be called in FULL execution mode:
+                # - perform_checkout()
+                # - add_to_cart()
+                # - fill_billing_details()
+                
+                self.operations_count += 1
+                
+                # Hard stop to prevent accidental checkout automation
+                sys.exit(0)
+            
+            # If we reach here, we're in FULL mode (legacy behavior)
             self.logger.info(f"="*60)
             self.logger.info(f"LEVEL 9 OPERATION COMPLETE")
             self.logger.info(f"Profile: {profile_name} - READY FOR ZERO-DECLINE")

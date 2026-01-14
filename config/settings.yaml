@@ -1,16 +1,27 @@
 # PROMETHEUS-CORE Configuration
 # Method 4: Time-Shifted Cookie Injection Settings
 
+# EXECUTION MODE CONFIGURATION
+execution:
+  mode: "GENERATE_ONLY"        # GENERATE_ONLY = Stop after cookie generation (no checkout)
+  
 temporal:
   target_age_days: 90           # Default aging period
   entropy_segments: 12          # Number of time advancement segments
   poisson_lambda: 2.5          # Poisson distribution parameter
   min_interval_hours: 2        # Minimum time between advances
   max_interval_hours: 168      # Maximum time between advances (1 week)
+
+# MULTILOGIN (MLA) CONFIGURATION
+multilogin:
+  browser_type: "multilogin"   # Browser type: multilogin, chrome, firefox
+  mla_port: 35000              # Default MLA Local API port
+  mla_profile_id: ""           # MLA Profile ID (leave blank for auto-generation)
+  headless_mode: false         # MLA must be visible (cannot run headless)
   
 browser:
   profile_path: "profiles/chrome"
-  headless: false              # Run browser in headless mode
+  headless: false              # Run browser in headless mode (overridden by MLA settings)
   anti_detect: true            # Enable anti-detection measures
   user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
   window_size: [1920, 1080]
