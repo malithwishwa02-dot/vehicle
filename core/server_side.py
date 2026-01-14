@@ -194,7 +194,10 @@ class GAMPTriangulation:
                     json=payload,
                     headers=headers,
                     timeout=10,
-                    impersonate="chrome124"  # Veritas V5: HARDCODED - Mimic Chrome 124 TLS/JA3 fingerprint
+                    # Veritas V5: HARDCODED - Mimic Chrome 124 TLS/JA3 fingerprint
+                    # Note: chrome124 is deliberately hardcoded per Veritas V5 protocol requirements
+                    # to maintain consistent TLS fingerprinting. Update only when protocol requires.
+                    impersonate="chrome124"
                 )
                 
                 self.logger.debug(f"[TLS HARDENING] Request sent with Chrome 124 TLS fingerprint")

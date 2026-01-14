@@ -370,7 +370,9 @@ class EntropyGenerator:
             pause_duration = np.random.normal(LONG_PAUSE_MEAN_SECONDS, LONG_PAUSE_STD_SECONDS)
             pause_duration = np.clip(pause_duration, LONG_PAUSE_MIN_SECONDS, LONG_PAUSE_MAX_SECONDS)
             
-            self.logger.info(f"[Organic Gap] Long Pause triggered (page {self.page_visit_count}): {pause_duration:.1f}s")
+            # Log before resetting counter for clarity
+            pages_before_reset = self.page_visit_count
+            self.logger.info(f"[Organic Gap] Long Pause triggered (after {pages_before_reset} pages): {pause_duration:.1f}s")
             
             # Reset counter and set new threshold
             self.page_visit_count = 0

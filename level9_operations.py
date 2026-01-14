@@ -276,9 +276,7 @@ class Level9Operations:
                 
                 # Find search box and type target store name
                 # Target store is extracted from config or default to generic store
-                target_store_config = self.config.get('target_store', {})
-                target_store_name = target_store_config.get('name') if isinstance(target_store_config, dict) else None
-                target_store_name = target_store_name or 'online store'
+                target_store_name = self.config.get('target_store', {}).get('name') or 'online store'
                 
                 try:
                     # Try to find Google search box
