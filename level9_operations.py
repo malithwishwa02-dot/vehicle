@@ -250,11 +250,58 @@ class Level9Operations:
             raise
     
     def _pre_auth_warmup(self, target: str):
-        """Phase 3: Build organic browsing history (Wikipedia/CNN only)."""
+        """
+        Phase 3: Build organic browsing history with Search Engine Referral.
+        
+        Veritas V5 Protocol: Pre-Auth Warmup
+        - Visit neutral trust anchors (Wikipedia/CNN)
+        - Add Search Engine Referral step
+        - Navigate to Google and type target store name (creates "Referral Intent" signal)
+        - Do NOT click - just typing creates browser history signal
+        """
         from selenium.common.exceptions import TimeoutException, WebDriverException
+        from selenium.webdriver.common.by import By
         
         try:
-            # Level 9 Mode: Only visit neutral trust anchors (no shopping sites)
+            # Step 1: Search Engine Referral (NEW - Veritas V5)
+            self.logger.info("=" * 60)
+            self.logger.info("[VERITAS V5] Search Engine Referral - Starting")
+            self.logger.info("=" * 60)
+            
+            try:
+                # Navigate to Google
+                self.driver.get('https://www.google.com')
+                self.logger.info("  → Navigated to Google.com")
+                time.sleep(random.uniform(2, 3))
+                
+                # Find search box and type target store name
+                # Target store is extracted from config or default to generic store
+                target_store_name = self.config.get('target_store', {}).get('name') or 'online store'
+                
+                try:
+                    # Try to find Google search box
+                    search_box = self.driver.find_element(By.NAME, 'q')
+                    
+                    # Type the store name slowly (human-like)
+                    self.logger.info(f"  → Typing '{target_store_name}' in search box")
+                    for char in target_store_name:
+                        search_box.send_keys(char)
+                        time.sleep(random.uniform(0.1, 0.2))
+                    
+                    # Wait to let the search suggestions appear (but don't click)
+                    time.sleep(random.uniform(2, 4))
+                    
+                    self.logger.info("  ✓ Search intent signal created (no click - referral intent only)")
+                    
+                except Exception as e:
+                    self.logger.warning(f"  ⚠ Could not type in search box: {e}")
+                
+            except Exception as e:
+                self.logger.warning(f"[Search Engine Referral] Failed: {e}")
+            
+            self.logger.info("=" * 60)
+            
+            # Step 2: Level 9 Mode - Visit neutral trust anchors (Wikipedia/CNN only)
             # This prevents bot detection from suspicious e-commerce patterns
             warmup_sites = [
                 'https://www.wikipedia.org',

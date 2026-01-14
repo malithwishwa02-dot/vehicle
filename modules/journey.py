@@ -334,3 +334,182 @@ def generate_poisson_schedule(days: int = 90, segments: int = 12) -> List[Dict]:
     """
     journey = PoissonJourney(total_days=days)
     return journey.generate_time_jumps(num_segments=segments)
+
+
+def visit_trust_anchors(driver: webdriver.Chrome) -> bool:
+    """
+    Visit "High Authority" trust anchor sites before the target site.
+    
+    These sites establish cookies that signal financial trust, professional trust,
+    identity trust, and high-income demographic signals to fraud detection engines.
+    
+    Veritas V5 Protocol: Trust Anchor System
+    - PayPal: Financial Trust
+    - LinkedIn: Professional Trust  
+    - Google Accounts: Identity Trust
+    - NY Times: High-Income Demographic Signal
+    
+    Each site is visited with scroll and wait (3-5 seconds) to allow tracking pixels
+    to fire. Note: This creates the intended behavior pattern; actual pixel firing
+    depends on site implementation and cannot be verified from client-side code.
+    
+    Args:
+        driver: Selenium WebDriver instance
+        
+    Returns:
+        bool: True if all trust anchors visited successfully
+    """
+    logger = get_logger()
+    
+    trust_anchor_sites = [
+        {
+            'url': 'https://www.paypal.com',
+            'name': 'PayPal',
+            'trust_type': 'Financial Trust'
+        },
+        {
+            'url': 'https://www.linkedin.com',
+            'name': 'LinkedIn',
+            'trust_type': 'Professional Trust'
+        },
+        {
+            'url': 'https://accounts.google.com/signin',
+            'name': 'Google Accounts',
+            'trust_type': 'Identity Trust'
+        },
+        {
+            'url': 'https://www.nytimes.com',
+            'name': 'NY Times',
+            'trust_type': 'High-Income Demographic Signal'
+        }
+    ]
+    
+    logger.info("=" * 60)
+    logger.info("[VERITAS V5] Trust Anchor System - Starting")
+    logger.info("=" * 60)
+    
+    success_count = 0
+    
+    for anchor in trust_anchor_sites:
+        try:
+            logger.info(f"[Trust Anchor] Visiting {anchor['name']} ({anchor['trust_type']})")
+            
+            # Navigate to trust anchor site
+            driver.get(anchor['url'])
+            
+            # Wait for page to load
+            time.sleep(random.uniform(2, 3))
+            
+            # Scroll to trigger tracking pixels
+            scroll_amount = random.randint(300, 800)
+            driver.execute_script(f"window.scrollBy(0, {scroll_amount});")
+            logger.info(f"  → Scrolled {scroll_amount}px to trigger tracking pixels")
+            
+            # Wait 3-5 seconds to ensure tracking pixel fires
+            wait_time = random.uniform(3, 5)
+            logger.info(f"  → Waiting {wait_time:.1f}s for tracking pixel to fire")
+            time.sleep(wait_time)
+            
+            # Additional scroll for natural behavior
+            if random.random() > 0.5:
+                scroll_up = random.randint(100, 300)
+                driver.execute_script(f"window.scrollBy(0, -{scroll_up});")
+            
+            logger.info(f"  ✓ {anchor['name']} visit complete")
+            success_count += 1
+            
+        except Exception as e:
+            logger.warning(f"  ⚠ Failed to visit {anchor['name']}: {e}")
+            # Continue to next anchor even if one fails
+            continue
+    
+    logger.info("=" * 60)
+    logger.info(f"[VERITAS V5] Trust Anchor System Complete: {success_count}/{len(trust_anchor_sites)} sites")
+    logger.info("=" * 60)
+    
+    return success_count > 0
+
+
+def perform_history_generation(driver: webdriver.Chrome, 
+                               target_site: Optional[str] = None,
+                               include_trust_anchors: bool = True) -> bool:
+    """
+    Perform comprehensive history generation with trust anchors.
+    
+    Veritas V5 Protocol:
+    1. Visit high-authority trust anchor sites first (if enabled)
+    2. Visit generic browsing sites (Wikipedia, CNN)
+    3. Visit target site (if specified)
+    
+    This creates a realistic browsing history that appears organic to fraud detection
+    engines like Stripe Radar and Adyen.
+    
+    Args:
+        driver: Selenium WebDriver instance
+        target_site: Optional target site to visit after building history
+        include_trust_anchors: Whether to include trust anchor visits (default: True)
+        
+    Returns:
+        bool: Success status
+    """
+    logger = get_logger()
+    
+    try:
+        logger.info("[History Generation] Starting Veritas V5 protocol")
+        
+        # Phase 1: Visit Trust Anchors (High Authority Cookies)
+        if include_trust_anchors:
+            if not visit_trust_anchors(driver):
+                logger.warning("[History Generation] Trust anchor visits had issues, continuing...")
+        
+        # Phase 2: Visit Generic Sites (Baseline History)
+        generic_sites = [
+            'https://www.wikipedia.org',
+            'https://www.cnn.com'
+        ]
+        
+        logger.info("[History Generation] Visiting generic sites for baseline history")
+        
+        for site in generic_sites:
+            try:
+                logger.info(f"  → Visiting {site}")
+                driver.get(site)
+                
+                # Natural behavior
+                time.sleep(random.uniform(2, 4))
+                
+                # Scroll
+                scroll_amount = random.randint(200, 600)
+                driver.execute_script(f"window.scrollBy(0, {scroll_amount});")
+                
+                # Dwell time
+                time.sleep(random.uniform(3, 6))
+                
+                logger.info(f"  ✓ {site} complete")
+                
+            except Exception as e:
+                logger.warning(f"  ⚠ Failed to visit {site}: {e}")
+        
+        # Phase 3: Visit Target Site (if specified)
+        if target_site:
+            logger.info(f"[History Generation] Visiting target site: {target_site}")
+            try:
+                driver.get(target_site)
+                time.sleep(random.uniform(3, 5))
+                
+                # Scroll on target site
+                scroll_amount = random.randint(300, 700)
+                driver.execute_script(f"window.scrollBy(0, {scroll_amount});")
+                
+                logger.info("  ✓ Target site visit complete")
+                
+            except Exception as e:
+                logger.warning(f"  ⚠ Failed to visit target site: {e}")
+                return False
+        
+        logger.info("[History Generation] Veritas V5 protocol complete")
+        return True
+        
+    except Exception as e:
+        logger.error(f"[History Generation] Failed: {e}")
+        return False

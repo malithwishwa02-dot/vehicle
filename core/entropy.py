@@ -6,9 +6,19 @@ Creates realistic browsing patterns and time advancement strategies.
 import numpy as np
 from scipy import stats
 import random
+import time
 from datetime import datetime, timedelta
-from typing import List, Dict, Any, Tuple
+from typing import List, Dict, Any, Tuple, Optional
 import logging
+
+
+# Veritas V5: Organic Pause Constants
+LONG_PAUSE_MEAN_SECONDS = 60  # Mean duration for long pauses
+LONG_PAUSE_STD_SECONDS = 15   # Standard deviation for long pauses
+LONG_PAUSE_MIN_SECONDS = 30   # Minimum long pause duration
+LONG_PAUSE_MAX_SECONDS = 90   # Maximum long pause duration
+REGULAR_PAUSE_MIN_SECONDS = 1 # Minimum regular pause duration
+REGULAR_PAUSE_MAX_SECONDS = 5 # Maximum regular pause duration
 
 
 class EntropyGenerator:
@@ -32,6 +42,10 @@ class EntropyGenerator:
         if self.random_seed:
             random.seed(self.random_seed)
             np.random.seed(self.random_seed)
+        
+        # Veritas V5: Organic pause tracking
+        self.page_visit_count = 0
+        self.long_pause_threshold = random.randint(3, 5)  # Trigger long pause every 3-5 pages
     
     def generate_segments(self, total_days: int, num_segments: Optional[int] = None) -> List[Dict]:
         """
@@ -326,3 +340,56 @@ class EntropyGenerator:
                 })
         
         return pattern
+    
+    def organic_pause(self, force_long: bool = False) -> float:
+        """
+        Generate organic browsing pauses with localized random distribution.
+        
+        Veritas V5 Protocol: Organic Gaps
+        - Robots browse linearly with uniform delays
+        - Humans browse in bursts with long pauses
+        - Every 3-5 pages: trigger "Long Pause" (30-90 seconds) to simulate reading/multitasking
+        - Regular pauses: 1-5 seconds with localized distribution
+        
+        This adds time to generation but drastically increases trust scores.
+        
+        Args:
+            force_long: Force a long pause regardless of page count
+            
+        Returns:
+            float: Pause duration in seconds
+        """
+        self.page_visit_count += 1
+        
+        # Check if we should trigger a long pause
+        should_long_pause = (self.page_visit_count >= self.long_pause_threshold) or force_long
+        
+        if should_long_pause:
+            # Long Pause: 30-90 seconds (simulates reading or multitasking)
+            # Use normal distribution centered at LONG_PAUSE_MEAN_SECONDS
+            pause_duration = np.random.normal(LONG_PAUSE_MEAN_SECONDS, LONG_PAUSE_STD_SECONDS)
+            pause_duration = np.clip(pause_duration, LONG_PAUSE_MIN_SECONDS, LONG_PAUSE_MAX_SECONDS)
+            
+            # Log before resetting counter for clarity
+            pages_before_reset = self.page_visit_count
+            self.logger.info(f"[Organic Gap] Long Pause triggered (after {pages_before_reset} pages): {pause_duration:.1f}s")
+            
+            # Reset counter and set new threshold
+            self.page_visit_count = 0
+            self.long_pause_threshold = random.randint(3, 5)
+            
+        else:
+            # Regular pause: 1-5 seconds with localized random distribution
+            # Use gamma distribution for more realistic human timing
+            shape = 2.0  # Shape parameter for gamma distribution
+            scale = 1.0  # Scale parameter
+            
+            pause_duration = np.random.gamma(shape, scale)
+            pause_duration = np.clip(pause_duration, REGULAR_PAUSE_MIN_SECONDS, REGULAR_PAUSE_MAX_SECONDS)
+            
+            self.logger.debug(f"[Organic Gap] Regular pause: {pause_duration:.2f}s")
+        
+        # Execute the pause
+        time.sleep(pause_duration)
+        
+        return pause_duration

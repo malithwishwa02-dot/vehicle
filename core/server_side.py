@@ -56,12 +56,14 @@ class GAMPTriangulation:
         self.rolling_window = []
         self.lock = threading.Lock()
         
-        # Level 9: TLS fingerprinting
+        # Veritas V5: TLS Hardening - Strict curl_cffi enforcement
         self.use_curl_cffi = CURL_CFFI_AVAILABLE
         if self.use_curl_cffi:
-            self.logger.info("✓ Level 9: curl_cffi enabled - Chrome 124+ TLS mimicking active")
+            self.logger.info("✓ [VERITAS V5] curl_cffi enabled - Chrome 124+ TLS mimicking ACTIVE")
         else:
-            self.logger.warning("⚠ curl_cffi not available - using standard requests (reduced stealth)")
+            self.logger.error("✗ [VERITAS V5] curl_cffi NOT AVAILABLE - TLS hardening DISABLED")
+            self.logger.error("✗ [VERITAS V5] Install with: pip install curl_cffi")
+            self.logger.error("✗ [VERITAS V5] Ghost Signal operations will be ABORTED (no fallback)")
         
         # Validate configuration
         if not self.measurement_id or not self.api_secret:
@@ -158,9 +160,21 @@ class GAMPTriangulation:
     def _send_to_gamp(self, payload: Dict, debug: bool = False) -> bool:
         """
         Send payload to Google Analytics Measurement Protocol.
-        Level 9: Uses curl_cffi to mimic Chrome 124+ TLS fingerprint for maximum stealth.
+        
+        Veritas V5 Protocol: TLS Hardening
+        - Strictly enforce curl_cffi for Chrome 124+ TLS mimicking
+        - Hardcode impersonate="chrome124" parameter
+        - Abort if curl_cffi fails (no fallback to standard requests)
+        - Better to send nothing than to send a Python-fingerprinted packet
         """
         try:
+            # Veritas V5: Strict curl_cffi enforcement - no fallback allowed
+            if not self.use_curl_cffi:
+                self.logger.error("[TLS HARDENING] curl_cffi is not available - ABORTING")
+                self.logger.error("[TLS HARDENING] Install curl_cffi to avoid Python fingerprinting")
+                self.logger.error("[TLS HARDENING] Command: pip install curl_cffi")
+                return False
+            
             # Select endpoint
             endpoint = self.GAMP_DEBUG_ENDPOINT if debug else self.GAMP_ENDPOINT
             
@@ -173,23 +187,26 @@ class GAMPTriangulation:
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36'
             }
             
-            if self.use_curl_cffi:
-                # Level 9: Use curl_cffi to mimic Chrome 124+ TLS fingerprint
+            # Veritas V5: Use curl_cffi to mimic Chrome 124+ TLS fingerprint (HARDCODED)
+            try:
                 response = curl_requests.post(
                     url,
                     json=payload,
                     headers=headers,
                     timeout=10,
-                    impersonate="chrome124"  # Mimic Chrome 124 TLS/JA3 fingerprint
+                    # Veritas V5: HARDCODED - Mimic Chrome 124 TLS/JA3 fingerprint
+                    # Note: chrome124 is deliberately hardcoded per Veritas V5 protocol requirements
+                    # to maintain consistent TLS fingerprinting. Update only when protocol requires.
+                    impersonate="chrome124"
                 )
-            else:
-                # Fallback to standard requests
-                response = requests.post(
-                    url,
-                    json=payload,
-                    headers=headers,
-                    timeout=10
-                )
+                
+                self.logger.debug(f"[TLS HARDENING] Request sent with Chrome 124 TLS fingerprint")
+                
+            except Exception as curl_error:
+                # Veritas V5: No fallback - abort on curl_cffi failure
+                self.logger.error(f"[TLS HARDENING] curl_cffi request failed: {curl_error}")
+                self.logger.error("[TLS HARDENING] ABORTING - Will not fallback to standard requests")
+                return False
             
             # Check response
             if debug:
@@ -202,7 +219,7 @@ class GAMPTriangulation:
             return response.status_code in [200, 204]
             
         except Exception as e:
-            self.logger.error(f"GAMP request failed: {e}")
+            self.logger.error(f"[TLS HARDENING] GAMP request failed: {e}")
             return False
     
     def _rolling_triangulation(self, client_id: str,
