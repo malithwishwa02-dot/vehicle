@@ -1,18 +1,29 @@
 """
 Server-Side Triangulation: Google Analytics Measurement Protocol (GAMP) implementation.
 Manages backdated event transmission with 72-hour rolling window strategy.
+Level 9: Enhanced TLS fingerprinting with curl_cffi for Chrome 124+ mimicking.
 """
 
-import requests
 import json
 import time
 import hashlib
 import logging
+import random
 from datetime import datetime, timedelta
 from typing import Optional, Dict, Any, List
 from collections import deque
 import threading
 import uuid
+
+# Try to import curl_cffi for Chrome 124+ TLS mimicking
+try:
+    from curl_cffi import requests as curl_requests
+    CURL_CFFI_AVAILABLE = True
+except ImportError:
+    CURL_CFFI_AVAILABLE = False
+
+# Fallback to standard requests if curl_cffi is not available
+import requests
 
 
 class GAMPTriangulation:
@@ -44,6 +55,13 @@ class GAMPTriangulation:
         self.client_sessions = {}
         self.rolling_window = []
         self.lock = threading.Lock()
+        
+        # Level 9: TLS fingerprinting
+        self.use_curl_cffi = CURL_CFFI_AVAILABLE
+        if self.use_curl_cffi:
+            self.logger.info("✓ Level 9: curl_cffi enabled - Chrome 124+ TLS mimicking active")
+        else:
+            self.logger.warning("⚠ curl_cffi not available - using standard requests (reduced stealth)")
         
         # Validate configuration
         if not self.measurement_id or not self.api_secret:
@@ -138,7 +156,10 @@ class GAMPTriangulation:
         return payload
     
     def _send_to_gamp(self, payload: Dict, debug: bool = False) -> bool:
-        """Send payload to Google Analytics Measurement Protocol."""
+        """
+        Send payload to Google Analytics Measurement Protocol.
+        Level 9: Uses curl_cffi to mimic Chrome 124+ TLS fingerprint for maximum stealth.
+        """
         try:
             # Select endpoint
             endpoint = self.GAMP_DEBUG_ENDPOINT if debug else self.GAMP_ENDPOINT
@@ -146,18 +167,29 @@ class GAMPTriangulation:
             # Build URL with parameters
             url = f"{endpoint}?measurement_id={self.measurement_id}&api_secret={self.api_secret}"
             
-            # Send POST request
+            # Send POST request with Chrome 124+ TLS mimicking
             headers = {
                 'Content-Type': 'application/json',
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0'
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36'
             }
             
-            response = requests.post(
-                url,
-                json=payload,
-                headers=headers,
-                timeout=10
-            )
+            if self.use_curl_cffi:
+                # Level 9: Use curl_cffi to mimic Chrome 124+ TLS fingerprint
+                response = curl_requests.post(
+                    url,
+                    json=payload,
+                    headers=headers,
+                    timeout=10,
+                    impersonate="chrome124"  # Mimic Chrome 124 TLS/JA3 fingerprint
+                )
+            else:
+                # Fallback to standard requests
+                response = requests.post(
+                    url,
+                    json=payload,
+                    headers=headers,
+                    timeout=10
+                )
             
             # Check response
             if debug:
@@ -282,15 +314,18 @@ class GAMPTriangulation:
     def generate_organic_events(self, client_id: str,
                                start_date: datetime,
                                end_date: datetime,
-                               daily_events: int = 5) -> List[Dict]:
+                               daily_events: int = 7) -> List[Dict]:
         """
         Generate organic-looking event patterns for a date range.
+        
+        Level 9: Generates 5-10 events per day (default 7) with organic distribution
+        to avoid flooding and maintain natural user behavior patterns.
         
         Args:
             client_id: Google Analytics client ID
             start_date: Start of date range
             end_date: End of date range  
-            daily_events: Average events per day
+            daily_events: Average events per day (Level 9 default: 7, range: 5-10)
             
         Returns:
             List of event dictionaries
@@ -310,9 +345,9 @@ class GAMPTriangulation:
         ]
         
         while current_date < end_date:
-            # Vary daily events with some randomness
-            import random
-            num_events = max(1, int(random.gauss(daily_events, 2)))
+            # Level 9: Vary daily events organically between 5-10 events
+            # Use Gaussian distribution centered on daily_events with controlled variance
+            num_events = max(5, min(10, int(random.gauss(daily_events, 1.5))))
             
             for _ in range(num_events):
                 # Random time within the day
@@ -400,3 +435,15 @@ class GAMPTriangulation:
         except Exception as e:
             self.logger.error(f"Configuration validation failed: {e}")
             return False
+
+
+# Level 9: GhostSignalInjector alias for backward compatibility
+class GhostSignalInjector(GAMPTriangulation):
+    """
+    Ghost Signal Injector for Level 9 operations.
+    Uses curl_cffi to mimic Chrome 124+ TLS fingerprints for undetectable server-side triangulation.
+    
+    This is an alias/wrapper for GAMPTriangulation to maintain backward compatibility
+    while providing Level 9 enhancements.
+    """
+    pass

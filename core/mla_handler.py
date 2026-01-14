@@ -7,6 +7,7 @@ Level 9: Hardware Consistency Enforcement
 import requests
 import time
 import random
+from urllib.parse import quote
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
@@ -34,6 +35,99 @@ class MLAHandler:
         # API endpoints
         self.api_v1 = Config.MLA_URL
         self.api_v2 = Config.MLA_URL_V2
+    
+    def validate_profile_config(self, profile_id: str) -> Dict[str, Any]:
+        """
+        Level 9 Pre-Flight Check: Validate profile configuration before operations.
+        
+        This function fetches the profile configuration from MLA API and validates:
+        1. Canvas/WebGL noise settings (prefer "Real" over "Noise" mode)
+        2. Hardware concurrency (CPU cores >= 4)
+        3. General hardware consistency
+        
+        Args:
+            profile_id: Multilogin profile ID to validate
+            
+        Returns:
+            Dict with validation results: {
+                'valid': bool,
+                'warnings': List[str],
+                'errors': List[str]
+            }
+        """
+        validation = {
+            'valid': True,
+            'warnings': [],
+            'errors': []
+        }
+        
+        try:
+            # Fetch profile data from MLA API with URL-encoded profile_id
+            encoded_profile_id = quote(profile_id, safe='')
+            url = f"{self.api_v2}/profile?profileId={encoded_profile_id}"
+            response = requests.get(url, timeout=10)
+            
+            if response.status_code != 200:
+                validation['errors'].append(f"Failed to fetch profile: HTTP {response.status_code}")
+                validation['valid'] = False
+                return validation
+            
+            profile_data = response.json()
+            
+            # Check Canvas/WebGL noise settings
+            canvas_settings = profile_data.get('canvas', {})
+            webgl_settings = profile_data.get('webgl', {})
+            
+            canvas_mode = canvas_settings.get('mode', '').lower()
+            webgl_mode = webgl_settings.get('mode', '').lower()
+            
+            if canvas_mode == 'noise':
+                validation['warnings'].append(
+                    "⚠ LEVEL 9 RECOMMENDATION: Canvas is using 'Noise' mode. "
+                    "For maximum consistency, consider using 'Real' or consistent noise settings."
+                )
+                self.logger.warning("⚠ Canvas: Noise mode detected (Level 9 prefers Real)")
+            
+            if webgl_mode == 'noise':
+                validation['warnings'].append(
+                    "⚠ LEVEL 9 RECOMMENDATION: WebGL is using 'Noise' mode. "
+                    "For maximum consistency, consider using 'Real' or consistent noise settings."
+                )
+                self.logger.warning("⚠ WebGL: Noise mode detected (Level 9 prefers Real)")
+            
+            # Check navigator.hardwareConcurrency
+            navigator_settings = profile_data.get('navigator', {})
+            hardware_concurrency = navigator_settings.get('hardwareConcurrency', 0)
+            
+            if hardware_concurrency < 4:
+                validation['warnings'].append(
+                    f"⚠ LOW SPEC WARNING: navigator.hardwareConcurrency = {hardware_concurrency} (< 4 cores). "
+                    "Modern systems typically have 4+ cores. Low-spec systems may be flagged."
+                )
+                self.logger.warning(f"⚠ Hardware Concurrency: {hardware_concurrency} cores (< 4)")
+            
+            # Run additional hardware validation
+            hardware_validation = self.validate_hardware_config(profile_data)
+            validation['warnings'].extend(hardware_validation.get('warnings', []))
+            validation['errors'].extend(hardware_validation.get('errors', []))
+            
+            if hardware_validation.get('valid') is False:
+                validation['valid'] = False
+            
+            # Log final validation status
+            if validation['valid'] and not validation['warnings']:
+                self.logger.info("✓ Profile Configuration: PASSED")
+            elif validation['valid'] and validation['warnings']:
+                self.logger.warning(f"⚠ Profile Configuration: PASSED (with {len(validation['warnings'])} warnings)")
+            else:
+                self.logger.error(f"❌ Profile Configuration: FAILED ({len(validation['errors'])} errors)")
+            
+        except Exception as e:
+            validation['errors'].append(f"Profile validation exception: {e}")
+            validation['valid'] = False
+            self.logger.error(f"Profile validation error: {e}")
+        
+        return validation
     
     def validate_hardware_config(self, profile_data: Dict[str, Any]) -> Dict[str, Any]:
         """
@@ -158,8 +252,11 @@ class MLAHandler:
         """
         self.logger.info(f"Starting Profile: {self.profile_id}")
         
+        # URL-encode profile_id for safe URL construction
+        encoded_profile_id = quote(self.profile_id, safe='')
+        
         # Try v1 API with automation and puppeteer flags (MLA Local API specification)
-        url = f"{self.api_v1}/profile/start?automation=true&puppeteer=true&profileId={self.profile_id}"
+        url = f"{self.api_v1}/profile/start?automation=true&puppeteer=true&profileId={encoded_profile_id}"
         
         try:
             resp = requests.get(url, timeout=30)
@@ -178,7 +275,7 @@ class MLAHandler:
                 return self._attach_selenium()
             
             # Fallback to v2 API
-            url = f"{self.api_v2}/profile/start?profileId={self.profile_id}"
+            url = f"{self.api_v2}/profile/start?profileId={encoded_profile_id}"
             resp = requests.get(url, timeout=30)
             data = resp.json()
             
@@ -371,10 +468,13 @@ class MLAHandler:
                 pass
             self.driver = None
         
+        # URL-encode profile_id for safe URL construction
+        encoded_profile_id = quote(self.profile_id, safe='')
+        
         # Stop profile via API to ensure cloud sync
         try:
             # Try v2 API first
-            url = f"{self.api_v2}/profile/stop?profileId={self.profile_id}"
+            url = f"{self.api_v2}/profile/stop?profileId={encoded_profile_id}"
             resp = requests.get(url, timeout=10)
             
             if resp.status_code == 200:
@@ -386,7 +486,7 @@ class MLAHandler:
         
         # Fallback to v1 API
         try:
-            url = f"{self.api_v1}/profile/stop?profileId={self.profile_id}"
+            url = f"{self.api_v1}/profile/stop?profileId={encoded_profile_id}"
             requests.get(url, timeout=10)
             self.logger.success("Profile stopped (v1 API) - cookies synced")
         except:
