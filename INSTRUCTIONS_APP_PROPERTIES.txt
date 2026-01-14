@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 STEP 1: Close Multilogin completely (Task Manager -> End Task).
 STEP 2: Press Windows + R, type %appdata%, and press Enter.
 STEP 3: Navigate to the .multiloginapp.com folder (or Multilogin folder depending on version).
@@ -6,3 +7,64 @@ STEP 5: Restart Multilogin.
 STEP 6: Verify: Open browser to http://localhost:35000/api/v1/profile/active.
 
 AUTHORITY: Dva.12 | STATUS: EXECUTE
+=======
+MULTILOGIN app.properties DEPLOYMENT INSTRUCTIONS
+==================================================
+
+AUTHORITY: Dva.12 | STATUS: EXECUTE
+
+OVERVIEW:
+This file contains step-by-step instructions for deploying the app.properties 
+configuration file to configure Multilogin's Local API port (35000) and custom 
+data path.
+
+DEPLOYMENT STEPS:
+-----------------
+
+STEP 1: Close Multilogin completely (Task Manager -> End Task)
+   - Press Ctrl+Shift+Esc to open Task Manager
+   - Find "Multilogin" in the processes list
+   - Right-click and select "End Task"
+   - Ensure all Multilogin processes are terminated
+
+STEP 2: Press Windows + R, type %appdata%, and press Enter
+   - This will open the Windows Roaming AppData folder
+   - The full path typically looks like: C:\Users\[YourUsername]\AppData\Roaming
+
+STEP 3: Navigate to the .multiloginapp.com folder (or Multilogin folder depending on version)
+   - Look for a folder named ".multiloginapp.com" or "Multilogin"
+   - Double-click to open this folder
+   - Note: The folder name may vary depending on your Multilogin version
+
+STEP 4: Copy the app.properties file generated above into this folder
+   - Locate the app.properties file from your repository root
+   - Copy this file into the .multiloginapp.com (or Multilogin) folder
+   - If an existing app.properties file exists, you may want to back it up first
+   - Replace or overwrite with the new app.properties file
+
+STEP 5: Restart Multilogin
+   - Launch Multilogin normally from your Start Menu or Desktop shortcut
+   - The application will now use the new configuration settings
+   - Local API Port: 35000
+   - Custom Data Path: C:/Users/Mahesh-PC/mlx
+
+STEP 6: Verify configuration
+   - Open your web browser
+   - Navigate to: http://localhost:35000/api/v1/profile/active
+   - If configured correctly, you should see a JSON response (even if empty)
+   - If you see a connection error, the port configuration may not have applied
+
+TROUBLESHOOTING:
+----------------
+- If verification fails, ensure Multilogin is completely closed before copying the file
+- Check that the app.properties file is in the correct folder
+- Verify the custom data path (C:/Users/Mahesh-PC/mlx) exists on your system
+- Try restarting your computer if the configuration doesn't apply
+
+CONFIGURATION DETAILS:
+---------------------
+Port: 35000 (Required for Python Bridge integration)
+Data Path: C:/Users/Mahesh-PC/mlx (Custom workspace directory)
+
+For support, refer to the MLA_INTEGRATION_GUIDE.md in the repository.
+>>>>>>> 00bbf0755f5e78fadc8c80b7ef90a2b1560a3703
