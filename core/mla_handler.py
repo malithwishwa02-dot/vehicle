@@ -1,6 +1,7 @@
 """
 Multilogin API Controller v2.0
 Direct interface with MLA Local API and browser automation
+Level 9: Hardware Consistency Enforcement
 """
 
 import requests
@@ -10,12 +11,13 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import WebDriverException
-from typing import List, Dict, Optional
+from typing import List, Dict, Optional, Any
 
 class MLAHandler:
     """
     Multilogin browser controller with cookie seeding capabilities
     Implements trust anchor visitation for synthetic patina generation
+    Level 9: Hardware Consistency Enforcement
     """
     
     def __init__(self, profile_id: str):
@@ -32,6 +34,92 @@ class MLAHandler:
         # API endpoints
         self.api_v1 = Config.MLA_URL
         self.api_v2 = Config.MLA_URL_V2
+    
+    def validate_hardware_config(self, profile_data: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Level 9 Hardware Consistency Validation
+        
+        Validates hardware configuration to ensure realistic fingerprints.
+        Returns validation results with warnings/errors.
+        
+        Args:
+            profile_data: Profile configuration dictionary
+            
+        Returns:
+            Dict with validation results: {
+                'valid': bool,
+                'warnings': List[str],
+                'errors': List[str]
+            }
+        """
+        validation = {
+            'valid': True,
+            'warnings': [],
+            'errors': []
+        }
+        
+        try:
+            # Extract hardware configuration
+            os_type = profile_data.get('os', 'win').lower()
+            navigator = profile_data.get('navigator', {})
+            webgl = profile_data.get('webgl', {})
+            media_devices = profile_data.get('mediaDevices', {})
+            
+            # Check 1: WebGL Vendor validation for Windows
+            if 'win' in os_type:
+                webgl_vendor = webgl.get('vendor', '')
+                webgl_renderer = webgl.get('renderer', '')
+                
+                # Flag SwiftShader (software renderer - bot indicator)
+                if 'swiftshader' in webgl_vendor.lower() or 'swiftshader' in webgl_renderer.lower():
+                    validation['errors'].append(
+                        "CRITICAL: WebGL using SwiftShader (software renderer). "
+                        "This is a major bot detection flag. Use hardware acceleration."
+                    )
+                    validation['valid'] = False
+                    self.logger.error("❌ Hardware Check Failed: SwiftShader detected")
+                
+                # Flag VMware (virtualization indicator)
+                if 'vmware' in webgl_vendor.lower() or 'vmware' in webgl_renderer.lower():
+                    validation['errors'].append(
+                        "CRITICAL: VMware GPU detected. This indicates virtualization. "
+                        "Use native hardware or proper GPU passthrough."
+                    )
+                    validation['valid'] = False
+                    self.logger.error("❌ Hardware Check Failed: VMware GPU detected")
+            
+            # Check 2: RAM validation
+            device_memory = navigator.get('deviceMemory', 0)
+            if device_memory > 0 and device_memory < 4:
+                validation['warnings'].append(
+                    f"LOW TRUST: Device memory is {device_memory}GB (< 4GB). "
+                    "Low-spec systems may be flagged by advanced fingerprinting."
+                )
+                self.logger.warning(f"⚠ Low Trust: RAM = {device_memory}GB (< 4GB)")
+            
+            # Check 3: Audio inputs validation
+            audio_inputs = media_devices.get('audioInputs', 1)
+            if audio_inputs == 0:
+                validation['warnings'].append(
+                    "BOT FLAG: No audio input devices detected. "
+                    "Real systems typically have at least 1 microphone. This may trigger bot detection."
+                )
+                self.logger.warning("⚠ Bot Flag: Audio Inputs = 0")
+            
+            # Log validation results
+            if validation['valid'] and not validation['warnings']:
+                self.logger.success("✓ Hardware Consistency: PASSED")
+            elif validation['valid'] and validation['warnings']:
+                self.logger.warning(f"⚠ Hardware Consistency: PASSED (with {len(validation['warnings'])} warnings)")
+            else:
+                self.logger.error(f"❌ Hardware Consistency: FAILED ({len(validation['errors'])} errors)")
+            
+        except Exception as e:
+            validation['errors'].append(f"Validation exception: {e}")
+            validation['valid'] = False
+            self.logger.error(f"Hardware validation error: {e}")
+        
+        return validation
     
     def start_profile(self) -> bool:
         """

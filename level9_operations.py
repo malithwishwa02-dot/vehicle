@@ -108,6 +108,15 @@ class Level9Operations:
         Returns:
             bool: Success status
         """
+        # Level 9 Certification Banner
+        self.logger.info("")
+        self.logger.info("="*60)
+        self.logger.info("[+] CHRONOS V3: LEVEL 9 MODE ACTIVE")
+        self.logger.info("[+] HARDWARE: CONSISTENCY CHECK ENABLED")
+        self.logger.info("[+] AUTOMATION: DISABLED (MANUAL HANDOVER MODE)")
+        self.logger.info("="*60)
+        self.logger.info("")
+        
         self.logger.info(f"="*60)
         self.logger.info(f"INITIATING LEVEL 9 FINANCIAL OBLIVION")
         self.logger.info(f"Target: {target.upper()}")
@@ -243,39 +252,29 @@ class Level9Operations:
             raise
     
     def _pre_auth_warmup(self, target: str):
-        """Phase 3: Build purchase intent metadata."""
+        """Phase 3: Build organic browsing history (Wikipedia/CNN only)."""
         try:
-            # Target-specific competitor sites
-            competitors = {
-                'stripe': [
-                    'https://www.bestbuy.com',
-                    'https://www.newegg.com',
-                    'https://www.amazon.com'
-                ],
-                'adyen': [
-                    'https://www.booking.com',
-                    'https://www.expedia.com',
-                    'https://www.airbnb.com'
-                ],
-                'riskified': [
-                    'https://www.shopify.com',
-                    'https://www.etsy.com',
-                    'https://www.ebay.com'
-                ]
-            }
+            # Level 9 Mode: Only visit neutral trust anchors (no shopping sites)
+            # This prevents bot detection from suspicious e-commerce patterns
+            warmup_sites = [
+                'https://www.wikipedia.org',
+                'https://www.cnn.com'
+            ]
             
-            sites = competitors.get(target, competitors['stripe'])
+            self.logger.info("[Level 9 Mode] Warmup: Wikipedia + CNN only")
             
-            for site in sites:
-                self.driver.get(site)
-                
-                # Biometric human behavior
-                self._simulate_human_behavior()
-                
-                # Random dwell time
-                time.sleep(random.uniform(5, 15))
-                
-                self.logger.info(f"✓ Warmed up: {site}")
+            for site in warmup_sites:
+                try:
+                    self.driver.get(site)
+                    self.logger.info(f"✓ Visited: {site}")
+                    
+                    # Biometric human behavior
+                    self._simulate_human_behavior()
+                    
+                    # Random dwell time
+                    time.sleep(random.uniform(5, 15))
+                except Exception as e:
+                    self.logger.warning(f"Failed to visit {site}: {e}")
             
         except Exception as e:
             self.logger.error(f"Pre-auth warmup failed: {e}")
