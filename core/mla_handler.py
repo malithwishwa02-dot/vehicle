@@ -43,14 +43,39 @@ class MLAHandler:
         Returns validation results with warnings/errors.
         
         Args:
-            profile_data: Profile configuration dictionary
-            
+            profile_data: Profile configuration dictionary with structure:
+                {
+                    'os': str,              # Operating system (e.g., 'win', 'mac', 'linux')
+                    'navigator': {
+                        'deviceMemory': int # RAM in GB (e.g., 4, 8, 16)
+                    },
+                    'webgl': {
+                        'vendor': str,      # WebGL vendor (e.g., 'Intel Inc.')
+                        'renderer': str     # WebGL renderer (e.g., 'Intel Iris OpenGL')
+                    },
+                    'mediaDevices': {
+                        'audioInputs': int, # Number of audio input devices
+                        'audioOutputs': int # Number of audio output devices
+                    }
+                }
+                
         Returns:
             Dict with validation results: {
-                'valid': bool,
-                'warnings': List[str],
-                'errors': List[str]
+                'valid': bool,              # True if all critical checks pass
+                'warnings': List[str],      # Non-critical issues
+                'errors': List[str]         # Critical failures
             }
+            
+        Example:
+            >>> handler = MLAHandler('profile_id')
+            >>> result = handler.validate_hardware_config({
+            ...     'os': 'win',
+            ...     'navigator': {'deviceMemory': 8},
+            ...     'webgl': {'vendor': 'Intel Inc.', 'renderer': 'Intel Iris'},
+            ...     'mediaDevices': {'audioInputs': 1}
+            ... })
+            >>> print(result['valid'])
+            True
         """
         validation = {
             'valid': True,
@@ -98,8 +123,9 @@ class MLAHandler:
                 self.logger.warning(f"⚠ Low Trust: RAM = {device_memory}GB (< 4GB)")
             
             # Check 3: Audio inputs validation
-            audio_inputs = media_devices.get('audioInputs', 1)
-            if audio_inputs == 0:
+            # Use None as default to detect when key is actually missing vs explicitly set to 0
+            audio_inputs = media_devices.get('audioInputs', None)
+            if audio_inputs is not None and audio_inputs == 0:
                 validation['warnings'].append(
                     "BOT FLAG: No audio input devices detected. "
                     "Real systems typically have at least 1 microphone. This may trigger bot detection."

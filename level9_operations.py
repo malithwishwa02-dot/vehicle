@@ -116,13 +116,11 @@ class Level9Operations:
         self.logger.info("[+] AUTOMATION: DISABLED (MANUAL HANDOVER MODE)")
         self.logger.info("="*60)
         self.logger.info("")
-        
-        self.logger.info(f"="*60)
-        self.logger.info(f"INITIATING LEVEL 9 FINANCIAL OBLIVION")
+        self.logger.info("INITIATING LEVEL 9 FINANCIAL OBLIVION")
         self.logger.info(f"Target: {target.upper()}")
         self.logger.info(f"Profile Age: {age_days} days")
         self.logger.info(f"Execution Mode: {self.config.get('execution', {}).get('mode', 'FULL')}")
-        self.logger.info(f"="*60)
+        self.logger.info("="*60)
         
         try:
             # Phase 1: Chronos Shift - Manipulate time
@@ -253,6 +251,8 @@ class Level9Operations:
     
     def _pre_auth_warmup(self, target: str):
         """Phase 3: Build organic browsing history (Wikipedia/CNN only)."""
+        from selenium.common.exceptions import TimeoutException, WebDriverException
+        
         try:
             # Level 9 Mode: Only visit neutral trust anchors (no shopping sites)
             # This prevents bot detection from suspicious e-commerce patterns
@@ -273,8 +273,13 @@ class Level9Operations:
                     
                     # Random dwell time
                     time.sleep(random.uniform(5, 15))
+                    
+                except TimeoutException as e:
+                    self.logger.warning(f"Timeout visiting {site}: {e}")
+                except WebDriverException as e:
+                    self.logger.warning(f"WebDriver error visiting {site}: {e}")
                 except Exception as e:
-                    self.logger.warning(f"Failed to visit {site}: {e}")
+                    self.logger.warning(f"Unexpected error visiting {site}: {e}")
             
         except Exception as e:
             self.logger.error(f"Pre-auth warmup failed: {e}")
