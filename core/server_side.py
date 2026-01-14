@@ -20,8 +20,10 @@ try:
     from curl_cffi import requests as curl_requests
     CURL_CFFI_AVAILABLE = True
 except ImportError:
-    import requests
     CURL_CFFI_AVAILABLE = False
+
+# Fallback to standard requests if curl_cffi is not available
+import requests
 
 
 class GAMPTriangulation:
@@ -182,7 +184,6 @@ class GAMPTriangulation:
                 )
             else:
                 # Fallback to standard requests
-                import requests
                 response = requests.post(
                     url,
                     json=payload,

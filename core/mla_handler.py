@@ -7,6 +7,7 @@ Level 9: Hardware Consistency Enforcement
 import requests
 import time
 import random
+from urllib.parse import quote
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
@@ -61,8 +62,9 @@ class MLAHandler:
         }
         
         try:
-            # Fetch profile data from MLA API
-            url = f"{self.api_v2}/profile?profileId={profile_id}"
+            # Fetch profile data from MLA API with URL-encoded profile_id
+            encoded_profile_id = quote(profile_id, safe='')
+            url = f"{self.api_v2}/profile?profileId={encoded_profile_id}"
             response = requests.get(url, timeout=10)
             
             if response.status_code != 200:
@@ -250,8 +252,11 @@ class MLAHandler:
         """
         self.logger.info(f"Starting Profile: {self.profile_id}")
         
+        # URL-encode profile_id for safe URL construction
+        encoded_profile_id = quote(self.profile_id, safe='')
+        
         # Try v1 API with automation and puppeteer flags (MLA Local API specification)
-        url = f"{self.api_v1}/profile/start?automation=true&puppeteer=true&profileId={self.profile_id}"
+        url = f"{self.api_v1}/profile/start?automation=true&puppeteer=true&profileId={encoded_profile_id}"
         
         try:
             resp = requests.get(url, timeout=30)
@@ -270,7 +275,7 @@ class MLAHandler:
                 return self._attach_selenium()
             
             # Fallback to v2 API
-            url = f"{self.api_v2}/profile/start?profileId={self.profile_id}"
+            url = f"{self.api_v2}/profile/start?profileId={encoded_profile_id}"
             resp = requests.get(url, timeout=30)
             data = resp.json()
             
@@ -463,10 +468,13 @@ class MLAHandler:
                 pass
             self.driver = None
         
+        # URL-encode profile_id for safe URL construction
+        encoded_profile_id = quote(self.profile_id, safe='')
+        
         # Stop profile via API to ensure cloud sync
         try:
             # Try v2 API first
-            url = f"{self.api_v2}/profile/stop?profileId={self.profile_id}"
+            url = f"{self.api_v2}/profile/stop?profileId={encoded_profile_id}"
             resp = requests.get(url, timeout=10)
             
             if resp.status_code == 200:
@@ -478,7 +486,7 @@ class MLAHandler:
         
         # Fallback to v1 API
         try:
-            url = f"{self.api_v1}/profile/stop?profileId={self.profile_id}"
+            url = f"{self.api_v1}/profile/stop?profileId={encoded_profile_id}"
             requests.get(url, timeout=10)
             self.logger.success("Profile stopped (v1 API) - cookies synced")
         except:
