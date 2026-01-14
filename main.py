@@ -501,8 +501,8 @@ def main():
     parser.add_argument(
         "--age",
         type=int,
-        default=90,
-        help="Age of profile in days (default: 90)"
+        default=None,
+        help="Age of profile in days (defaults to config or 90)"
     )
     
     parser.add_argument(
@@ -549,6 +549,18 @@ def main():
     
     # Initialize core
     core = PrometheusCore()
+
+    # Resolve defaults from configuration for zero-argument runs
+    config_target = core.config.get("target_url") or core.config.get("TARGET_URL")
+    config_age = (
+        core.config.get("age_days")
+        or core.config.get("AGE_DAYS")
+        or core.config.get("temporal", {}).get("target_age_days")
+        or 90
+    )
+
+    target = args.target or config_target
+    age = args.age if args.age is not None else config_age
     
     # Execute based on arguments
     if args.test_detection:
@@ -563,23 +575,24 @@ def main():
         from verify_implementation import verify_all
         verify_all()
         
-    elif args.target:
+    elif target:
         # Execute Level 9 operation
-        results = core.execute_level9_operation(args.target, args.age)
+        results = core.execute_level9_operation(target, age)
         
         if args.export_multilogin:
             print(f"\n{Fore.CYAN}Exporting to Multilogin...{Style.RESET_ALL}")
             exporter = MultiloginProfileExporter()
             export_file = exporter.export_profile(
                 results['phases']['profile']['profile_path'], 
-                args.age
+                age
             )
             print(f"{Fore.GREEN}Exported to: {export_file}{Style.RESET_ALL}")
     
     else:
-        print(f"\n{Fore.YELLOW}No target specified. Use --help for options.{Style.RESET_ALL}")
+        print(f"\n{Fore.YELLOW}No target specified and none set in config/settings.yaml.{Style.RESET_ALL}")
         print(f"\n{Fore.CYAN}Quick start:{Style.RESET_ALL}")
         print(f"  python main.py --target https://example.com --age 90")
+        print(f"  python main.py  # uses config/settings.yaml target if defined")
         print(f"  python main.py --verify")
         print(f"  python main.py --test-detection")
 

@@ -1,0 +1,8 @@
+STEP 1: Close Multilogin completely (Task Manager -> End Task).
+STEP 2: Press Windows + R, type %appdata%, and press Enter.
+STEP 3: Navigate to the .multiloginapp.com folder (or Multilogin folder depending on version).
+STEP 4: Copy the app.properties file generated above into this folder.
+STEP 5: Restart Multilogin.
+STEP 6: Verify: Open browser to http://localhost:35000/api/v1/profile/active.
+
+AUTHORITY: Dva.12 | STATUS: EXECUTE

@@ -1,6 +1,17 @@
 # PROMETHEUS-CORE Configuration
 # Method 4: Time-Shifted Cookie Injection Settings
 
+# --- CONFIGURATION START ---
+BROWSER_TYPE: "multilogin"
+MLA_PROFILE_ID: "37ab1612-c285-4314-b32a-6a06d35d6d84"
+TARGET_URL: "https://donate.wikimedia.org"
+AGE_DAYS: 90
+EXECUTION_MODE: "GENERATE_ONLY"
+# --- CONFIGURATION END ---
+
+target_url: "https://donate.wikimedia.org"
+age_days: 90
+
 # EXECUTION MODE CONFIGURATION
 execution:
   mode: "GENERATE_ONLY"        # GENERATE_ONLY = Stop after cookie generation (no checkout)
@@ -16,7 +27,7 @@ temporal:
 multilogin:
   browser_type: "multilogin"   # Browser type: multilogin, chrome, firefox
   mla_port: 35000              # Default MLA Local API port
-  mla_profile_id: ""           # MLA Profile ID (leave blank for auto-generation)
+  mla_profile_id: "37ab1612-c285-4314-b32a-6a06d35d6d84"           # MLA Profile ID (leave blank for auto-generation)
   headless_mode: false         # MLA must be visible (cannot run headless)
   
 browser:
