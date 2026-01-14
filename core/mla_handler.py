@@ -34,10 +34,17 @@ class MLAHandler:
         self.api_v2 = Config.MLA_URL_V2
     
     def start_profile(self) -> bool:
-        """Start Multilogin profile and attach Selenium driver"""
+        """
+        Start Multilogin profile and attach Selenium driver.
+        
+        API Specification (MLA Local API v1):
+        GET http://localhost:35000/api/v1/profile/start?automation=true&puppeteer=true&profileId={profile_id}
+        
+        The automation=true and puppeteer=true flags ensure proper WebDriver compatibility.
+        """
         self.logger.info(f"Starting Profile: {self.profile_id}")
         
-        # Try v1 API with automation and puppeteer flags (as per specification)
+        # Try v1 API with automation and puppeteer flags (MLA Local API specification)
         url = f"{self.api_v1}/profile/start?automation=true&puppeteer=true&profileId={self.profile_id}"
         
         try:
@@ -244,7 +251,7 @@ class MLAHandler:
         if self.driver:
             try:
                 # Give browser time to write cookies to disk
-                time.sleep(2)
+                time.sleep(self.config.COOKIE_FLUSH_DELAY_SECONDS)
                 self.driver.quit()
             except:
                 pass
@@ -258,7 +265,7 @@ class MLAHandler:
             
             if resp.status_code == 200:
                 self.logger.success("Profile stopped - cookies synced to MLA cloud/disk")
-                time.sleep(2)  # Allow file locks to release
+                time.sleep(self.config.MLA_SYNC_DELAY_SECONDS)  # Allow file locks to release
                 return
         except:
             pass
@@ -271,7 +278,7 @@ class MLAHandler:
         except:
             self.logger.warning("Profile stop API call failed - cookies may not be fully synced")
         
-        time.sleep(2)  # Allow file locks to release
+        time.sleep(self.config.MLA_SYNC_DELAY_SECONDS)  # Allow file locks to release
     
     def cleanup(self):
         """Emergency cleanup"""

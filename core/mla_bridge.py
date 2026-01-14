@@ -263,9 +263,12 @@ class MLABridge:
         self.logger.info("Stopping profile and syncing cookies to MLA...")
         
         try:
+            # Import Config for delay constants
+            from config.settings import Config
+            
             # Close WebDriver if active (with delay to flush cookies)
             if self.driver:
-                time.sleep(2)  # Allow cookies to be written
+                time.sleep(Config.COOKIE_FLUSH_DELAY_SECONDS)  # Allow cookies to be written
                 self.driver.quit()
                 self.driver = None
             
@@ -275,7 +278,7 @@ class MLABridge:
             
             if response.status_code == 200:
                 self.logger.success("Profile stopped - cookies synced to MLA")
-                time.sleep(2)  # Allow MLA to complete sync
+                time.sleep(Config.MLA_SYNC_DELAY_SECONDS)  # Allow MLA to complete sync
                 return True
             else:
                 # Try v1 API as fallback

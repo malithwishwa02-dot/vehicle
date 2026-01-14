@@ -64,6 +64,10 @@ class Config:
     SCROLL_BEHAVIOR = True
     RANDOM_CLICKS = True
     
+    # MLA Profile Management
+    COOKIE_FLUSH_DELAY_SECONDS = 2    # Delay to allow cookies to write to disk
+    MLA_SYNC_DELAY_SECONDS = 2        # Delay to allow MLA cloud/disk sync
+    
     # System Safety
     BLOCK_NTP = True
     RESTORE_TIME_ON_EXIT = True

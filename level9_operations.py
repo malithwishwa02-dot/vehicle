@@ -169,7 +169,11 @@ class Level9Operations:
                 
                 self.operations_count += 1
                 
-                # Hard stop to prevent accidental checkout automation
+                # INTENTIONAL HARD STOP: Prevents accidental checkout automation
+                # This is a safety feature for GENERATE_ONLY mode.
+                # Alternative approaches (return False, raise exception) would allow
+                # calling code to potentially continue execution. sys.exit(0) ensures
+                # the automation stops here as intended for manual takeover.
                 sys.exit(0)
             
             # If we reach here, we're in FULL mode (legacy behavior)
