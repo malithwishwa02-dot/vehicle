@@ -312,6 +312,17 @@ class MLAHandler:
             # Remove webdriver property
             self.driver.execute_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
             
+            # Level 9 Hardware Consistency Check
+            try:
+                hardware_concurrency = self.driver.execute_script("return navigator.hardwareConcurrency;")
+                self.logger.info(f"[Level 9] navigator.hardwareConcurrency = {hardware_concurrency}")
+                
+                if hardware_concurrency < 4:
+                    self.logger.warning(f"[WARNING] LOW TRUST HARDWARE: {hardware_concurrency} cores detected (< 4)")
+                    self.logger.warning("Modern systems typically have 4+ cores. Low-spec hardware may trigger detection.")
+            except Exception as e:
+                self.logger.warning(f"Could not check hardware concurrency: {e}")
+            
             self.logger.success("Browser Driver Attached")
             return True
             

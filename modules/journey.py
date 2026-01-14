@@ -348,44 +348,61 @@ def visit_trust_anchors(driver: webdriver.Chrome) -> bool:
     - LinkedIn: Professional Trust  
     - Google Accounts: Identity Trust
     - NY Times: High-Income Demographic Signal
+    - Amazon: E-commerce Trust
     
     Each site is visited with scroll and wait (3-5 seconds) to allow tracking pixels
     to fire. Note: This creates the intended behavior pattern; actual pixel firing
     depends on site implementation and cannot be verified from client-side code.
     
+    LEVEL 10 REQUIREMENT: Hardcoded trust anchors - visits at least 3 before target.
+    
     Args:
         driver: Selenium WebDriver instance
         
     Returns:
-        bool: True if all trust anchors visited successfully
+        bool: True if at least 3 trust anchors visited successfully
     """
     logger = get_logger()
     
+    # LEVEL 10 FINALIZATION: Hardcoded Trust Anchors
+    trust_anchors = [
+        "https://www.paypal.com",
+        "https://www.linkedin.com",
+        "https://accounts.google.com",
+        "https://www.nytimes.com",
+        "https://www.amazon.com"
+    ]
+    
     trust_anchor_sites = [
         {
-            'url': 'https://www.paypal.com',
+            'url': trust_anchors[0],  # PayPal
             'name': 'PayPal',
             'trust_type': 'Financial Trust'
         },
         {
-            'url': 'https://www.linkedin.com',
+            'url': trust_anchors[1],  # LinkedIn
             'name': 'LinkedIn',
             'trust_type': 'Professional Trust'
         },
         {
-            'url': 'https://accounts.google.com/signin',
+            'url': trust_anchors[2],  # Google Accounts
             'name': 'Google Accounts',
             'trust_type': 'Identity Trust'
         },
         {
-            'url': 'https://www.nytimes.com',
+            'url': trust_anchors[3],  # NY Times
             'name': 'NY Times',
             'trust_type': 'High-Income Demographic Signal'
+        },
+        {
+            'url': trust_anchors[4],  # Amazon
+            'name': 'Amazon',
+            'trust_type': 'E-commerce Trust'
         }
     ]
     
     logger.info("=" * 60)
-    logger.info("[VERITAS V5] Trust Anchor System - Starting")
+    logger.info("[LEVEL 10 - VERITAS V5] Trust Anchor System - Starting")
     logger.info("=" * 60)
     
     success_count = 0
@@ -424,10 +441,18 @@ def visit_trust_anchors(driver: webdriver.Chrome) -> bool:
             continue
     
     logger.info("=" * 60)
-    logger.info(f"[VERITAS V5] Trust Anchor System Complete: {success_count}/{len(trust_anchor_sites)} sites")
+    logger.info(f"[LEVEL 10 - VERITAS V5] Trust Anchor System Complete: {success_count}/{len(trust_anchor_sites)} sites")
+    
+    # LEVEL 10 REQUIREMENT: Must visit at least 3 trust anchors
+    if success_count < 3:
+        logger.error(f"[LEVEL 10 FAILURE] Only {success_count} trust anchors visited - minimum is 3")
+        logger.info("=" * 60)
+        return False
+    
+    logger.info(f"[LEVEL 10 SUCCESS] Minimum 3 trust anchors requirement met")
     logger.info("=" * 60)
     
-    return success_count > 0
+    return True
 
 
 def perform_history_generation(driver: webdriver.Chrome, 
