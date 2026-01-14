@@ -6,9 +6,19 @@ Creates realistic browsing patterns and time advancement strategies.
 import numpy as np
 from scipy import stats
 import random
+import time
 from datetime import datetime, timedelta
 from typing import List, Dict, Any, Tuple, Optional
 import logging
+
+
+# Veritas V5: Organic Pause Constants
+LONG_PAUSE_MEAN_SECONDS = 60  # Mean duration for long pauses
+LONG_PAUSE_STD_SECONDS = 15   # Standard deviation for long pauses
+LONG_PAUSE_MIN_SECONDS = 30   # Minimum long pause duration
+LONG_PAUSE_MAX_SECONDS = 90   # Maximum long pause duration
+REGULAR_PAUSE_MIN_SECONDS = 1 # Minimum regular pause duration
+REGULAR_PAUSE_MAX_SECONDS = 5 # Maximum regular pause duration
 
 
 class EntropyGenerator:
@@ -349,8 +359,6 @@ class EntropyGenerator:
         Returns:
             float: Pause duration in seconds
         """
-        import time
-        
         self.page_visit_count += 1
         
         # Check if we should trigger a long pause
@@ -358,9 +366,9 @@ class EntropyGenerator:
         
         if should_long_pause:
             # Long Pause: 30-90 seconds (simulates reading or multitasking)
-            # Use normal distribution centered at 60 seconds
-            pause_duration = np.random.normal(60, 15)  # mean=60s, std=15s
-            pause_duration = np.clip(pause_duration, 30, 90)
+            # Use normal distribution centered at LONG_PAUSE_MEAN_SECONDS
+            pause_duration = np.random.normal(LONG_PAUSE_MEAN_SECONDS, LONG_PAUSE_STD_SECONDS)
+            pause_duration = np.clip(pause_duration, LONG_PAUSE_MIN_SECONDS, LONG_PAUSE_MAX_SECONDS)
             
             self.logger.info(f"[Organic Gap] Long Pause triggered (page {self.page_visit_count}): {pause_duration:.1f}s")
             
@@ -375,7 +383,7 @@ class EntropyGenerator:
             scale = 1.0  # Scale parameter
             
             pause_duration = np.random.gamma(shape, scale)
-            pause_duration = np.clip(pause_duration, 1, 5)
+            pause_duration = np.clip(pause_duration, REGULAR_PAUSE_MIN_SECONDS, REGULAR_PAUSE_MAX_SECONDS)
             
             self.logger.debug(f"[Organic Gap] Regular pause: {pause_duration:.2f}s")
         

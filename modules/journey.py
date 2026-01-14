@@ -349,7 +349,9 @@ def visit_trust_anchors(driver: webdriver.Chrome) -> bool:
     - Google Accounts: Identity Trust
     - NY Times: High-Income Demographic Signal
     
-    Each site is visited with scroll and wait (3-5 seconds) to ensure tracking pixels fire.
+    Each site is visited with scroll and wait (3-5 seconds) to allow tracking pixels
+    to fire. Note: This creates the intended behavior pattern; actual pixel firing
+    depends on site implementation and cannot be verified from client-side code.
     
     Args:
         driver: Selenium WebDriver instance
