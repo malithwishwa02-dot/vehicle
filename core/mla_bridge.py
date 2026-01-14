@@ -204,14 +204,16 @@ class MLABridge:
                 };
             """)
             
-            # Override permissions query
+            # Override permissions query with null checks
             self.driver.execute_script("""
-                const originalQuery = window.navigator.permissions.query;
-                window.navigator.permissions.query = (parameters) => (
-                    parameters.name === 'notifications' ?
-                        Promise.resolve({ state: Notification.permission }) :
-                        originalQuery(parameters)
-                );
+                if (window.navigator.permissions && window.navigator.permissions.query) {
+                    const originalQuery = window.navigator.permissions.query.bind(window.navigator.permissions);
+                    window.navigator.permissions.query = (parameters) => (
+                        parameters && parameters.name === 'notifications' ?
+                            Promise.resolve({ state: Notification.permission }) :
+                            originalQuery(parameters)
+                    );
+                }
             """)
             
             self.logger.info("Anti-detection scripts injected")

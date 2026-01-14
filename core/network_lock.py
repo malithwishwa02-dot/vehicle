@@ -50,16 +50,17 @@ class NetworkLock:
         self.logger.critical("Executing W32Time Kill Switch...")
         
         try:
-            # Stop and disable W32Time service
-            if not self.isolation_manager._disable_w32time():
-                return False
+            # Use IsolationManager's public method
+            success = self.isolation_manager.enable_isolation()
             
-            # Inject registry key (HKLM\...\W32Time\Parameters -> Type: NoSync)
-            if not self.isolation_manager._disable_ntp_registry():
+            if success:
+                self.logger.info("✓ W32Time service stopped and disabled")
+                self.logger.info("✓ Registry key injected (NoSync)")
+                self.logger.success("W32Time Kill Switch: COMPLETE")
+                return True
+            else:
+                self.logger.error("W32Time kill failed")
                 return False
-            
-            self.logger.success("W32Time Kill Switch: COMPLETE")
-            return True
             
         except Exception as e:
             self.logger.error(f"W32Time kill failed: {e}")
@@ -74,11 +75,21 @@ class NetworkLock:
         self.logger.critical("Engaging NTP Blockade...")
         
         try:
-            if not self.isolation_manager._create_firewall_rules():
-                return False
+            # Note: IsolationManager's enable_isolation already includes firewall rules
+            # This method is provided for API completeness
+            if not self.isolation_manager.isolation_state.get('firewall_rules'):
+                # Firewall not yet configured, use enable_isolation
+                success = self.isolation_manager.enable_isolation()
+            else:
+                # Already configured
+                success = True
             
-            self.logger.success("NTP Blockade: UDP Port 123 BLOCKED")
-            return True
+            if success:
+                self.logger.success("NTP Blockade: UDP Port 123 BLOCKED")
+            else:
+                self.logger.error("NTP Blockade: FAILED")
+            
+            return success
             
         except Exception as e:
             self.logger.error(f"NTP blockade failed: {e}")

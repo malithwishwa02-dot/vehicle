@@ -87,24 +87,22 @@ class HumanMouse:
             # Calculate number of steps based on duration
             num_steps = int(duration * 100)  # 100 steps per second
             
-            action = ActionChains(self.driver)
-            
             # Move along the Bezier curve
             prev_x, prev_y = p0
             for i in range(num_steps):
                 t = i / num_steps
                 x, y = self.cubic_bezier(t, p0, p1, p2, p3)
                 
-                # Move to point
+                # Create fresh ActionChains for each step to execute immediately
+                action = ActionChains(self.driver)
                 action.move_by_offset(x - prev_x, y - prev_y)
+                action.perform()
                 
                 # Micro-sleep (random float between movements)
                 micro_sleep = random.uniform(0.001, 0.01)
                 time.sleep(micro_sleep)
                 
                 prev_x, prev_y = x, y
-            
-            action.perform()
             self.logger.info(f"Bezier mouse movement: ({start_x},{start_y}) -> ({target_x},{target_y})")
             
         except Exception as e:
@@ -296,15 +294,22 @@ class PoissonJourney:
         self.logger.info(f"Generated {len(time_jumps)} time jump segments")
         return time_jumps
     
-    def should_kill_browser(self, jump_index: int) -> bool:
+    def should_kill_browser(self, jump_index: int, total_jumps: int) -> bool:
         """
         Determine if browser should be killed after this jump.
         
         Browser MUST be fully closed between jumps to flush .wal files to disk.
         (CHRONOS_TASK.md Module 3, Requirement 1)
+        
+        Args:
+            jump_index: Current jump index (0-based)
+            total_jumps: Total number of jumps
+            
+        Returns:
+            bool: True if browser should be killed
         """
-        # Kill browser after every jump (except the last one)
-        return True
+        # Kill browser after every jump except the last one
+        return jump_index < (total_jumps - 1)
 
 
 # Convenience functions

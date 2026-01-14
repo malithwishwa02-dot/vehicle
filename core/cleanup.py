@@ -116,7 +116,7 @@ class CleanupManager:
         try:
             # Set service to automatic startup
             result = subprocess.run(
-                ["sc", "config", "w32time", "start=", "auto"],
+                ["sc", "config", "w32time", "start=auto"],
                 capture_output=True,
                 text=True,
                 shell=True
@@ -222,14 +222,20 @@ class CleanupManager:
             
             data = response.json()
             
-            # Parse server time
+            # Parse server time - support multiple formats for compatibility
             server_time_str = data.get('datetime', '')
             if not server_time_str:
                 self.logger.error("Invalid time API response")
                 raise SystemExit("Time validation failed: Invalid API response")
             
-            # Parse ISO 8601 datetime
-            server_time = datetime.fromisoformat(server_time_str.replace('Z', '+00:00'))
+            # Parse ISO 8601 datetime with fallback for Python < 3.7
+            try:
+                # Python 3.7+
+                server_time = datetime.fromisoformat(server_time_str.replace('Z', '+00:00'))
+            except (AttributeError, ValueError):
+                # Fallback for older Python versions
+                from dateutil.parser import parse
+                server_time = parse(server_time_str)
             
             # Get local system time (Module 5, Requirement 2, Step 2)
             local_time = datetime.utcnow()
