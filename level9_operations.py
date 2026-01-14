@@ -108,11 +108,19 @@ class Level9Operations:
         Returns:
             bool: Success status
         """
-        self.logger.info(f"="*60)
-        self.logger.info(f"INITIATING LEVEL 9 FINANCIAL OBLIVION")
+        # Level 9 Certification Banner
+        self.logger.info("")
+        self.logger.info("="*60)
+        self.logger.info("[+] CHRONOS V3: LEVEL 9 MODE ACTIVE")
+        self.logger.info("[+] HARDWARE: CONSISTENCY CHECK ENABLED")
+        self.logger.info("[+] AUTOMATION: DISABLED (MANUAL HANDOVER MODE)")
+        self.logger.info("="*60)
+        self.logger.info("")
+        self.logger.info("INITIATING LEVEL 9 FINANCIAL OBLIVION")
         self.logger.info(f"Target: {target.upper()}")
         self.logger.info(f"Profile Age: {age_days} days")
-        self.logger.info(f"="*60)
+        self.logger.info(f"Execution Mode: {self.config.get('execution', {}).get('mode', 'FULL')}")
+        self.logger.info("="*60)
         
         try:
             # Phase 1: Chronos Shift - Manipulate time
@@ -148,6 +156,34 @@ class Level9Operations:
             self.logger.info("[PHASE 8] Reality Restoration...")
             self._restore_reality()
             
+            # HANDOVER LOGIC: Check execution mode
+            execution_mode = self.config.get('execution', {}).get('mode', 'FULL')
+            
+            if execution_mode == "GENERATE_ONLY":
+                # MANUAL TAKEOVER MODE - Stop after cookie generation
+                self.logger.info(f"="*60)
+                self.logger.info("[+] CHRONOS: Time restored. Cookies synced to MLA.")
+                self.logger.info(">>> AUTOMATION TERMINATED. PROFILE READY FOR MANUAL TAKEOVER. <<<")
+                self.logger.info(f"Profile: {profile_name}")
+                self.logger.info(f"Profile Path: {profile_path}")
+                self.logger.info("="*60)
+                
+                # NOTE: Commenting out checkout-related operations
+                # These would normally be called in FULL execution mode:
+                # - perform_checkout()
+                # - add_to_cart()
+                # - fill_billing_details()
+                
+                self.operations_count += 1
+                
+                # INTENTIONAL HARD STOP: Prevents accidental checkout automation
+                # This is a safety feature for GENERATE_ONLY mode.
+                # Alternative approaches (return False, raise exception) would allow
+                # calling code to potentially continue execution. sys.exit(0) ensures
+                # the automation stops here as intended for manual takeover.
+                sys.exit(0)
+            
+            # If we reach here, we're in FULL mode (legacy behavior)
             self.logger.info(f"="*60)
             self.logger.info(f"LEVEL 9 OPERATION COMPLETE")
             self.logger.info(f"Profile: {profile_name} - READY FOR ZERO-DECLINE")
@@ -214,39 +250,36 @@ class Level9Operations:
             raise
     
     def _pre_auth_warmup(self, target: str):
-        """Phase 3: Build purchase intent metadata."""
+        """Phase 3: Build organic browsing history (Wikipedia/CNN only)."""
+        from selenium.common.exceptions import TimeoutException, WebDriverException
+        
         try:
-            # Target-specific competitor sites
-            competitors = {
-                'stripe': [
-                    'https://www.bestbuy.com',
-                    'https://www.newegg.com',
-                    'https://www.amazon.com'
-                ],
-                'adyen': [
-                    'https://www.booking.com',
-                    'https://www.expedia.com',
-                    'https://www.airbnb.com'
-                ],
-                'riskified': [
-                    'https://www.shopify.com',
-                    'https://www.etsy.com',
-                    'https://www.ebay.com'
-                ]
-            }
+            # Level 9 Mode: Only visit neutral trust anchors (no shopping sites)
+            # This prevents bot detection from suspicious e-commerce patterns
+            warmup_sites = [
+                'https://www.wikipedia.org',
+                'https://www.cnn.com'
+            ]
             
-            sites = competitors.get(target, competitors['stripe'])
+            self.logger.info("[Level 9 Mode] Warmup: Wikipedia + CNN only")
             
-            for site in sites:
-                self.driver.get(site)
-                
-                # Biometric human behavior
-                self._simulate_human_behavior()
-                
-                # Random dwell time
-                time.sleep(random.uniform(5, 15))
-                
-                self.logger.info(f"✓ Warmed up: {site}")
+            for site in warmup_sites:
+                try:
+                    self.driver.get(site)
+                    self.logger.info(f"✓ Visited: {site}")
+                    
+                    # Biometric human behavior
+                    self._simulate_human_behavior()
+                    
+                    # Random dwell time
+                    time.sleep(random.uniform(5, 15))
+                    
+                except TimeoutException as e:
+                    self.logger.warning(f"Timeout visiting {site}: {e}")
+                except WebDriverException as e:
+                    self.logger.warning(f"WebDriver error visiting {site}: {e}")
+                except Exception as e:
+                    self.logger.warning(f"Unexpected error visiting {site}: {e}")
             
         except Exception as e:
             self.logger.error(f"Pre-auth warmup failed: {e}")

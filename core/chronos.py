@@ -320,3 +320,23 @@ class Chronos:
                              capture_output=True, shell=True)
             except:
                 pass
+    
+    def shift_time(self, days_ago: int) -> bool:
+        """
+        Alias for time_jump for compatibility with ChronosTimeMachine interface.
+        
+        CRITICAL: This must be called BEFORE mla_handler.start_profile()
+        Reason: Browser process must spawn AFTER Windows Kernel time has changed
+        for "Natural Generation" to work properly.
+        
+        Args:
+            days_ago: Number of days to shift backwards
+            
+        Returns:
+            bool: Success status
+        """
+        return self.time_jump(days_ago)
+
+
+# Alias for compatibility
+ChronosTimeMachine = Chronos

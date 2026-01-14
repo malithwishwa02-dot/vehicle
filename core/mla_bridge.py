@@ -119,6 +119,10 @@ class MLABridge:
     def launch_profile(self) -> bool:
         """
         Launch profile via API (CHRONOS_TASK.md Module 2, Requirement 3)
+        Also known as start_profile in MLA API context.
+        
+        IMPORTANT: This should be called AFTER ChronosTimeMachine.shift_time()
+        to ensure browser process spawns with kernel time already shifted.
         """
         self.logger.info(f"Launching profile via MLA API: {self.profile_id}")
         
@@ -137,6 +141,26 @@ class MLABridge:
         except Exception as e:
             self.logger.error(f"Profile launch exception: {e}")
             return False
+    
+    def start_profile(self, profile_id: Optional[str] = None) -> bool:
+        """
+        Start MLA profile (alias for launch_profile for API compatibility).
+        
+        Request: http://localhost:35000/api/v1/profile/start?automation=true&puppeteer=true&profileId={profile_id}
+        Response: Extract 'value' (WebSocket URL) from JSON response
+        Attach: Selenium Remote WebDriver to this URL
+        
+        Args:
+            profile_id: Optional profile ID to override instance profile
+            
+        Returns:
+            bool: Success status
+        """
+        if profile_id:
+            self.profile_id = profile_id
+            self.mla_handler.profile_id = profile_id
+        
+        return self.launch_profile()
     
     def attach_webdriver(self) -> Optional[webdriver.Chrome]:
         """
@@ -221,25 +245,46 @@ class MLABridge:
         except Exception as e:
             self.logger.warning(f"Anti-detection injection warning: {e}")
     
-    def stop_profile(self) -> bool:
-        """Stop the running profile"""
-        self.logger.info("Stopping profile...")
+    def stop_profile(self, profile_id: Optional[str] = None) -> bool:
+        """
+        Stop the running profile - ensures cookies are written to disk/cloud.
+        
+        CRITICAL: Must be called before script exits to ensure cookies are synced.
+        
+        Args:
+            profile_id: Optional profile ID to override instance profile
+            
+        Returns:
+            bool: Success status
+        """
+        if profile_id:
+            self.profile_id = profile_id
+        
+        self.logger.info("Stopping profile and syncing cookies to MLA...")
         
         try:
-            # Close WebDriver if active
+            # Import Config for delay constants
+            from config.settings import Config
+            
+            # Close WebDriver if active (with delay to flush cookies)
             if self.driver:
+                time.sleep(Config.COOKIE_FLUSH_DELAY_SECONDS)  # Allow cookies to be written
                 self.driver.quit()
                 self.driver = None
             
-            # Stop profile via API
+            # Stop profile via API (ensures cloud sync)
             url = f"{self.MLA_API_V2}/profile/stop?profileId={self.profile_id}"
             response = requests.get(url, timeout=30)
             
             if response.status_code == 200:
-                self.logger.success("Profile stopped")
+                self.logger.success("Profile stopped - cookies synced to MLA")
+                time.sleep(Config.MLA_SYNC_DELAY_SECONDS)  # Allow MLA to complete sync
                 return True
             else:
-                self.logger.warning("Profile stop request completed with warnings")
+                # Try v1 API as fallback
+                url = f"{self.MLA_API_V1}/profile/stop?profileId={self.profile_id}"
+                response = requests.get(url, timeout=30)
+                self.logger.warning("Profile stop completed via v1 API")
                 return True
                 
         except Exception as e:

@@ -1,6 +1,7 @@
 """
 Multilogin API Controller v2.0
 Direct interface with MLA Local API and browser automation
+Level 9: Hardware Consistency Enforcement
 """
 
 import requests
@@ -10,12 +11,13 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import WebDriverException
-from typing import List, Dict, Optional
+from typing import List, Dict, Optional, Any
 
 class MLAHandler:
     """
     Multilogin browser controller with cookie seeding capabilities
     Implements trust anchor visitation for synthetic patina generation
+    Level 9: Hardware Consistency Enforcement
     """
     
     def __init__(self, profile_id: str):
@@ -33,37 +35,159 @@ class MLAHandler:
         self.api_v1 = Config.MLA_URL
         self.api_v2 = Config.MLA_URL_V2
     
+    def validate_hardware_config(self, profile_data: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Level 9 Hardware Consistency Validation
+        
+        Validates hardware configuration to ensure realistic fingerprints.
+        Returns validation results with warnings/errors.
+        
+        Args:
+            profile_data: Profile configuration dictionary with structure:
+                {
+                    'os': str,              # Operating system (e.g., 'win', 'mac', 'linux')
+                    'navigator': {
+                        'deviceMemory': int # RAM in GB (e.g., 4, 8, 16)
+                    },
+                    'webgl': {
+                        'vendor': str,      # WebGL vendor (e.g., 'Intel Inc.')
+                        'renderer': str     # WebGL renderer (e.g., 'Intel Iris OpenGL')
+                    },
+                    'mediaDevices': {
+                        'audioInputs': int, # Number of audio input devices
+                        'audioOutputs': int # Number of audio output devices
+                    }
+                }
+                
+        Returns:
+            Dict with validation results: {
+                'valid': bool,              # True if all critical checks pass
+                'warnings': List[str],      # Non-critical issues
+                'errors': List[str]         # Critical failures
+            }
+            
+        Example:
+            >>> handler = MLAHandler('profile_id')
+            >>> result = handler.validate_hardware_config({
+            ...     'os': 'win',
+            ...     'navigator': {'deviceMemory': 8},
+            ...     'webgl': {'vendor': 'Intel Inc.', 'renderer': 'Intel Iris'},
+            ...     'mediaDevices': {'audioInputs': 1}
+            ... })
+            >>> print(result['valid'])
+            True
+        """
+        validation = {
+            'valid': True,
+            'warnings': [],
+            'errors': []
+        }
+        
+        try:
+            # Extract hardware configuration
+            os_type = profile_data.get('os', 'win').lower()
+            navigator = profile_data.get('navigator', {})
+            webgl = profile_data.get('webgl', {})
+            media_devices = profile_data.get('mediaDevices', {})
+            
+            # Check 1: WebGL Vendor validation for Windows
+            if 'win' in os_type:
+                webgl_vendor = webgl.get('vendor', '')
+                webgl_renderer = webgl.get('renderer', '')
+                
+                # Flag SwiftShader (software renderer - bot indicator)
+                if 'swiftshader' in webgl_vendor.lower() or 'swiftshader' in webgl_renderer.lower():
+                    validation['errors'].append(
+                        "CRITICAL: WebGL using SwiftShader (software renderer). "
+                        "This is a major bot detection flag. Use hardware acceleration."
+                    )
+                    validation['valid'] = False
+                    self.logger.error("❌ Hardware Check Failed: SwiftShader detected")
+                
+                # Flag VMware (virtualization indicator)
+                if 'vmware' in webgl_vendor.lower() or 'vmware' in webgl_renderer.lower():
+                    validation['errors'].append(
+                        "CRITICAL: VMware GPU detected. This indicates virtualization. "
+                        "Use native hardware or proper GPU passthrough."
+                    )
+                    validation['valid'] = False
+                    self.logger.error("❌ Hardware Check Failed: VMware GPU detected")
+            
+            # Check 2: RAM validation
+            device_memory = navigator.get('deviceMemory', 0)
+            if device_memory > 0 and device_memory < 4:
+                validation['warnings'].append(
+                    f"LOW TRUST: Device memory is {device_memory}GB (< 4GB). "
+                    "Low-spec systems may be flagged by advanced fingerprinting."
+                )
+                self.logger.warning(f"⚠ Low Trust: RAM = {device_memory}GB (< 4GB)")
+            
+            # Check 3: Audio inputs validation
+            # Use None as default to detect when key is actually missing vs explicitly set to 0
+            audio_inputs = media_devices.get('audioInputs', None)
+            if audio_inputs is not None and audio_inputs == 0:
+                validation['warnings'].append(
+                    "BOT FLAG: No audio input devices detected. "
+                    "Real systems typically have at least 1 microphone. This may trigger bot detection."
+                )
+                self.logger.warning("⚠ Bot Flag: Audio Inputs = 0")
+            
+            # Log validation results
+            if validation['valid'] and not validation['warnings']:
+                self.logger.success("✓ Hardware Consistency: PASSED")
+            elif validation['valid'] and validation['warnings']:
+                self.logger.warning(f"⚠ Hardware Consistency: PASSED (with {len(validation['warnings'])} warnings)")
+            else:
+                self.logger.error(f"❌ Hardware Consistency: FAILED ({len(validation['errors'])} errors)")
+            
+        except Exception as e:
+            validation['errors'].append(f"Validation exception: {e}")
+            validation['valid'] = False
+            self.logger.error(f"Hardware validation error: {e}")
+        
+        return validation
+    
     def start_profile(self) -> bool:
-        """Start Multilogin profile and attach Selenium driver"""
+        """
+        Start Multilogin profile and attach Selenium driver.
+        
+        API Specification (MLA Local API v1):
+        GET http://localhost:35000/api/v1/profile/start?automation=true&puppeteer=true&profileId={profile_id}
+        
+        The automation=true and puppeteer=true flags ensure proper WebDriver compatibility.
+        """
         self.logger.info(f"Starting Profile: {self.profile_id}")
         
-        # Try v2 API first
-        url = f"{self.api_v2}/profile/start?profileId={self.profile_id}"
+        # Try v1 API with automation and puppeteer flags (MLA Local API specification)
+        url = f"{self.api_v1}/profile/start?automation=true&puppeteer=true&profileId={self.profile_id}"
         
         try:
             resp = requests.get(url, timeout=30)
             data = resp.json()
             
             if 'value' in data:
-                # Extract debugging port
+                # Extract the WebSocket URL or debugging port
                 if isinstance(data['value'], dict) and 'port' in data['value']:
                     self.remote_port = data['value']['port']
                 else:
                     self.remote_port = data['value']
                 
-                self.logger.success(f"Profile started on port: {self.remote_port}")
+                self.logger.success(f"Profile started (v1 API) on port: {self.remote_port}")
                 
                 # Attach Selenium
                 return self._attach_selenium()
             
-            # Fallback to v1 API
-            url = f"{self.api_v1}/profile/start?automation=true&profileId={self.profile_id}"
+            # Fallback to v2 API
+            url = f"{self.api_v2}/profile/start?profileId={self.profile_id}"
             resp = requests.get(url, timeout=30)
             data = resp.json()
             
             if 'value' in data:
-                self.remote_port = data['value']
-                self.logger.success(f"Profile started (v1 API) on port: {self.remote_port}")
+                if isinstance(data['value'], dict) and 'port' in data['value']:
+                    self.remote_port = data['value']['port']
+                else:
+                    self.remote_port = data['value']
+                self.logger.success(f"Profile started (v2 API) on port: {self.remote_port}")
                 return self._attach_selenium()
             
             self.logger.error(f"Failed to start profile: {data}")
@@ -234,32 +358,41 @@ class MLAHandler:
                 self.logger.warning(f"Journey step failed: {e}")
     
     def stop_profile(self):
-        """Stop Multilogin profile and cleanup"""
-        self.logger.info("Stopping Profile...")
+        """Stop Multilogin profile and cleanup - ensures cookies are written to disk/cloud"""
+        self.logger.info("Stopping Profile and syncing cookies...")
         
-        # Close Selenium driver
+        # Close Selenium driver first to ensure all cookies are flushed
         if self.driver:
             try:
+                # Give browser time to write cookies to disk
+                time.sleep(self.config.COOKIE_FLUSH_DELAY_SECONDS)
                 self.driver.quit()
             except:
                 pass
             self.driver = None
         
-        # Stop profile via API
+        # Stop profile via API to ensure cloud sync
         try:
-            # Try v2 API
+            # Try v2 API first
             url = f"{self.api_v2}/profile/stop?profileId={self.profile_id}"
-            requests.get(url, timeout=10)
+            resp = requests.get(url, timeout=10)
+            
+            if resp.status_code == 200:
+                self.logger.success("Profile stopped - cookies synced to MLA cloud/disk")
+                time.sleep(self.config.MLA_SYNC_DELAY_SECONDS)  # Allow file locks to release
+                return
         except:
-            try:
-                # Fallback to v1
-                url = f"{self.api_v1}/profile/stop?profileId={self.profile_id}"
-                requests.get(url, timeout=10)
-            except:
-                pass
+            pass
         
-        time.sleep(2)  # Allow file locks to release
-        self.logger.success("Profile stopped")
+        # Fallback to v1 API
+        try:
+            url = f"{self.api_v1}/profile/stop?profileId={self.profile_id}"
+            requests.get(url, timeout=10)
+            self.logger.success("Profile stopped (v1 API) - cookies synced")
+        except:
+            self.logger.warning("Profile stop API call failed - cookies may not be fully synced")
+        
+        time.sleep(self.config.MLA_SYNC_DELAY_SECONDS)  # Allow file locks to release
     
     def cleanup(self):
         """Emergency cleanup"""

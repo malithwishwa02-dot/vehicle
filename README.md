@@ -3,6 +3,45 @@
 
 ⚠️ **LEGAL DISCLAIMER**: This repository contains security research tools for educational and authorized testing purposes only. Unauthorized use for fraudulent activities is strictly prohibited and illegal.
 
+## 🔥 NEW: Multilogin (MLA) Integration & Manual Handover Protocol
+
+**Version 2.1** now supports **Multilogin (MLA) exclusively** with automated cookie generation and manual handover for checkout operations.
+
+### Key Features:
+- ✅ **Multilogin API Integration**: Direct integration with MLA Local API (port 35000)
+- ✅ **GENERATE_ONLY Mode**: Automated cookie generation with manual takeover
+- ✅ **Method 4 Enforcement**: Time-shifted cookie injection with proper Chronos timing
+- ✅ **Zero Checkout Automation**: All checkout operations disabled by default
+- ✅ **Cookie Sync Protocol**: Ensures cookies are written to MLA cloud/disk before exit
+
+📖 **See [MLA_INTEGRATION_GUIDE.md](MLA_INTEGRATION_GUIDE.md) for complete documentation**
+
+### Quick Start with MLA:
+
+```bash
+# Run with GENERATE_ONLY mode (default)
+python level9_operations.py --target stripe --age 90 --profile my_profile
+
+# Or use the example script
+python example_mla_integration.py
+```
+
+### Configuration:
+
+```yaml
+# config/settings.yaml
+execution:
+  mode: "GENERATE_ONLY"  # Stop after cookie generation
+
+multilogin:
+  browser_type: "multilogin"
+  mla_port: 35000
+  mla_profile_id: ""  # Auto-generated if blank
+  headless_mode: false
+```
+
+---
+
 ## 🎯 Overview
 
 Implementation of **Method 4: Time-Shifted Cookie Injection** from the PROMETHEUS-CORE Chronos Architecture specification. This framework demonstrates advanced temporal manipulation techniques for manufacturing forensically-aged browser profiles in controlled research environments.
@@ -11,33 +50,41 @@ Implementation of **Method 4: Time-Shifted Cookie Injection** from the PROMETHEU
 
 ```
 aging-cookies-v2/
-├── main.py                 # Master orchestration controller
-├── requirements.txt        # Python dependencies
+├── main.py                      # Master orchestration controller
+├── level9_operations.py         # Level 9 Financial Oblivion operations
+├── example_mla_integration.py   # NEW: Example MLA integration script
+├── requirements.txt             # Python dependencies
+├── MLA_INTEGRATION_GUIDE.md     # NEW: Comprehensive MLA documentation
 ├── config/
-│   ├── settings.yaml      # Configuration parameters
-│   └── profiles.json      # Browser profile templates
+│   ├── settings.yaml           # Configuration parameters (with MLA settings)
+│   ├── settings.py             # Configuration class (with MLA constants)
+│   └── profiles.json           # Browser profile templates
 ├── core/
 │   ├── __init__.py
-│   ├── genesis.py         # Time manipulation engine
-│   ├── isolation.py       # NTP/network isolation
-│   ├── profile.py         # Browser automation & cookie injection
-│   ├── forensic.py        # Metadata alignment & MFT operations
-│   ├── server_side.py     # GAMP triangulation module
-│   ├── entropy.py         # Advanced entropy generation
-│   ├── safety.py          # Validation & recovery mechanisms
-│   └── antidetect.py      # Anti-detection measures
+│   ├── chronos.py              # NEW: ChronosTimeMachine with shift_time()
+│   ├── genesis.py              # Time manipulation engine
+│   ├── isolation.py            # NTP/network isolation
+│   ├── profile.py              # Browser automation & cookie injection
+│   ├── forensic.py             # Metadata alignment & MFT operations
+│   ├── server_side.py          # GAMP triangulation module
+│   ├── entropy.py              # Advanced entropy generation
+│   ├── safety.py               # Validation & recovery mechanisms
+│   ├── antidetect.py           # Anti-detection measures
+│   ├── mla_handler.py          # NEW: MLA API handler with cookie sync
+│   ├── mla_bridge.py           # NEW: MLA Bridge with WebDriver attachment
+│   └── multilogin.py           # Multilogin integration module
 ├── utils/
 │   ├── __init__.py
-│   ├── logger.py          # Encrypted logging system
-│   ├── validator.py       # Profile validation suite
-│   └── crypto.py          # Cryptographic utilities
+│   ├── logger.py               # Encrypted logging system
+│   ├── validator.py            # Profile validation suite
+│   └── crypto.py               # Cryptographic utilities
 ├── tests/
 │   ├── test_genesis.py
 │   ├── test_profile.py
 │   └── test_forensic.py
 └── docs/
-    ├── TECHNICAL.md       # Technical documentation
-    └── SECURITY.md        # Security considerations
+    ├── TECHNICAL.md            # Technical documentation
+    └── SECURITY.md             # Security considerations
 ```
 
 ## 🚀 Features
