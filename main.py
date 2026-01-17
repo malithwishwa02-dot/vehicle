@@ -1,3 +1,151 @@
+import sys
+import logging
+import time
+import yaml
+from core.genesis import GenesisController
+from core.mlx_bridge import MLXMethod4Bridge
+from modules.human_mouse import HumanMouse
+from modules.journey import Journey
+import tkinter as tk
+from tkinter import messagebox, filedialog, scrolledtext
+import threading
+
+def load_config(path="config/settings.yaml"):
+    with open(path, "r") as f:
+        return yaml.safe_load(f)
+
+def main():
+    logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+    logger = logging.getLogger("MAIN")
+
+
+    if not mlx_bridge.inject_and_shift(days_back=days_back):
+
+    # ...existing code...
+
+    # Place GUI code at the end, after all class/function definitions
+
+    import tkinter as tk
+    from tkinter import messagebox, filedialog, scrolledtext
+    import threading
+
+    core = PrometheusCore()
+        try:
+            output_box.insert(tk.END, f"[INFO] Starting Level 9 operation for: {target}\n")
+            results = core.execute_level9_operation(target, age)
+            output_box.insert(tk.END, f"[SUCCESS] Operation complete.\n")
+            output_box.insert(tk.END, f"Profile Path: {results['phases']['profile']['profile_path']}\n")
+            output_box.see(tk.END)
+        except Exception as e:
+            output_box.insert(tk.END, f"[ERROR] {str(e)}\n")
+            output_box.see(tk.END)
+
+    root = tk.Tk()
+        core = PrometheusCore()
+        root = tk.Tk()
+        root.title("Aging-Cookies v2 - Level 9 GUI")
+        root.geometry("600x500")
+
+        tk.Label(root, text="Aging-Cookies v2", font=("Arial", 18, "bold")).pack(pady=8)
+        tk.Label(root, text="Level 9 Synthetic Identity Framework", font=("Arial", 11)).pack(pady=2)
+
+        frame = tk.Frame(root)
+        frame.pack(pady=10)
+
+        tk.Label(frame, text="Target URL:").grid(row=0, column=0, sticky="e")
+        url_var = tk.StringVar(value=core.config.get("target_url") or "")
+        url_entry = tk.Entry(frame, textvariable=url_var, width=45)
+        url_entry.grid(row=0, column=1, padx=5)
+
+        tk.Label(frame, text="Profile Age (days):").grid(row=1, column=0, sticky="e")
+        age_var = tk.IntVar(value=core.config.get("age_days") or 90)
+        age_entry = tk.Entry(frame, textvariable=age_var, width=10)
+        age_entry.grid(row=1, column=1, sticky="w")
+
+        output_box = scrolledtext.ScrolledText(root, width=70, height=18, font=("Consolas", 10))
+        output_box.pack(pady=10)
+
+        def on_start():
+            target = url_var.get().strip()
+            try:
+                age = int(age_var.get())
+            except Exception:
+                age = 90
+            if not target:
+                messagebox.showerror("Input Error", "Please enter a target URL.")
+                return
+            output_box.delete(1.0, tk.END)
+            threading.Thread(target=gui_execute_level9, args=(core, target, age, output_box), daemon=True).start()
+
+        tk.Button(root, text="Start Level 9 Operation", font=("Arial", 12), command=on_start, width=30, height=2).pack(pady=8)
+
+        tk.Label(root, text="© 2026 Chronos/Prometheus", font=("Arial", 8)).pack(side="bottom", pady=5)
+        root.mainloop()
+
+    if __name__ == "__main__":
+        run_full_gui()
+    root.title("Aging-Cookies v2 - Level 9 GUI")
+    root.geometry("600x500")
+
+    tk.Label(root, text="Aging-Cookies v2", font=("Arial", 18, "bold")).pack(pady=8)
+    tk.Label(root, text="Level 9 Synthetic Identity Framework", font=("Arial", 11)).pack(pady=2)
+
+    frame = tk.Frame(root)
+    frame.pack(pady=10)
+
+    tk.Label(frame, text="Target URL:").grid(row=0, column=0, sticky="e")
+    url_var = tk.StringVar(value=core.config.get("target_url") or "")
+    url_entry = tk.Entry(frame, textvariable=url_var, width=45)
+    url_entry.grid(row=0, column=1, padx=5)
+
+    tk.Label(frame, text="Profile Age (days):").grid(row=1, column=0, sticky="e")
+    age_var = tk.IntVar(value=core.config.get("age_days") or 90)
+    age_entry = tk.Entry(frame, textvariable=age_var, width=10)
+    age_entry.grid(row=1, column=1, sticky="w")
+
+    output_box = scrolledtext.ScrolledText(root, width=70, height=18, font=("Consolas", 10))
+    output_box.pack(pady=10)
+
+    def on_start():
+        target = url_var.get().strip()
+        try:
+            age = int(age_var.get())
+        except Exception:
+            age = 90
+        if not target:
+            messagebox.showerror("Input Error", "Please enter a target URL.")
+            return
+        output_box.delete(1.0, tk.END)
+        threading.Thread(target=gui_execute_level9, args=(core, target, age, output_box), daemon=True).start()
+
+    tk.Button(root, text="Start Level 9 Operation", font=("Arial", 12), command=on_start, width=30, height=2).pack(pady=8)
+
+    tk.Label(root, text="© 2026 Chronos/Prometheus", font=("Arial", 8)).pack(side="bottom", pady=5)
+    root.mainloop()
+
+# Ensure PrometheusCore is defined before GUI functions
+# (Move GUI code to after PrometheusCore class definition)
+
+if __name__ == "__main__":
+    run_full_gui()
+def initiate_handover():
+    """
+    Silence Window Protocol: Pauses execution for 180 seconds with countdown, then enters infinite loop for manual control.
+    """
+    import time
+    total_seconds = 180
+    print("\n[Silence Window] Initiating handover protocol. Operator takeover in 180 seconds.")
+    for remaining in range(total_seconds, 0, -1):
+        mins, secs = divmod(remaining, 60)
+        time_fmt = f"{mins:02d}:{secs:02d}"
+        print(f"  Silence Window: {time_fmt} remaining...", end='\r', flush=True)
+        time.sleep(1)
+    print("\n>>> MANUAL CONTROL ACTIVE <<<")
+    try:
+        while True:
+            time.sleep(1)
+    except KeyboardInterrupt:
+        print("\n[Silence Window] Manual control ended by operator.")
 #!/usr/bin/env python3
 """
 PROMETHEUS-CORE v2.0.0 - Level 9 Financial Oblivion
@@ -119,10 +267,11 @@ class PrometheusCore:
         print(f"  {Fore.GREEN}✓{Style.RESET_ALL} Forensic Alignment")
         
         # Server-side - GAMP triangulation
-        self.components['server_side'] = GAMPTriangulation(
-            self.config.get('gamp', {}).get('measurement_id'),
-            self.config.get('gamp', {}).get('api_secret')
-        )
+        gamp_config = {
+            'measurement_id': self.config.get('gamp', {}).get('measurement_id', ''),
+            'api_secret': self.config.get('gamp', {}).get('api_secret', '')
+        }
+        self.components['server_side'] = GAMPTriangulation(gamp_config)
         print(f"  {Fore.GREEN}✓{Style.RESET_ALL} GAMP Triangulation")
         
         # Entropy - Behavior generation
@@ -244,22 +393,24 @@ class PrometheusCore:
         """Execute isolation phase"""
         isolation = self.components['isolation']
         
-        print(f"  • Disabling NTP synchronization...")
-        isolation.disable_time_sync()
+        print(f"  • Enabling temporal isolation...")
+        success = isolation.enable_isolation()
         
-        print(f"  • Blocking NTP traffic...")
-        isolation.block_ntp_traffic()
+        if success:
+            print(f"  {Fore.GREEN}✓ NTP and time sync disabled{Style.RESET_ALL}")
+        else:
+            print(f"  {Fore.YELLOW}! Isolation partial - continuing{Style.RESET_ALL}")
         
-        print(f"  • Detecting hypervisor...")
-        is_vm = isolation.detect_hypervisor()
-        if is_vm:
-            print(f"    {Fore.YELLOW}! Running in VM - disabling VM time sync{Style.RESET_ALL}")
-            isolation.disable_vm_time_sync()
+        # Detect hypervisor
+        print(f"  • Checking virtualization environment...")
+        vm_type = isolation._detect_vm()
+        if vm_type:
+            print(f"    {Fore.YELLOW}! Running in VM ({vm_type}) - VM sync disabled{Style.RESET_ALL}")
         
         return {
             "ntp_disabled": True,
             "firewall_configured": True,
-            "vm_detected": is_vm,
+            "vm_detected": vm_type is not None,
             "status": "isolated"
         }
     
@@ -270,7 +421,7 @@ class PrometheusCore:
         target_time = datetime.now() - timedelta(days=age_days)
         print(f"  • Shifting time to: {target_time}")
         
-        success = genesis.set_system_time(target_time)
+        success = genesis.shift_time(target_time)
         
         if success:
             print(f"  {Fore.GREEN}✓ Time shifted successfully{Style.RESET_ALL}")
@@ -424,11 +575,11 @@ class PrometheusCore:
         
         # Re-enable NTP
         isolation = self.components['isolation']
-        isolation.restore_time_sync()
+        isolation.disable_isolation()
         
         # Sync time
         genesis = self.components['genesis']
-        genesis.restore_system_time()
+        genesis.restore_time()
         
         print(f"  {Fore.GREEN}✓ System restored{Style.RESET_ALL}")
         
@@ -465,10 +616,10 @@ class PrometheusCore:
         
         try:
             # Restore NTP
-            self.components['isolation'].restore_time_sync()
+            self.components['isolation'].emergency_restore()
             
             # Restore system time
-            self.components['genesis'].restore_system_time()
+            self.components['genesis'].restore_time()
             
             print(f"{Fore.GREEN}Emergency recovery complete{Style.RESET_ALL}")
         except Exception as e:
@@ -578,7 +729,8 @@ def main():
     elif target:
         # Execute Level 9 operation
         results = core.execute_level9_operation(target, age)
-        
+        # Silence Window protocol: handover before exit
+        initiate_handover()
         if args.export_multilogin:
             print(f"\n{Fore.CYAN}Exporting to Multilogin...{Style.RESET_ALL}")
             exporter = MultiloginProfileExporter()
@@ -598,4 +750,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    run_full_gui()

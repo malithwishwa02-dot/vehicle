@@ -26,67 +26,32 @@ temporal:
 # MULTILOGIN (MLA) CONFIGURATION
 multilogin:
   browser_type: "multilogin"   # Browser type: multilogin, chrome, firefox
-  mla_port: 35000              # Default MLA Local API port
+  mla_port: 45000              # Default MLA Local API port
   mla_profile_id: "37ab1612-c285-4314-b32a-6a06d35d6d84"           # MLA Profile ID (leave blank for auto-generation)
   headless_mode: false         # MLA must be visible (cannot run headless)
   
-browser:
-  profile_path: "profiles/chrome"
-  headless: false              # Run browser in headless mode (overridden by MLA settings)
-  anti_detect: true            # Enable anti-detection measures
-  user_agent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
-  window_size: [1920, 1080]
-  disable_blink_features: "AutomationControlled"
-  excludeSwitches:
-    - "enable-automation"
-    - "enable-logging"
-  
-analytics:
-  measurement_id: ""           # Google Analytics Measurement ID
-  api_secret: ""              # Google Analytics API Secret
-  enable_triangulation: true
-  max_backdate_hours: 72
-  events_per_day: 5
-  
-safety:
-  time_api: "http://worldtimeapi.org/api/ip"
-  max_skew_seconds: 5
-  rollback_on_error: true
-  validation_interval: 300     # Seconds between validation checks
-  
-forensic:
-  enable_timestomping: true
-  enable_mft_scrub: true
-  temp_path: "C:\\Windows\\Temp\\prometheus"
-  final_path: "C:\\Users\\Public\\Documents\\Profiles"
-  recursive_depth: 5
-  
-entropy:
-  mouse_jitter: true
-  jitter_amplitude: 5         # Pixels
-  scroll_patterns: true
-  tab_switching: true
-  min_tabs: 2
-  max_tabs: 7
-  typing_delay_ms: [50, 250]  # Min/max typing delay
-  
-antidetect:
-  randomize_canvas: true
-  randomize_webgl: true
-  randomize_audio: true
-  spoof_webrtc: true
-  spoof_battery: true
-  randomize_fonts: true
-  
-logging:
-  level: "INFO"
-  encrypt: true
-  log_file: "logs/prometheus.log"
-  max_size_mb: 100
-  backup_count: 5
-  
-security:
-  require_admin: true
-  auto_cleanup: true
-  secure_delete: true
-  encryption_key: ""          # Will be generated if empty
+project:
+  name: "CHRONOS-MLA-V3"
+  version: "3.0.0"
+  opsec_level: "MAXIMUM"
+
+execution:
+  mode: "GENERATE_ONLY"       # Strict safety: Stops before checkout
+  manual_handover: true       # Enforces 180s silence before exit
+  debug_logging: true
+
+temporal:
+  target_age_days: 90         # T-90 Days Genesis
+  resync_on_exit: true        # Restoration watchdog
+  force_utc: true             # Windows API requires UTC
+
+multilogin:
+  api_url: "http://127.0.0.1" # Localhost
+  api_port: 35000             # Default MLX port
+  api_version: "v2"
+  profile_id: ""              # Injected at runtime
+
+behavior:
+  poisson_lambda: 2.5         # Burstiness factor
+  mouse_speed: "human_slow"
+  scroll_volatility: 0.3      # 30% chance to scroll UP (reading)

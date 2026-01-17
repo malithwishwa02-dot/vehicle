@@ -1,9 +1,10 @@
+import os
+import json
 """
 Multilogin API Controller v2.0
 Direct interface with MLA Local API and browser automation
 Level 9: Hardware Consistency Enforcement
 """
-
 import requests
 import time
 import random
@@ -15,17 +16,48 @@ from selenium.common.exceptions import WebDriverException
 from typing import List, Dict, Optional, Any
 
 class MLAHandler:
-    """
-    Multilogin browser controller with cookie seeding capabilities
-    Implements trust anchor visitation for synthetic patina generation
-    Level 9: Hardware Consistency Enforcement
-    """
-    
-    def __init__(self, profile_id: str):
-        self.profile_id = profile_id
-        self.driver = None
-        self.remote_port = None
-        
+
+        def inject_chronos_cookies(self, profile_id: str, cookie_json_path: str) -> bool:
+            """
+            Method 4 Kernel Time Shift: Inject Chronos-generated cookies into MLA profile with file timestamp shift.
+            1. Reads the Chronos cookie jar (JSON).
+            2. Uses os.utime() to set file timestamps to T-90 days (profile creation date).
+            3. Calls MLA API /api/v2/profile/cookies/import to push cookies.
+            4. Logs "Kernel Time Shift Applied" on success.
+            """
+            try:
+                # Read cookies and extract creation date (T-90 days)
+                with open(cookie_json_path, 'r', encoding='utf-8') as f:
+                    cookies = json.load(f)
+                # Use profile age from config (default 90 days)
+                profile_age_days = getattr(self.config, 'PROFILE_AGE_DAYS', 90)
+                t_90_epoch = int(time.time()) - profile_age_days * 86400
+                # Set file timestamps to T-90 days
+                os.utime(cookie_json_path, (t_90_epoch, t_90_epoch))
+                # Push cookies to MLA API
+                url = f"{self.api_v2}/profile/cookies/import"
+                payload = {
+                    "profileId": profile_id,
+                    "cookies": cookies
+                }
+                resp = requests.post(url, json=payload, timeout=10)
+                if resp.status_code == 200:
+                    self.logger.info("Kernel Time Shift Applied")
+                    return True
+                """
+                MODULE: core/mla_handler.py
+                STATUS: PATCHED (Prometheus v2.1)
+                AUTHORITY: Dva.12
+
+                PURPOSE:
+                Acts as the bridge between the Orchestrator and the Anti-Detect Browser API (Multilogin/MLA).
+                Now enforces ResilientClient usage to prevent API bans.
+                """
+
+                import json
+                from typing import Dict, Optional, Any
+                from core.resilient_api import ResilientClient
+                from config.settings import MLA_URL, MLA_API_KEY # Assuming these exist in settings
         from config.settings import Config
         from utils.logger import get_logger
         
@@ -342,50 +374,46 @@ class MLAHandler:
             return
         
         anchors = self.config.TRUST_ANCHORS
-        if deep_seed:
-            anchors.extend(self.config.DEEP_ANCHORS)
-        
-        self.logger.info(f"Seeding cookies across {len(anchors)} trust anchors...")
-        
-        for url in anchors:
-            try:
-                self.logger.info(f"Visiting: {url}")
-                self.driver.get(url)
-                
-                # Random human-like behavior
-                dwell_time = random.uniform(2, 5)
-                time.sleep(dwell_time)
-                
-                # Random scrolling
-                if self.config.SCROLL_BEHAVIOR and random.random() > 0.5:
-                    scroll_amount = random.randint(100, 500)
-                    self.driver.execute_script(f"window.scrollBy(0, {scroll_amount});")
-                    time.sleep(random.uniform(0.5, 1.5))
-                
-                # Random clicks on page (non-interactive elements)
-                if self.config.RANDOM_CLICKS and random.random() > 0.7:
-                    try:
-                        self.driver.execute_script("""
-                            var x = Math.floor(Math.random() * window.innerWidth);
-                            var y = Math.floor(Math.random() * window.innerHeight);
-                            document.elementFromPoint(x, y).click();
-                        """)
-                    except:
-                        pass  # Ignore click errors
-                
-                self.logger.success(f"Seeded: {url}")
-                
-            except Exception as e:
-                self.logger.warning(f"Failed to visit {url}: {e}")
-    
-    def inject_cookies(self, cookies: List[Dict]) -> int:
-        """
-        Directly inject cookies into browser session
-        
-        Args:
-            cookies: List of cookie dictionaries
-            
-        Returns:
+        class MLAHandler:
+            def __init__(self):
+                # Initialize the Resilient Client (Anti-Ban Logic)
+                self.client = ResilientClient(base_url=MLA_URL, api_key=MLA_API_KEY)
+
+            def start_profile(self, profile_id: str) -> Optional[str]:
+                """
+                Starts a browser profile via MLX/MLA API.
+                Returns the WebSocket URL (Puppeteer endpoint) or None on failure.
+                """
+                endpoint = f"v2/profile/start?profileId={profile_id}&automation=true"
+                response = self.client.request("GET", endpoint)
+                if response and "value" in response:
+                    return response["value"] # Usually the WebSocket URL
+                return None
+
+            def stop_profile(self, profile_id: str) -> bool:
+                """Stops the profile safely."""
+                endpoint = f"v2/profile/stop?profileId={profile_id}"
+                response = self.client.request("GET", endpoint)
+                return response is not None
+
+            def get_active_profiles(self) -> list:
+                """Fetches list of currently running profiles."""
+                endpoint = "v2/profile/active"
+                response = self.client.request("GET", endpoint)
+                return response if isinstance(response, list) else []
+
+            def update_profile_cookies(self, profile_id: str, cookies: list) -> bool:
+                """Injects the Level 9 Golden Cookies."""
+                endpoint = "v2/profile/cookies"
+                payload = {
+                    "profileId": profile_id,
+                    "cookies": cookies
+                }
+                response = self.client.request("POST", endpoint, data=payload)
+                return response is not None
+
+        # Singleton Instance
+        mla = MLAHandler()
             Number of successfully injected cookies
         """
         if not self.driver:

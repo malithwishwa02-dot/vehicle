@@ -1,8 +1,19 @@
+def get_human_jitter(min_ms=8, max_ms=32):
+    """
+    Returns a cryptographically secure, human-like jitter (in seconds) for mouse movement delays.
+    Args:
+        min_ms: Minimum jitter in milliseconds (default 8)
+        max_ms: Maximum jitter in milliseconds (default 32)
+    Returns:
+        float: Jitter in seconds
+    """
+    import secrets
+    ms = min_ms + secrets.randbelow(max_ms - min_ms + 1)
+    return ms / 1000.0
 """
 Entropy Generator: Advanced temporal entropy generation with Poisson distribution.
 Creates realistic browsing patterns and time advancement strategies.
 """
-
 import numpy as np
 from scipy import stats
 import random
@@ -12,7 +23,8 @@ from typing import List, Dict, Any, Tuple, Optional
 import logging
 
 
-# Veritas V5: Organic Pause Constants
+import secrets
+import random
 LONG_PAUSE_MEAN_SECONDS = 60  # Mean duration for long pauses
 LONG_PAUSE_STD_SECONDS = 15   # Standard deviation for long pauses
 LONG_PAUSE_MIN_SECONDS = 30   # Minimum long pause duration
@@ -90,16 +102,16 @@ class EntropyGenerator:
             segments.append(segment)
             current_time += interval
         
-        return segments
-    
-    def _generate_poisson_intervals(self, num_segments: int, total_hours: float) -> List[float]:
-        """Generate Poisson-distributed time intervals."""
-        
-        # Generate raw Poisson values
-        raw_intervals = np.random.poisson(self.poisson_lambda, num_segments)
-        
-        # Scale to hours
-        scale_factor = 24  # Base scale for daily patterns
+                # Long Pause: 30-90 seconds (simulates reading or multitasking)
+                # Use normal distribution centered at LONG_PAUSE_MEAN_SECONDS
+                pause_duration = float(secrets.SystemRandom().normalvariate(LONG_PAUSE_MEAN_SECONDS, LONG_PAUSE_STD_SECONDS))
+                pause_duration = float(np.clip(pause_duration, LONG_PAUSE_MIN_SECONDS, LONG_PAUSE_MAX_SECONDS))
+                # Log before resetting counter for clarity
+                pages_before_reset = self.page_visit_count
+                self.logger.info(f"[Organic Gap] Long Pause triggered (after {pages_before_reset} pages): {pause_duration:.1f}s")
+                # Reset counter and set new threshold
+                self.page_visit_count = 0
+                self.long_pause_threshold = self._secure_random.randint(3, 5)
         intervals = raw_intervals * scale_factor
         
         # Apply constraints
@@ -116,6 +128,14 @@ class EntropyGenerator:
         
         # Final constraint check
         intervals = np.maximum(intervals, self.min_interval)
+        # Hardened entropy: cryptographically secure delay
+        def get_secure_delay(min_seconds, max_seconds):
+            """
+            Uses cryptographic randomness to prevent mathematical prediction of sleep patterns.
+            """
+            rand_float = secrets.randbelow(1000000) / 1000000.0
+            range_span = max_seconds - min_seconds
+            return min_seconds + (range_span * rand_float)
         
         return intervals.tolist()
     
@@ -160,9 +180,10 @@ class EntropyGenerator:
                 'idle', 'scroll', 'refresh', 'check_notifications'
             ]
         }
-        
+        self._secure_random = secrets.SystemRandom()
+        num_actions = self._secure_random.randint(min_actions, max_actions)
         pool = action_pools.get(activity_level, action_pools['medium'])
-        
+        return [self._secure_random.choice(pool) for _ in range(num_actions)]
         # Number of actions based on activity level
         num_actions_map = {'high': (5, 15), 'medium': (3, 8), 'low': (1, 3)}
         min_actions, max_actions = num_actions_map.get(activity_level, (3, 8))
@@ -201,37 +222,37 @@ class EntropyGenerator:
         
         if action_type == 'scroll':
             action['parameters'] = {
-                'direction': random.choice(['down', 'up']),
-                'amount': random.randint(100, 800),
-                'duration': random.uniform(0.5, 2.0)
+                'direction': self._secure_random.choice(['down', 'up']),
+                'amount': self._secure_random.randint(100, 800),
+                'duration': self._secure_random.uniform(0.5, 2.0)
             }
         
         elif action_type == 'click_link':
             action['parameters'] = {
-                'selector': random.choice(['a', 'button', '.btn', '[role="button"]']),
-                'index': random.randint(0, 10),
-                'wait_after': random.uniform(1, 3)
+                'selector': self._secure_random.choice(['a', 'button', '.btn', '[role="button"]']),
+                'index': self._secure_random.randint(0, 10),
+                'wait_after': self._secure_random.uniform(1, 3)
             }
         
         elif action_type == 'search':
             action['parameters'] = {
                 'query': self._generate_search_query(),
-                'submit_delay': random.uniform(0.5, 2),
-                'typing_speed': random.uniform(0.05, 0.15)
+                'submit_delay': self._secure_random.uniform(0.5, 2),
+                'typing_speed': self._secure_random.uniform(0.05, 0.15)
             }
         
         elif action_type == 'mouse_movement':
             action['parameters'] = {
-                'pattern': random.choice(['bezier', 'linear', 'random']),
-                'duration': random.uniform(0.3, 1.5),
+                'pattern': self._secure_random.choice(['bezier', 'linear', 'random']),
+                'duration': self._secure_random.uniform(0.3, 1.5),
                 'points': self._generate_mouse_path()
             }
         
         elif action_type == 'form_submission':
             action['parameters'] = {
-                'fields': random.randint(2, 6),
-                'typing_delays': [random.uniform(0.05, 0.2) for _ in range(6)],
-                'submit_delay': random.uniform(1, 3)
+                'fields': self._secure_random.randint(2, 6),
+                'typing_delays': [self._secure_random.uniform(0.05, 0.2) for _ in range(6)],
+                'submit_delay': self._secure_random.uniform(1, 3)
             }
         
         return action
@@ -256,25 +277,25 @@ class EntropyGenerator:
             "software", "game", "movie", "recipe", "workout"
         ]
         
-        template = random.choice(query_templates)
+        template = self._secure_random.choice(query_templates)
         
         if '{}' in template:
             if template.count('{}') == 2:
-                return template.format(random.choice(topics), random.choice(topics))
+                return template.format(self._secure_random.choice(topics), self._secure_random.choice(topics))
             else:
-                return template.format(random.choice(topics))
+                return template.format(self._secure_random.choice(topics))
         
         return template
     
     def _generate_mouse_path(self) -> List[Tuple[int, int]]:
         """Generate realistic mouse movement path."""
         
-        num_points = random.randint(3, 8)
+        num_points = self._secure_random.randint(3, 8)
         points = []
         
         for _ in range(num_points):
-            x = random.randint(100, 1800)
-            y = random.randint(100, 900)
+            x = self._secure_random.randint(100, 1800)
+            y = self._secure_random.randint(100, 900)
             points.append((x, y))
         
         return points
@@ -295,25 +316,25 @@ class EntropyGenerator:
             base_date = datetime.utcnow() - timedelta(days=days-day)
             
             # Morning activity (6-9 AM)
-            morning_start = base_date.replace(hour=random.randint(6, 7), 
-                                             minute=random.randint(0, 59))
-            morning_duration = random.uniform(0.5, 2)
+                morning_start = base_date.replace(hour=self._secure_random.randint(6, 7), 
+                                                 minute=self._secure_random.randint(0, 59))
+                morning_duration = self._secure_random.uniform(0.5, 2)
             
             # Midday activity (11 AM - 2 PM)
-            midday_start = base_date.replace(hour=random.randint(11, 12),
-                                            minute=random.randint(0, 59))
-            midday_duration = random.uniform(1, 2.5)
+                midday_start = base_date.replace(hour=self._secure_random.randint(11, 12),
+                                                minute=self._secure_random.randint(0, 59))
+                midday_duration = self._secure_random.uniform(1, 2.5)
             
             # Evening activity (6-10 PM)
-            evening_start = base_date.replace(hour=random.randint(18, 20),
-                                             minute=random.randint(0, 59))
-            evening_duration = random.uniform(1.5, 3)
+                evening_start = base_date.replace(hour=self._secure_random.randint(18, 20),
+                                                 minute=self._secure_random.randint(0, 59))
+                evening_duration = self._secure_random.uniform(1.5, 3)
             
             # Add some days with night activity
-            if random.random() < 0.2:  # 20% chance
-                night_start = base_date.replace(hour=random.randint(22, 23),
-                                               minute=random.randint(0, 59))
-                night_duration = random.uniform(0.5, 1.5)
+                if self._secure_random.random() < 0.2:  # 20% chance
+                    night_start = base_date.replace(hour=self._secure_random.randint(22, 23),
+                                                   minute=self._secure_random.randint(0, 59))
+                    night_duration = self._secure_random.uniform(0.5, 1.5)
                 
                 pattern.append({
                     'day': day,

@@ -2,7 +2,6 @@
 Isolation Manager: Complete NTP and time synchronization severance.
 Implements service shutdown, registry modification, and firewall rules.
 """
-
 import subprocess
 import ctypes
 import winreg

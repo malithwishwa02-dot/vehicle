@@ -2,7 +2,6 @@
 PROMETHEUS-CORE: Multilogin Integration Module
 Complete anti-detection integration with Multilogin/GoLogin/AdsPower
 """
-
 import json
 import base64
 import hashlib

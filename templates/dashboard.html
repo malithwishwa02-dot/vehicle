@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CHRONOS AI</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@17/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+  </head>
+  <body class="bg-gray-900 text-gray-100 min-h-screen">
+    <div id="root"></div>
+    <script type="text/babel">
+      function Dashboard() {
+        const [target, setTarget] = React.useState("");
+        const [persona, setPersona] = React.useState("");
+        const [logs, setLogs] = React.useState([]);
+        const [jobId, setJobId] = React.useState(null);
+        const [status, setStatus] = React.useState(null);
+        const [downloadUrl, setDownloadUrl] = React.useState(null);
+        React.useEffect(() => {
+          let interval;
+          if (jobId) {
+            interval = setInterval(() => {
+              fetch(`/api/status/${jobId}`)
+                .then(res => res.json())
+                .then(data => {
+                  setLogs(data.logs);
+                  setStatus(data.status);
+                  if (data.status === 'COMPLETED') {
+                    setDownloadUrl(`/api/download/${jobId}`);
+                    clearInterval(interval);
+                  }
+                });
+            }, 1000);
+          }
+          return () => clearInterval(interval);
+        }, [jobId]);
+        const deployAgent = () => {
+          setLogs([]);
+          setStatus(null);
+          setDownloadUrl(null);
+          fetch('/api/spawn_agent', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ target, persona })
+          })
+            .then(res => res.json())
+            .then(data => {
+              setJobId(data.job_id);
+              setStatus(data.status);
+            });
+        };
+        return (
+          <div className="max-w-2xl mx-auto py-10">
+            <h1 className="text-4xl font-bold mb-6 text-center">CHRONOS AI</h1>
+            <div className="bg-gray-800 p-6 rounded-lg mb-6">
+              <div className="mb-4 flex flex-col md:flex-row gap-2">
+                <input className="flex-1 p-2 rounded bg-gray-700 text-gray-100" placeholder="Target URL" value={target} onChange={e => setTarget(e.target.value)} />
+                <input className="flex-1 p-2 rounded bg-gray-700 text-gray-100" placeholder="Persona" value={persona} onChange={e => setPersona(e.target.value)} />
+                <button className="bg-blue-600 px-4 py-2 rounded text-white font-semibold" onClick={deployAgent}>DEPLOY AGENT</button>
+              </div>
+              <div className="bg-black rounded p-4 h-48 overflow-y-auto font-mono text-green-400 text-sm">
+                {logs.map((log, i) => (
+                  <div key={i}>{new Date(log.timestamp * 1000).toLocaleTimeString()} - {log.msg}</div>
+                ))}
+              </div>
+              <div className="mt-4">
+                <div className="w-full bg-gray-700 rounded h-2">
+                  <div className={`h-2 rounded ${status === 'COMPLETED' ? 'bg-green-500' : status === 'FAILED' ? 'bg-red-500' : 'bg-blue-500 animate-pulse'}`} style={{ width: status === 'COMPLETED' ? '100%' : status === 'FAILED' ? '100%' : status ? '50%' : '0%' }}></div>
+                </div>
+                {downloadUrl && (
+                  <a href={downloadUrl} className="mt-4 inline-block bg-green-600 px-4 py-2 rounded text-white font-semibold" download>Download Profile ZIP</a>
+                )}
+              </div>
+            </div>
+          </div>
+        );
+      }
+      ReactDOM.render(<Dashboard />, document.getElementById('root'));
+    </script>
+  </body>
+</html>

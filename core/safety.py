@@ -2,7 +2,6 @@
 Safety Validator: Time synchronization validation and recovery mechanisms.
 Ensures system clock accuracy before and after operations.
 """
-
 import requests
 import logging
 from datetime import datetime, timedelta

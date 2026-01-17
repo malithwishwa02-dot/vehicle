@@ -1,3 +1,26 @@
+import sqlite3
+import time
+from contextlib import contextmanager
+
+# File lock context manager for sqlite3 (defensive, in case of future db ops)
+@contextmanager
+def sqlite_retry_connect(db_path, timeout=30, retries=5, delay=1):
+    attempt = 0
+    conn = None
+    while attempt < retries:
+        try:
+            conn = sqlite3.connect(db_path, timeout=timeout)
+            yield conn
+            break
+        except sqlite3.OperationalError as e:
+            if 'database is locked' in str(e):
+                time.sleep(delay)
+                attempt += 1
+            else:
+                raise
+        finally:
+            if conn:
+                conn.close()
 """
 Network Lock Module (MODULE 1: THE VOID - Network Control)
 Wrapper for IsolationManager to provide network-level time synchronization blocking.

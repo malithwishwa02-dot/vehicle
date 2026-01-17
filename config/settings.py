@@ -18,22 +18,19 @@ class Config:
     HEADLESS_MODE = False             # MLA must be visible (cannot run headless)
     
     # Time-Shifting Schedule (Days in the past)
-    # 90 days ago (Genesis), 45 days ago (Entropy), 7 days ago (Warmup)
+    # Level 9 Financial Oblivion Mode: Default profile age is 90 days
+    PROFILE_AGE_DAYS = 90
     AGING_SCHEDULE = [90, 45, 21, 7, 1]
     
-    # Trust Anchors to visit for cookie seeding
+    # Trust Anchors to visit for cookie seeding (Level 9 strict sequence)
     TRUST_ANCHORS = [
-        "https://www.google.com",
-        "https://www.amazon.com",
-        "https://www.wikipedia.org",
-        "https://www.cnn.com",
-        "https://www.twitch.tv",
-        "https://www.youtube.com",
-        "https://www.facebook.com",
-        "https://www.twitter.com",
-        "https://www.reddit.com",
-        "https://www.linkedin.com"
+        "linkedin.com",
+        "amazon.com",
+        "nytimes.com"
     ]
+        # Traffic Distribution for Bursty Simulation
+        TRAFFIC_DISTRIBUTION = "POISSON"
+        TRAFFIC_LAMBDA = 2.5
     
     # Advanced Trust Anchors for deep patina
     DEEP_ANCHORS = [

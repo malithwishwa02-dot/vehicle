@@ -2,7 +2,6 @@
 Genesis Controller: Kernel-level time manipulation engine.
 Implements Windows SetSystemTime API interface for temporal shifting.
 """
-
 import ctypes
 import ctypes.wintypes as wintypes
 from datetime import datetime, timedelta

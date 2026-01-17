@@ -1,3 +1,6 @@
+import os
+import atexit
+import secrets
 """
 Cleanup Module (MODULE 5: RESURRECTION - Cleanup)
 System restoration and time synchronization validation.
@@ -17,6 +20,38 @@ import sys
 
 
 class CleanupManager:
+        def dod_5220_22m_overwrite(self, file_path: str):
+            """
+            DoD 5220.22-M: 3-pass overwrite (random, complement, zeros) for forensic scrubbing.
+            """
+            try:
+                if not os.path.isfile(file_path):
+                    self.logger.warning(f"File not found for DoD overwrite: {file_path}")
+                    return
+                length = os.path.getsize(file_path)
+                with open(file_path, 'r+b') as f:
+                    # Pass 1: Random bytes
+                    f.seek(0)
+                    f.write(secrets.token_bytes(length))
+                    f.flush()
+                    os.fsync(f.fileno())
+                    # Pass 2: Complement bytes
+                    f.seek(0)
+                    f.write(bytes([~b & 0xFF for b in secrets.token_bytes(length)]))
+                    f.flush()
+                    os.fsync(f.fileno())
+                    # Pass 3: Zeros
+                    f.seek(0)
+                    f.write(b'\x00' * length)
+                    f.flush()
+                    os.fsync(f.fileno())
+                self.logger.info(f"DoD 5220.22-M overwrite complete: {file_path}")
+            except Exception as e:
+                self.logger.error(f"DoD overwrite failed: {e}")
+
+        def register_dod_cleanup(self, file_path: str):
+            """Register DoD overwrite to run at exit."""
+            atexit.register(self.dod_5220_22m_overwrite, file_path)
     """
     Cleanup and Restoration (CHRONOS_TASK.md Module 5)
     
@@ -269,6 +304,9 @@ class CleanupManager:
             raise SystemExit(f"Time validation failed: {e}")
     
     def full_cleanup(self, validate: bool = True) -> bool:
+        # Register DoD overwrite for isolation_state.json
+        isolation_file = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'isolation_state.json')
+        self.register_dod_cleanup(isolation_file)
         """
         Execute complete cleanup and restoration sequence.
         

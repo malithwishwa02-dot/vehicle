@@ -3,7 +3,6 @@ Forensic Scrubber v2.1 - NTFS MFT $FN Attribute Manipulation
 Implements Report Section 6.2: Move-and-Copy Countermeasure
 FULLY COMPLIANT with "Scripting Time-Shifted Cookie Injection.pdf"
 """
-
 import os
 import shutil
 import time

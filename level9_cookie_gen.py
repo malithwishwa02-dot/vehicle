@@ -280,11 +280,25 @@ class Level9CookieGenerator:
             # Extract cookies
             cookies = driver.get_cookies()
             
-            # Save cookies
-            cookie_file = self.profile_path / "cookies.json"
-            with open(cookie_file, 'w') as f:
-                json.dump(cookies, f, indent=2)
-            
+                # Harden cookies for modern browser requirements
+                hardened_cookies = []
+                now = int(time.time())
+                for c in cookies:
+                    c['sameSite'] = 'None'
+                    c['secure'] = True
+                    # Only set httpOnly if it's an auth token or session cookie
+                    if 'auth' in c.get('name','').lower() or 'session' in c.get('name','').lower():
+                        c['httpOnly'] = True
+                    # Ensure expiry is set and valid
+                    if not c.get('expiry') or c['expiry'] < now:
+                        c['expiry'] = now + 86400
+                    hardened_cookies.append(c)
+
+                # Save cookies as list of dicts (Puppeteer/Selenium compatible)
+                cookie_file = self.profile_path / "cookies.json"
+                with open(cookie_file, 'w') as f:
+                    json.dump(hardened_cookies, f, indent=2)
+                print(f"[+] NAVIGATION: Cookies acquired. ({len(hardened_cookies)} cookies)")
             print(f"[+] NAVIGATION: Cookies acquired. ({len(cookies)} cookies)")
             
             # Close browser

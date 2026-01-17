@@ -35,6 +35,12 @@ Pillow==10.1.0          # Image processing for screenshots
 colorlog==6.8.0
 python-json-logger==2.0.7
 
+# Web server (Chronos AI)
+flask==3.0.0
+flask-cors==4.0.0
+requests==2.31.0
+gunicorn==21.2.0
+
 # Testing
 pytest==7.4.3
 pytest-cov==4.1.0

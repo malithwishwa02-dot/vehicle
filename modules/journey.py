@@ -1,18 +1,30 @@
-"""
-Journey Module (MODULE 3: THE JOURNEY - Entropy & Behavior)
-Implements behavioral patterns, Bezier mouse movement, and human-like interactions.
-Maps to CHRONOS_TASK.md Module 3 specifications.
-"""
-
-from core.entropy import EntropyGenerator
-from utils.logger import get_logger
-import numpy as np
-import random
 import time
-from typing import List, Tuple, Optional, Dict, Any
-from selenium import webdriver
-from selenium.webdriver.common.action_chains import ActionChains
-from selenium.webdriver.common.keys import Keys
+import sys
+import time
+import sys
+
+class Journey:
+    def execute_manual_handover(self):
+        """
+        The 'Kill Switch' for automation. 
+        Stops the script but leaves the browser open for the human.
+        """
+        print("\n" + "="*40)
+        print(">>> INITIATING MANUAL HANDOVER PROTOCOL <<<")
+        print(">>> AUTOMATION ENDING. DO NOT TOUCH FOR 180s <<<")
+        print("="*40)
+        
+        # 1. The Silence Window (Letting pixels settle)
+        for i in range(180, 0, -1):
+            print(f"Silence Window: {i}s remaining...", end='\r')
+            time.sleep(1)
+            
+        print("\n\n>>> HANDOVER COMPLETE. YOU HAVE CONTROL. <<<")
+        print(">>> PROCEED TO CHECKOUT MANUALLY. <<<")
+        
+        # Exit script code 0 (Clean exit)
+        sys.exit(0)
+
 
 
 class HumanMouse:
@@ -364,41 +376,11 @@ def visit_trust_anchors(driver: webdriver.Chrome) -> bool:
     """
     logger = get_logger()
     
-    # LEVEL 10 FINALIZATION: Hardcoded Trust Anchors
-    trust_anchors = [
-        "https://www.paypal.com",
-        "https://www.linkedin.com",
-        "https://accounts.google.com",
-        "https://www.nytimes.com",
-        "https://www.amazon.com"
-    ]
-    
+    # Level 9: Strict Trust Anchors from config
+    trust_anchors = getattr(Config, 'TRUST_ANCHORS', ["linkedin.com", "amazon.com", "nytimes.com"])
     trust_anchor_sites = [
-        {
-            'url': trust_anchors[0],  # PayPal
-            'name': 'PayPal',
-            'trust_type': 'Financial Trust'
-        },
-        {
-            'url': trust_anchors[1],  # LinkedIn
-            'name': 'LinkedIn',
-            'trust_type': 'Professional Trust'
-        },
-        {
-            'url': trust_anchors[2],  # Google Accounts
-            'name': 'Google Accounts',
-            'trust_type': 'Identity Trust'
-        },
-        {
-            'url': trust_anchors[3],  # NY Times
-            'name': 'NY Times',
-            'trust_type': 'High-Income Demographic Signal'
-        },
-        {
-            'url': trust_anchors[4],  # Amazon
-            'name': 'Amazon',
-            'trust_type': 'E-commerce Trust'
-        }
+        {'url': f"https://{site}", 'name': site.split('.')[0].capitalize(), 'trust_type': 'Trust Anchor'}
+        for site in trust_anchors
     ]
     
     logger.info("=" * 60)
@@ -414,18 +396,18 @@ def visit_trust_anchors(driver: webdriver.Chrome) -> bool:
             # Navigate to trust anchor site
             driver.get(anchor['url'])
             
-            # Wait for page to load
-            time.sleep(random.uniform(2, 3))
+            # Wait for page to load (Bursty Traffic Simulation)
+            logger.info("  → Bursty Traffic Simulation: Poisson wait for page load")
+            poisson_wait()
             
             # Scroll to trigger tracking pixels
             scroll_amount = random.randint(300, 800)
             driver.execute_script(f"window.scrollBy(0, {scroll_amount});")
             logger.info(f"  → Scrolled {scroll_amount}px to trigger tracking pixels")
             
-            # Wait 3-5 seconds to ensure tracking pixel fires
-            wait_time = random.uniform(3, 5)
-            logger.info(f"  → Waiting {wait_time:.1f}s for tracking pixel to fire")
-            time.sleep(wait_time)
+            # Wait using Poisson distribution for tracking pixel
+            wait_time = poisson_wait()
+            logger.info(f"  → Waiting {wait_time:.1f}s for tracking pixel to fire (Poisson)")
             
             # Additional scroll for natural behavior
             if random.random() > 0.5:
