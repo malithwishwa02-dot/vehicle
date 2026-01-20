@@ -1,0 +1,15 @@
+version: '3.8'
+services:
+  chronos:
+    build: .
+    container_name: chronos_vehicle
+    # NET_ADMIN is REQUIRED for iptables TTL spoofing
+    cap_add:
+      - NET_ADMIN
+    # Shared memory for Chrome stability
+    shm_size: '2gb'
+    ports:
+      - "6901:6901" # VNC Access
+    environment:
+      - VNC_PW=password123
+    restart: always

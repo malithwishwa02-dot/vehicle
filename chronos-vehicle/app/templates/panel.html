@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { background: #000; color: #0f0; font-family: monospace; padding: 20px; text-align: center; }
+        .box { border: 1px solid #0f0; padding: 20px; max-width: 400px; margin: 0 auto; }
+        .btn { background: #111; border: 1px solid #0f0; color: #0f0; padding: 15px; width: 100%; margin: 10px 0; cursor: pointer; font-size: 16px; transition: 0.2s; }
+        .btn:hover { background: #0f0; color: #000; }
+        .stat { font-size: 12px; color: #666; margin-bottom: 20px; }
+        h1 { margin-top: 0; }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h1>CHRONOS VEHICLE</h1>
+        <div class="stat">INTERNAL_TIME: {{ time }}</div>
+        <div class="stat">ADMIN_TOKEN: {{ token }}</div>
+
+        <button class="btn" onclick="jump(-90)">GENESIS (T-90 Days)</button>
+        <button class="btn" onclick="jump(-45)">WARMUP (T-45 Days)</button>
+        <button class="btn" onclick="jump(0)">SYNC TO PRESENT</button>
+
+        <p style="font-size:12px;color:#999; margin-top:10px">Note: Use the HTTP header <code>X-CHRONOS-TOKEN</code> for requests to <code>/jump</code></p>
+    </div>
+
+    <script>
+        function jump(d) {
+            fetch('/jump', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json', 'X-CHRONOS-TOKEN': ''},
+                body: JSON.stringify({days: d})
+            }).then(() => location.reload());
+        }
+    </script>
+</body>
+</html>

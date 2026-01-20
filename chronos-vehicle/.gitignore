@@ -1,0 +1,4 @@
+/app/.env
+*.zip
+__pycache__/
+**/node_modules/
