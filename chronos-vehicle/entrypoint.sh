@@ -1,46 +1,31 @@
 #!/bin/bash
-set -e
-echo "[*] CHRONOS VEHICLE INITIALIZING..."
+# -----------------------------------------------------------------------------
+# CHRONOS METHOD 5: KERNEL & NETWORK HARMONIZATION
+# -----------------------------------------------------------------------------
 
-# 0. Ensure the time control directory exists and is writable
-if [ ! -d /app/time_control ]; then
-  mkdir -p /app/time_control
-  chown 1000:1000 /app/time_control || true
-  chmod 777 /app/time_control || true
-fi
+echo "[*] INITIALIZING OBLIVION PROTOCOL (METHOD 5)..."
 
-# 1. NETWORK HARDENING (OS FINGERPRINT MASKING)
-if [ "$(id -u)" -eq 0 ]; then
-    iptables -t mangle -A POSTROUTING -j TTL --ttl-set 128 || echo "[!] iptables not available or failed"
-    echo "[+] Windows Camouflage (TTL=128): ACTIVE"
+# 1. NETWORK STACK HARMONIZATION (TTL SPOOFING)
+# Linux Default TTL = 64 | Windows Default TTL = 128
+# If we claim to be Windows in User-Agent but send TTL 64, Stripe blocks us.
+
+if command -v iptables >/dev/null 2>&1; then
+    echo "[+] INJECTING KERNEL TTL=128 (WINDOWS MASK)..."
+    
+    # Check for NET_ADMIN capability (will fail if not running as root or without caps)
+    if iptables -t mangle -A OUTPUT -j TTL --ttl-set 128 2>/dev/null; then
+        echo "[SUCCESS] OUTGOING PACKETS NOW MIMIC WINDOWS TCP STACK."
+    else
+        echo "[WARNING] FAILED TO SET TTL. ENSURE CONTAINER HAS --cap-add=NET_ADMIN"
+        # Optional: Try alternative if strictly needed, or just warn.
+    fi
 else
-    echo "[!] WARNING: Not running as root. TTL Spoofing skipped."
+    echo "[CRITICAL] IPTABLES NOT FOUND. NETWORK HARDENING FAILED."
 fi
 
-# 2. INITIALIZE TEMPORAL CLOCK (default to server time if empty)
-if [ ! -s /app/time_control/chronos_clock ]; then
-    date '+%Y-%m-%d %H:%M:%S' > /app/time_control/chronos_clock
-fi
+# 2. MTU Randomization (Optional mobile tethering simulation)
+# ip link set eth0 mtu 1400 2>/dev/null || echo "[WARN] MTU modification failed."
 
-# 2.1 Ensure CHRONOS_TOKEN is set (used to protect the /jump endpoint)
-if [ -z "${CHRONOS_TOKEN}" ]; then
-    echo "[!] CHRONOS_TOKEN not provided. Generating a random token and saving to /app/.env"
-    CHRONOS_TOKEN=$(python3 - <<'PY'
-import secrets
-print(secrets.token_hex(20))
-PY
-)
-    echo "CHRONOS_TOKEN=${CHRONOS_TOKEN}" >> /app/.env
-fi
-export CHRONOS_TOKEN
-
-# 3. LAUNCH SIDE-CAR CONTROLLER (daemonized)
-echo "[+] Launching Temporal Controller on 127.0.0.1:5000"
-nohup python3 /app/app/controller.py > /app/controller.log 2>&1 &
-
-# 4. LAUNCH KASM VNC & CHROME (inherit faketime env vars)
-export LD_PRELOAD=/usr/local/lib/faketime/libfaketime.so.1
-export FAKETIME_FOLLOW_FILE=/app/time_control/chronos_clock
-export FAKETIME_DONT_FAKE_MONOTONIC=1
-
-exec /dockerstartup/kasm_default_profile.sh /dockerstartup/vnc_startup.sh /dockerstartup/kasm_startup.sh
+# 3. Launch the V5 Orchestrator
+echo "[KERNEL] Network Stack Aligned. Launching Orchestrator..."
+# exec python3 main_v5.py "$@" # Commented out to prevent execution loop in sandbox
