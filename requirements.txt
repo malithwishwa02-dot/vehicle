@@ -1,68 +1,13 @@
-# PROMETHEUS-CORE Dependencies
-# Python 3.10+ required
-# Method 4 + MLA + Manual Takeover protocol
-
-# Core dependencies
-requests==2.31.0
-python-dateutil==2.8.2
-pyyaml==6.0.1
-cryptography==41.0.7
-curl_cffi==0.7.0b6
-
-# Browser automation
-undetected-chromedriver==3.5.4
-selenium==4.16.0
-selenium-wire==5.1.0
-
-# Level 9 Enhancements
-pyautogui==0.9.54        # Biometric spoofing & mouse control
-scapy==2.5.0            # Network packet manipulation
-fake-useragent==1.4.0   # User agent rotation
-
-# Windows-specific (REQUIRED for Level 9)
-pywin32==306; sys_platform == 'win32'
-wmi==1.5.1; sys_platform == 'win32'
-
-# Data processing
-numpy==1.26.2
-scipy==1.11.4
-
-# Visual enhancements
-colorama==0.4.6         # Terminal colors for verification
-Pillow==10.1.0          # Image processing for screenshots
-
-# Logging and monitoring
-colorlog==6.8.0
-python-json-logger==2.0.7
-
-# Web server (Chronos AI)
+nodriver==0.28
+curl_cffi==0.5.10
+numpy==1.26.0
+cryptography==41.0.3
 flask==3.0.0
-flask-cors==4.0.0
+pyyaml==6.0.1
+fake-useragent==1.4.0
 requests==2.31.0
-gunicorn==21.2.0
-
-# Testing
-pytest==7.4.3
-pytest-cov==4.1.0
-pytest-asyncio==0.21.1
-
-# Development
-black==23.12.1
-flake8==6.1.0
-mypy==1.7.1
-pre-commit==3.6.0
-
-# Performance monitoring
-psutil==5.9.6
-py-cpuinfo==9.0.0
-
-# Enhanced browser fingerprinting
-browsermob-proxy==0.8.0
-
-# Mouse movement enhancements
-pynput==1.7.6           # Advanced input control
-bezier==2021.2.12       # Bezier curve calculations
-
-# Network analysis
-mitmproxy==10.1.6       # HTTP/HTTPS interception
-dnspython==2.4.2        # DNS manipulation
+selenium==4.16.0
+colorama==0.4.6
+pyautogui==0.9.54
+bezier==2023.7.28
+scapy==2.5.0
