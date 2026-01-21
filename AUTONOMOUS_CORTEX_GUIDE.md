@@ -121,12 +121,17 @@ export OPENAI_MODEL="gpt-4-turbo-preview"
 
 ```bash
 # Install new dependencies
-pip install mcp==0.9.0 openai==1.12.0
+pip install "mcp>=1.23.0" openai==1.12.0
 
 # Install MCP servers (optional - for full autonomous operation)
 uvx install mcp-server-fetch
 uvx install mcp-server-filesystem
 ```
+
+**Security Note:** We use `mcp>=1.23.0` to ensure all known vulnerabilities are patched:
+- DNS rebinding protection (CVE < 1.23.0) ✅
+- FastMCP Server DoS (CVE < 1.9.4) ✅  
+- Streamable HTTP Transport DoS (CVE < 1.10.0) ✅
 
 ## Operation Modes
 

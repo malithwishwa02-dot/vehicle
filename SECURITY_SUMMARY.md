@@ -54,7 +54,7 @@
    - No existing functionality broken
 
 2. **`requirements.txt`** (+2 lines)
-   - Added: `mcp==0.9.0`
+   - Added: `mcp>=1.23.0` (patched for CVE: DNS rebinding, DoS vulnerabilities)
    - Added: `openai==1.12.0`
 
 ### Files NOT Modified (Protected)
@@ -168,8 +168,24 @@ Total: 5/5 tests passed (100%)
 
 ## Vulnerability Assessment
 
+### Fixed Vulnerabilities
+1. **MCP DNS Rebinding** (CVE) - **FIXED** ✅
+   - Affected: mcp < 1.23.0
+   - Fix: Updated to mcp >= 1.23.0
+   - Impact: DNS rebinding protection now enabled by default
+
+2. **MCP FastMCP Server DoS** (CVE) - **FIXED** ✅
+   - Affected: mcp < 1.9.4
+   - Fix: Updated to mcp >= 1.23.0
+   - Impact: Validation error DoS vulnerability patched
+
+3. **MCP Streamable HTTP Transport DoS** (CVE) - **FIXED** ✅
+   - Affected: mcp < 1.10.0
+   - Fix: Updated to mcp >= 1.23.0
+   - Impact: Unhandled exception DoS vulnerability patched
+
 ### Known Issues
-**Status:** NONE
+**Status:** NONE ✅
 
 ### Potential Future Considerations
 1. **Rate Limiting:** OpenAI API calls not rate-limited (depends on user's API tier)
