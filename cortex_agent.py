@@ -194,9 +194,12 @@ class CortexAgent:
             mcp = MCPClient(self.logger)
             is_healthy = await mcp.health_check()
             
+            # Safely get servers list
+            servers = list(mcp.servers.keys()) if hasattr(mcp, 'servers') and mcp.servers else []
+            
             self.status["mcp_health"] = {
                 "available": is_healthy,
-                "servers": list(mcp.servers.keys())
+                "servers": servers
             }
             
             if is_healthy:
@@ -427,7 +430,7 @@ class CortexAgent:
             True if user provided --age argument
         """
         # Check if age was in sys.argv
-        return "--age" in sys.argv or "-a" in sys.argv
+        return "--age" in sys.argv
     
     def _save_status_report(self) -> str:
         """
@@ -463,12 +466,6 @@ class CortexAgent:
         if self.dynamic_config["zip_code"]:
             cmd.extend(["--zip", self.dynamic_config["zip_code"]])
         cmd.extend(["--age", str(self.dynamic_config["age_days"])])
-        
-        # Add any additional arguments passed through
-        for arg in sys.argv[1:]:
-            if arg not in cmd and not arg.startswith("--") and arg != sys.argv[0]:
-                # Skip arguments we already handled
-                continue
         
         self.logger.info(f"  Command: {' '.join(cmd)}")
         

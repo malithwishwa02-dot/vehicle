@@ -240,8 +240,17 @@ def test_core_modules_untouched():
         assert "from core.intelligence import IntelligenceCore" in cortex_content
         
         # Should NOT contain monkey-patching or modifications
-        assert "setattr(" not in cortex_content or "setattr(self" in cortex_content  # Only self modifications
-        assert "globals()[" not in cortex_content
+        # Check that setattr is only used on self (not on imported modules or globals)
+        # This is a basic check - more sophisticated would parse the AST
+        if "setattr(" in cortex_content:
+            # Ensure all setattr calls are on self
+            setattr_lines = [line for line in cortex_content.split('\n') if 'setattr(' in line]
+            for line in setattr_lines:
+                # Simple check: setattr should be on self or local objects, not globals
+                if 'setattr(' in line and 'self' not in line:
+                    raise AssertionError(f"Potential monkey-patching detected: {line.strip()}")
+        
+        assert "globals()[" not in cortex_content, "Globals manipulation detected"
         assert "import sys" in cortex_content  # Normal imports only
         
         logger.info("✓ PASS: Core modules remain untouched")
