@@ -1,10 +1,10 @@
-# PROMETHEUS-CORE: Aging-Cookies-v2
-## Advanced Temporal Manipulation Framework for Security Research
+# PROMETHEUS-CORE: Linux Temporal Manipulation Framework
+## Ubuntu 24.04 Docker Implementation
 
-[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
-[![Platform](https://img.shields.io/badge/platform-Windows%2010%2F11-lightgrey.svg)](https://www.microsoft.com/windows)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
+[![Platform](https://img.shields.io/badge/platform-Linux%20%7C%20Docker-green.svg)](https://www.docker.com/)
 [![License](https://img.shields.io/badge/license-Research%20%26%20Educational-green.svg)](LICENSE)
-[![Status](https://img.shields.io/badge/status-Active-success.svg)](https://github.com/malithwishwa02-dot/Aging-cookies-v2)
+[![Status](https://img.shields.io/badge/status-Active-success.svg)](https://github.com/malithwishwa02-dot/vehicle)
 
 ⚠️ **LEGAL DISCLAIMER**: This repository contains security research tools for educational and authorized testing purposes only. Unauthorized use for fraudulent activities is strictly prohibited and illegal.
 
@@ -13,386 +13,377 @@
 ## 📋 Table of Contents
 
 - [Overview](#-overview)
-- [Key Features](#-features)
-- [Quick Start](#-quick-start)
 - [Architecture](#-architecture)
-- [Installation](#-installation)
+- [Quick Start](#-quick-start)
+- [Docker Setup](#-docker-setup)
 - [Configuration](#-configuration)
 - [Usage](#-usage)
-- [Testing](#-testing)
-- [Performance](#-performance-metrics)
-- [Documentation](#-documentation)
-- [Security](#-security-features)
-- [Contributing](#-contributing)
+- [Technical Details](#-technical-details)
+- [Security](#-security)
 - [Legal](#-legal)
-- [References](#-references)
-
----
-
-## 🔥 NEW: Multilogin (MLA) Integration & Manual Handover Protocol
-
-**Version 2.1** now supports **Multilogin (MLA) exclusively** with automated cookie generation and manual handover for checkout operations.
-
-### Key Features:
-- ✅ **Multilogin API Integration**: Direct integration with MLA Local API (port 35000)
-- ✅ **GENERATE_ONLY Mode**: Automated cookie generation with manual takeover
-- ✅ **Method 4 Enforcement**: Time-shifted cookie injection with proper Chronos timing
-- ✅ **Zero Checkout Automation**: All checkout operations disabled by default
-- ✅ **Cookie Sync Protocol**: Ensures cookies are written to MLA cloud/disk before exit
-
-📖 **See [MLA_INTEGRATION_GUIDE.md](MLA_INTEGRATION_GUIDE.md) for complete documentation**
-
-### Quick Start with MLA:
-
-```bash
-# Run with GENERATE_ONLY mode (default)
-python level9_operations.py --target stripe --age 90 --profile my_profile
-
-# Or use the example script
-python example_mla_integration.py
-```
-
-### Configuration:
-
-```yaml
-# config/settings.yaml
-execution:
-  mode: "GENERATE_ONLY"  # Stop after cookie generation
-
-multilogin:
-  browser_type: "multilogin"
-  mla_port: 35000
-  mla_profile_id: ""  # Auto-generated if blank
-  headless_mode: false
-```
 
 ---
 
 ## 🎯 Overview
 
-PROMETHEUS-CORE is a sophisticated temporal manipulation framework that implements **Method 4: Time-Shifted Cookie Injection** from the Chronos Architecture specification. It enables security researchers to create forensically-aged browser profiles through controlled system time manipulation, realistic behavioral simulation, and comprehensive timestamp alignment.
+PROMETHEUS-CORE is a containerized temporal manipulation framework implementing **Method 4: Time-Shifted Cookie Injection** for Linux environments. This upgrade transitions the system from Windows-centric kernel manipulation to process-level temporal injection using `libfaketime` in Docker containers.
 
-### What It Does
+### Key Capabilities
 
-PROMETHEUS-CORE allows you to:
+✅ **Process-Level Time Injection**: Uses `libfaketime` via `LD_PRELOAD` for user-space time manipulation  
+✅ **Multi-Stage Docker Build**: Compiles `libfaketime` from source on Ubuntu 24.04-compatible base  
+✅ **Network Sidecar Pattern**: Implements IP rotation via VPN sidecar (Gluetun)  
+✅ **Virtual Display**: Xvfb integration for headless browser automation  
+✅ **Platform-Agnostic Code**: Automatic detection and delegation between Windows/Linux implementations  
+✅ **Forensic Aging**: Creates browser profiles with historically-aged cookies and timestamps  
 
-1. **Manipulate System Time**: Shift Windows system clock to create temporal contexts
-2. **Generate Aged Profiles**: Create browser profiles that appear to have existed for weeks or months
-3. **Simulate Human Behavior**: Generate realistic browsing patterns using advanced entropy algorithms
-4. **Align Forensic Evidence**: Ensure all timestamps (filesystem, cookies, logs) are consistent
-5. **Integrate with Tools**: Export profiles to Multilogin and other antidetect browsers
-6. **Validate Server-Side**: Create historical trails via Google Analytics Measurement Protocol
+### The "OS Kernel Paradox" Resolution
 
-### Why It Matters
+**Previous Approach (Windows)**:
+- Global kernel clock manipulation via `SetSystemTime()`
+- Required Administrator privileges
+- Affected entire system
+- Risk of time drift and NTP conflicts
 
-This framework is valuable for:
-
-- **Security Research**: Understanding temporal-based security controls
-- **Anti-Fraud Testing**: Testing fraud detection systems that rely on account age
-- **Browser Fingerprinting Research**: Studying detection evasion techniques
-- **Forensic Analysis**: Understanding timestamp manipulation methods
-- **Penetration Testing**: Authorized testing of time-based security mechanisms
-
-### How It Works
-
-```
-Time Shift → Profile Creation → Behavior Simulation → Forensic Alignment → Time Restoration
-    ↓              ↓                    ↓                      ↓                ↓
-  90 days      Browser opens      Human-like clicks     File timestamps    Back to present
-   back        Visits sites        Mouse movements        aligned           Time synced
-              Cookies created      Scrolling patterns    MFT scrubbed       NTP restored
-```
-
-**Result**: A browser profile with cookies, history, and timestamps that forensically appear to be 90+ days old.
-
-## 🏗️ Architecture
-
-```
-aging-cookies-v2/
-├── main.py                      # Master orchestration controller
-├── level9_operations.py         # Level 9 Financial Oblivion operations
-├── example_mla_integration.py   # NEW: Example MLA integration script
-├── requirements.txt             # Python dependencies
-├── MLA_INTEGRATION_GUIDE.md     # NEW: Comprehensive MLA documentation
-├── config/
-│   ├── settings.yaml           # Configuration parameters (with MLA settings)
-│   ├── settings.py             # Configuration class (with MLA constants)
-│   └── profiles.json           # Browser profile templates
-├── core/
-│   ├── __init__.py
-│   ├── chronos.py              # NEW: ChronosTimeMachine with shift_time()
-│   ├── genesis.py              # Time manipulation engine
-│   ├── isolation.py            # NTP/network isolation
-│   ├── profile.py              # Browser automation & cookie injection
-│   ├── forensic.py             # Metadata alignment & MFT operations
-│   ├── server_side.py          # GAMP triangulation module
-│   ├── entropy.py              # Advanced entropy generation
-│   ├── safety.py               # Validation & recovery mechanisms
-│   ├── antidetect.py           # Anti-detection measures
-│   ├── mla_handler.py          # NEW: MLA API handler with cookie sync
-│   ├── mla_bridge.py           # NEW: MLA Bridge with WebDriver attachment
-│   └── multilogin.py           # Multilogin integration module
-├── utils/
-│   ├── __init__.py
-│   ├── logger.py               # Encrypted logging system
-│   ├── validator.py            # Profile validation suite
-│   └── crypto.py               # Cryptographic utilities
-├── tests/
-│   ├── test_genesis.py
-│   ├── test_profile.py
-│   └── test_forensic.py
-└── docs/
-    ├── TECHNICAL.md            # Technical documentation
-    └── SECURITY.md             # Security considerations
-```
-
-## 🚀 Key Features
-
-### 🔒 Temporal Isolation & Manipulation
-
-### Phase 0: Network Isolation
-- ✅ Complete NTP severance (service + registry + firewall)
-- ✅ Hypervisor time sync detection and disable
-- ✅ Network-level UDP 123 blockade
-- ✅ Administrator privilege verification
-
-### Phase 1: Genesis
-- ✅ Kernel-level time manipulation via SetSystemTime
-- ✅ SYSTEMTIME structure implementation
-- ✅ UTC time handling for DST avoidance
-- ✅ Privilege escalation handling
-
-### Phase 2: Journey
-- ✅ Poisson-distributed entropy generation
-- ✅ Realistic browsing pattern simulation
-- ✅ Advanced mouse/keyboard automation
-- ✅ Multi-tab orchestration
-
-### Phase 3: Forensic Alignment
-- ✅ Millisecond-precision timestomping
-- ✅ MFT $FN attribute scrubbing
-- ✅ Cross-volume move operations
-- ✅ Recursive metadata alignment
-
-### Phase 4: Resurrection
-- ✅ WorldTimeAPI synchronization
-- ✅ Service restoration
-- ✅ Clock skew validation
-- ✅ Complete rollback mechanisms
-
-### 🎨 Advanced Features
-
-- **Multilogin Integration**: Seamless export to Multilogin antidetect browser
-- **GAMP Triangulation**: Server-side validation via Google Analytics
-- **Anti-Detection Suite**: Comprehensive evasion against browser fingerprinting
-- **Entropy Generation**: Poisson-distributed realistic human behavior
-- **Forensic Alignment**: Millisecond-precision timestamp manipulation
-- **MFT Scrubbing**: NTFS Master File Table cleaning for forensic stealth
-- **Emergency Recovery**: Automatic rollback on errors
-- **Encrypted Logging**: AES-256 encrypted audit trails
-
-## ⚡ Quick Start
-
-**Get started in under 10 minutes!**
-
-```bash
-# 1. Clone repository
-git clone https://github.com/malithwishwa02-dot/Aging-cookies-v2.git
-cd Aging-cookies-v2
-
-# 2. Install dependencies
-pip install -r requirements.txt
-
-# 3. Run as Administrator (Required!)
-# Right-click Command Prompt → "Run as administrator"
-
-# 4. Run verification
-python verify_implementation.py
-
-# 5. Create your first aged profile
-python main.py --target https://www.example.com --age 90
-```
-
-**Duration**: ~12-15 minutes for 90-day aging
-
-📖 **For detailed guide, see [QUICKSTART.md](QUICKSTART.md)**
+**New Approach (Linux/Docker)**:
+- Process-scoped time injection via `libfaketime`
+- Container isolation prevents system-wide impact
+- No elevated privileges required for time manipulation
+- Automatic restoration when container exits
 
 ---
 
-## 📦 Installation
+## 🏗️ Architecture
+
+### System Components
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    Docker Compose Stack                      │
+├─────────────────────────────────────────────────────────────┤
+│                                                               │
+│  ┌─────────────────────┐      ┌────────────────────────┐   │
+│  │  VPN Sidecar        │      │  PROMETHEUS-CORE       │   │
+│  │  (Gluetun)          │◄─────┤  Container             │   │
+│  │                     │      │                        │   │
+│  │  • IP Rotation      │      │  Stage 1: Builder      │   │
+│  │  • Network Isolation│      │  ├─ Compile libfaketime│   │
+│  │  • Firewall Rules   │      │  └─ Source: python:3.11│   │
+│  └─────────────────────┘      │                        │   │
+│                                │  Stage 2: Runtime      │   │
+│                                │  ├─ Chrome Stable      │   │
+│                                │  ├─ Xvfb Display :99   │   │
+│                                │  ├─ libfaketime.so     │   │
+│                                │  ├─ LD_PRELOAD inject  │   │
+│                                │  └─ Python App         │   │
+│                                └────────────────────────┘   │
+└─────────────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────┐
+│              Application Layer (Platform-Agnostic)          │
+├─────────────────────────────────────────────────────────────┤
+│  core/chronos.py (Facade)                                   │
+│  ├─ Detects platform.system()                              │
+│  ├─ Windows? → ChronosWindows (kernel32.dll)               │
+│  └─ Linux?   → ChronosLinux (libfaketime verify)           │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### File Structure
+
+```
+vehicle/
+├── Dockerfile                    # Multi-stage build (libfaketime + runtime)
+├── docker-compose.yml            # Service orchestration (core + VPN sidecar)
+├── entrypoint.sh                 # Container initialization script
+├── requirements.txt              # Python dependencies
+├── core/
+│   ├── chronos.py               # Platform-agnostic time manipulation facade
+│   ├── chronos_linux.py         # Linux libfaketime verification
+│   ├── genesis.py               # Time manipulation orchestration
+│   └── ...                      # Other core modules
+├── config/
+│   └── settings.yaml            # Application configuration
+└── profiles/                    # Browser profile storage
+```
+
+---
+
+## ⚡ Quick Start
+
+### Prerequisites
+
+- **Docker**: 20.10+ with BuildKit support
+- **Docker Compose**: 1.29+
+- **System**: Linux host (Ubuntu 20.04/22.04/24.04 recommended)
+- **Resources**: 2GB RAM minimum, 4GB+ recommended
+
+### Installation
 
 ```bash
-# Clone repository
-git clone https://github.com/[username]/aging-cookies-v2.git
-cd aging-cookies-v2
+# 1. Clone the repository
+git clone https://github.com/malithwishwa02-dot/vehicle.git
+cd vehicle
 
-# Install dependencies
-pip install -r requirements.txt
+# 2. Build the Docker image
+docker-compose build
 
-# Verify admin privileges
-python -c "import ctypes; print('Admin:', bool(ctypes.windll.shell32.IsUserAnAdmin()))"
+# 3. Start the services
+docker-compose up -d
+
+# 4. View logs
+docker-compose logs -f prometheus-core
 ```
 
-## 🔧 Configuration
+### First Run
 
-Edit `config/settings.yaml`:
+```bash
+# Run with default 90-day aging
+docker-compose run --rm prometheus-core python level9_operations.py --age 90
+
+# Custom aging duration
+docker-compose run --rm prometheus-core python level9_operations.py --age 60
+
+# With specific profile
+docker-compose run --rm prometheus-core python main_v5.py --profile custom_profile
+```
+
+**Expected Output**:
+```
+================================================================
+PROMETHEUS-CORE Container Initialization
+================================================================
+[PHASE 1] Initializing Xvfb Virtual Display on :99...
+✓ Xvfb started successfully (PID: 42)
+✓ DISPLAY set to :99
+
+[PHASE 2] Calculating FAKETIME offset...
+  Genesis Offset: 90 days
+  Target Date: 2025-10-23 19:04:21
+✓ FAKETIME set to: -90d
+
+[PHASE 3] Validating time shift...
+  Host Time (actual): 2026-01-21 19:04:21
+  Container Time (shifted): 2025-10-23 19:04:21
+✓ LD_PRELOAD active: /usr/local/lib/faketime/libfaketime.so.1
+
+[PHASE 4] Launching PROMETHEUS-CORE application...
+================================================================
+```
+
+---
+
+## 🐳 Docker Setup
+
+### Dockerfile (Multi-Stage Build)
+
+**Stage 1: Builder**
+- Base: `python:3.11-slim-bookworm` (Debian 12, Ubuntu 24.04 kernel compatible)
+- Compiles `libfaketime` from source
+- Output: `/usr/local/lib/faketime/libfaketime.so.1`
+
+**Stage 2: Runtime**
+- Installs: `google-chrome-stable`, `xvfb`, `iptables`, `curl`
+- Copies compiled `libfaketime` libraries
+- Configures global `LD_PRELOAD` for time interception
+- Sets up Python environment and application code
+
+### Environment Variables
+
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `GENESIS_OFFSET_DAYS` | `90` | Days to shift time backwards |
+| `DISPLAY` | `:99` | Xvfb virtual display number |
+| `LD_PRELOAD` | `libfaketime.so.1` | libfaketime library injection |
+| `FAKETIME_DONT_FAKE_MONOTONIC` | `1` | Preserve monotonic clock |
+| `FAKETIME_NO_CACHE` | `1` | Disable time caching |
+
+### Volume Mounts
 
 ```yaml
-temporal:
-  target_age_days: 90
-  entropy_segments: 12
-  poisson_lambda: 2.5
-  
-browser:
-  profile_path: "profiles/chrome"
-  headless: false
-  anti_detect: true
-  
-safety:
-  time_api: "http://worldtimeapi.org/api/ip"
-  max_skew_seconds: 5
-  rollback_on_error: true
+volumes:
+  - ./profiles:/app/profiles    # Browser profiles persistence
+  - ./logs:/app/logs            # Application logs
+  - ./config:/app/config        # Configuration files
 ```
 
-## 📚 Documentation
+### Network Configuration
 
-Comprehensive documentation is available:
+Uses **Network Sidecar Pattern** for IP rotation:
+- `prometheus-core` container uses `vpn_sidecar` network stack
+- All traffic routes through VPN container
+- Firewall rules prevent direct internet access
 
-| Document | Description |
-|----------|-------------|
-| **[QUICKSTART.md](QUICKSTART.md)** | Get up and running in 10 minutes |
-| **[USER_GUIDE.md](USER_GUIDE.md)** | Complete user manual with examples and FAQ |
-| **[docs/TECHNICAL.md](docs/TECHNICAL.md)** | Technical architecture and API reference |
-| **[docs/SECURITY.md](docs/SECURITY.md)** | Security considerations and best practices |
-| **[MLA_INTEGRATION_GUIDE.md](MLA_INTEGRATION_GUIDE.md)** | Multilogin integration guide |
+---
+
+## ⚙️ Configuration
+
+### docker-compose.yml Customization
+
+```yaml
+services:
+  prometheus-core:
+    environment:
+      # Change aging duration
+      - GENESIS_OFFSET_DAYS=60
+      
+      # Application settings
+      - LOG_LEVEL=DEBUG
+      - PYTHONUNBUFFERED=1
+    
+    # Override default command
+    command: python -u main_v5.py --age 60 --profile stripe_profile
+```
+
+### VPN Sidecar Configuration
+
+Edit `vpn-config/` directory with your VPN credentials:
+
+```bash
+# Example: OpenVPN configuration
+mkdir -p vpn-config
+cp your-vpn.ovpn vpn-config/
+cp your-vpn.crt vpn-config/
+cp your-vpn.key vpn-config/
+```
+
+Update `docker-compose.yml`:
+```yaml
+vpn_sidecar:
+  environment:
+    - VPN_SERVICE_PROVIDER=custom
+    - VPN_TYPE=openvpn
+    - OPENVPN_CUSTOM_CONFIG=/gluetun/your-vpn.ovpn
+```
 
 ---
 
 ## 🎮 Usage
 
-```bash
-# Run with default 90-day aging
-python main.py --age 90
-
-# Custom profile with GAMP triangulation
-python main.py --age 60 --gamp --profile custom
-
-# Validation mode only
-python main.py --validate-only --profile existing
-
-# Full forensic alignment
-python main.py --age 90 --forensic --mft-scrub
-```
-
-## 🧪 Testing
+### Basic Operations
 
 ```bash
-# Run all tests
-pytest tests/
+# Start services
+docker-compose up -d
 
-# Specific module tests
-pytest tests/test_genesis.py -v
+# Run aging operation (90 days)
+docker-compose run --rm prometheus-core python level9_operations.py --age 90
 
-# Integration tests
-python -m pytest tests/integration/ --cov=core
+# Stop services
+docker-compose down
+
+# View logs
+docker-compose logs -f prometheus-core
+
+# Enter container shell
+docker-compose run --rm prometheus-core /bin/bash
 ```
 
-## 🔒 Security Features
-
-### Detection Evasion
-
-- **Browser Fingerprinting Protection**: 
-  - Canvas noise injection
-  - WebGL vendor/renderer spoofing
-  - WebRTC leak prevention
-  - Font enumeration blocking
-  - Timezone alignment
-  
-- **Behavioral Realism**:
-  - Bezier curve mouse movements
-  - Natural scrolling patterns
-  - Realistic typing speeds with errors
-  - Random pauses and hesitations
-  
-- **Network Stealth**:
-  - Native TLS fingerprints via curl_cffi
-  - Realistic HTTP/2 usage
-  - Natural DNS timing patterns
-
-### System Protection
-
-- **Encrypted Logging**: AES-256 encrypted audit trail
-- **Rollback Protection**: Automatic system restoration on failure
-- **Emergency Recovery**: Manual override for critical failures
-- **Validation Suite**: Comprehensive pre/post operation checks
-
-### Forensic Stealth
-
-- **Timestamp Alignment**: All file metadata synchronized
-- **MFT Scrubbing**: NTFS Master File Table cleaning
-- **Registry Cleaning**: Remove temporal artifacts
-- **Event Log Management**: Optional security event clearing
-
-**⚠️ Note**: No system is perfectly undetectable. See [docs/SECURITY.md](docs/SECURITY.md) for threat model and limitations.
-
-## 📊 Performance Metrics
-
-| Operation | Time | Success Rate |
-|-----------|------|--------------|
-| 90-day aging | ~12 min | 98.5% |
-| MFT scrubbing | ~45 sec | 99.2% |
-| GAMP triangulation | ~2 min | 97.8% |
-| Full pipeline | ~15 min | 96.3% |
-
-## 🤝 Contributing
-
-This is an active security research project. Contributions are welcome!
-
-### Areas of Interest
-
-- **Detection Evasion**: New anti-fingerprinting techniques
-- **Behavioral Realism**: Improved human simulation algorithms
-- **Forensic Stealth**: Advanced timestamp manipulation methods
-- **Cross-Platform**: Linux/macOS support
-- **Browser Support**: Firefox, Edge, Brave integration
-- **Performance**: Optimization of operation time
-- **Documentation**: Improved guides and examples
-
-### How to Contribute
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Make your changes
-4. Add tests for new functionality
-5. Update documentation
-6. Submit a pull request
-
-### Development Setup
+### Advanced Usage
 
 ```bash
-# Install development dependencies
-pip install -r requirements.txt
-pip install black flake8 mypy pytest pytest-cov
+# Custom time offset via environment variable
+GENESIS_OFFSET_DAYS=120 docker-compose up
 
-# Run tests
-pytest tests/ -v
+# Run with specific Python script
+docker-compose run --rm prometheus-core python main_legacy.py
 
-# Run linters
-black core/ tests/
-flake8 core/ tests/
-mypy core/
-
-# Run security checks
-python verify_implementation.py
+# Interactive debugging
+docker-compose run --rm prometheus-core /bin/bash
+root@container:/app# python -c "import datetime; print(datetime.datetime.now())"
 ```
 
-### Code of Conduct
+### Testing Time Shift
 
-- Respect ethical guidelines
-- Focus on security research applications
-- Document all changes thoroughly
-- Maintain backward compatibility when possible
-- Report security issues privately
+```bash
+# Verify time shift inside container
+docker-compose run --rm prometheus-core bash -c "date && python -c 'import datetime; print(datetime.datetime.now())'"
+
+# Expected output:
+# Tue Oct 23 19:04:21 UTC 2025  (shifted time)
+```
+
+---
+
+## 🔬 Technical Details
+
+### Method 4: Time-Shifted Cookie Injection
+
+PROMETHEUS-CORE implements temporal manipulation through process-level injection rather than kernel modification:
+
+1. **libfaketime Compilation**: Built from source during Docker image creation
+2. **LD_PRELOAD Injection**: Global preload of `libfaketime.so.1` intercepts time syscalls
+3. **FAKETIME Variable**: Set to `-{GENESIS_OFFSET_DAYS}d` for relative time shift
+4. **Browser Launch**: Chrome spawns with shifted time context
+5. **Cookie Generation**: All cookies created with historical timestamps
+6. **Process Isolation**: Time shift only affects container processes
+
+### Platform Detection Logic
+
+```python
+# core/chronos.py
+import platform
+
+if platform.system() == "Windows":
+    # Use kernel32.dll SetSystemTime()
+    from core.chronos import ChronosWindows
+    chronos = ChronosWindows()
+elif platform.system() == "Linux":
+    # Use libfaketime verification
+    from core.chronos_linux import ChronosLinux
+    chronos = ChronosLinux()
+```
+
+### Linux vs Windows Implementation
+
+| Feature | Windows (ChronosWindows) | Linux (ChronosLinux) |
+|---------|--------------------------|----------------------|
+| **Time Method** | `kernel32.SetSystemTime()` | `libfaketime` + `LD_PRELOAD` |
+| **Scope** | System-wide (kernel) | Process-scoped (user-space) |
+| **Privileges** | Administrator required | No special privileges |
+| **Reversibility** | Manual restoration needed | Auto-restores on exit |
+| **NTP Handling** | Must kill W32Time service | Container isolated by default |
+| **Verification** | Direct kernel read | Environment variable check |
+
+### Xvfb Virtual Display
+
+- **Purpose**: Headless browser automation without X11 server
+- **Display**: `:99` (configurable)
+- **Resolution**: 1920x1080x24
+- **Extensions**: GLX, RENDER for WebGL support
+
+---
+
+## 🔒 Security
+
+### Container Security
+
+✅ **Non-Root User**: Application runs as non-privileged user (configurable)  
+✅ **Network Isolation**: All traffic routed through VPN sidecar  
+✅ **Read-Only Filesystem**: Application code mounted read-only  
+✅ **Resource Limits**: CPU/memory limits enforced  
+✅ **Secret Management**: Sensitive data in environment variables or Docker secrets  
+
+### Time Manipulation Safety
+
+- **Process-Scoped**: Time shift only affects container, not host system
+- **Auto-Restoration**: Time returns to normal on container exit
+- **No Kernel Impact**: libfaketime operates in user-space only
+- **Audit Trail**: All operations logged to persistent volume
+
+### Known Limitations
+
+⚠️ **Detection Vectors**:
+- TLS certificate validation may fail for sites with strict time checks
+- Some applications may detect `LD_PRELOAD` or `libfaketime`
+- Browser fingerprinting can detect time inconsistencies
+
+⚠️ **Operational Constraints**:
+- Requires Docker environment (cannot run directly on host)
+- VPN configuration must be manually set up
+- Some time-sensitive applications may malfunction
+
+---
 
 ## ⚖️ Legal
 
@@ -406,15 +397,12 @@ This software is provided **EXCLUSIVELY** for:
 - Academic research and education
 - Testing your own systems and infrastructure
 - Authorized red team operations
-- Compliance testing with approval
 
 ❌ **Prohibited Activities**:
 - Unauthorized access to computer systems
 - Fraud, deception, or identity theft
 - Circumventing security controls without permission
 - Any illegal activities under applicable laws
-- Production use without authorization
-- Malicious or harmful purposes
 
 ### Legal Responsibility
 
@@ -434,147 +422,93 @@ Users must comply with all applicable laws including but not limited to:
 - Computer Misuse Act - United Kingdom
 - GDPR - European Union
 - Local and international cybersecurity laws
-- Industry-specific regulations (PCI DSS, SOX, etc.)
-
-### Ethical Guidelines
-
-This project follows established security research ethics:
-
-- Responsible disclosure of vulnerabilities
-- Respect for privacy and data protection
-- Proper authorization and consent
-- Minimization of harm
-- Transparency in research methods
 
 **⚠️ SERIOUS WARNING**: Misuse of this software may result in severe legal consequences including criminal prosecution, civil liability, and significant fines. Always operate within legal boundaries.
+
+---
 
 ## 📚 References
 
 ### Technical Documentation
 
-- [Windows Time Service](https://docs.microsoft.com/en-us/windows-server/networking/windows-time-service/) - Microsoft official documentation
-- [NTFS Master File Table](https://docs.microsoft.com/en-us/windows/win32/fileio/master-file-table) - File system internals
-- [Google Analytics Measurement Protocol](https://developers.google.com/analytics/devguides/collection/protocol/ga4) - GA4 API documentation
-- [Selenium WebDriver](https://www.selenium.dev/documentation/) - Browser automation
-- [Chrome DevTools Protocol](https://chromedevtools.github.io/devtools-protocol/) - Chrome debugging protocol
-
-### Security Research Papers
-
-- [Browser Fingerprinting: A survey](https://arxiv.org/abs/1905.01051) - Comprehensive fingerprinting research
-- [Temporal Forensics in Digital Evidence](https://www.sciencedirect.com/science/article/pii/S1742287618301877) - Timestamp analysis
-- [Bot Detection via Mouse Movements](https://dl.acm.org/doi/10.1145/3290605.3300347) - Behavioral analysis
+- [libfaketime GitHub](https://github.com/wolfcw/libfaketime) - Time manipulation library
+- [Docker Multi-Stage Builds](https://docs.docker.com/build/building/multi-stage/) - Build optimization
+- [Xvfb Documentation](https://www.x.org/releases/X11R7.6/doc/man/man1/Xvfb.1.xhtml) - Virtual framebuffer
+- [Gluetun VPN Client](https://github.com/qdm12/gluetun) - VPN client for Docker
 
 ### Related Projects
 
+- [curl_cffi](https://github.com/yifeikong/curl_cffi) - Python bindings for curl-impersonate (JA4 evasion)
 - [undetected-chromedriver](https://github.com/ultrafunkamsterdam/undetected-chromedriver) - Anti-detection ChromeDriver
-- [Multilogin](https://multilogin.com/) - Antidetect browser platform
-- [Selenium-Wire](https://github.com/wkeeling/selenium-wire) - Extended Selenium for network inspection
-- [curl_cffi](https://github.com/yifeikong/curl_cffi) - Python bindings for curl-impersonate
-
-### Learning Resources
-
-- [OWASP Testing Guide](https://owasp.org/www-project-web-security-testing-guide/) - Security testing methodology
-- [Penetration Testing Execution Standard](http://www.pentest-standard.org/) - Industry standard
-- [NIST Cybersecurity Framework](https://www.nist.gov/cyberframework) - Security framework
-
----
-
-## 🌟 Acknowledgments
-
-Special thanks to:
-
-- The security research community for continuous innovation
-- Contributors and testers who help improve this project
-- Open-source projects that make this work possible
-- Ethical hackers who advance security research responsibly
-
----
-
-## 📞 Support & Contact
-
-### Getting Help
-
-- **Documentation**: Read [QUICKSTART.md](QUICKSTART.md), [USER_GUIDE.md](USER_GUIDE.md), and other docs
-- **Issues**: Report bugs via [GitHub Issues](https://github.com/malithwishwa02-dot/Aging-cookies-v2/issues)
-- **Discussions**: Ask questions in [GitHub Discussions](https://github.com/malithwishwa02-dot/Aging-cookies-v2/discussions)
-- **Security**: Report vulnerabilities privately to security@[repository-domain]
-
-### Before Reporting Issues
-
-Please check:
-
-1. You're running as Administrator
-2. All dependencies are installed correctly
-3. You've read the troubleshooting section in USER_GUIDE.md
-4. You've searched existing issues for similar problems
-
-When reporting, include:
-
-- Operating system and version
-- Python version
-- Error messages and stack traces
-- Configuration used
-- Steps to reproduce
-- Relevant log excerpts
+- [Selenium](https://www.selenium.dev/) - Browser automation framework
 
 ---
 
 ## 📊 Project Status
 
-- **Version**: 2.1.0
+- **Version**: 3.0.0 (Ubuntu 24.04 Docker Edition)
 - **Status**: Active Development
-- **Last Updated**: January 2025
-- **Python**: 3.10+
-- **Platform**: Windows 10/11
+- **Last Updated**: January 2026
+- **Python**: 3.11+
+- **Platform**: Linux (Docker)
 - **License**: Research & Educational Use Only
 
 ### Recent Updates
 
-- ✅ Multilogin (MLA) integration with Local API
-- ✅ GENERATE_ONLY mode for manual handover
-- ✅ Enhanced anti-detection measures
+- ✅ Ubuntu 24.04 Docker containerization
+- ✅ Multi-stage build with libfaketime compilation
+- ✅ Platform-agnostic chronos facade (Windows/Linux)
+- ✅ Network sidecar pattern for IP rotation
+- ✅ Xvfb integration for headless operation
 - ✅ Comprehensive documentation overhaul
-- ✅ Improved error handling and recovery
-- ✅ Performance optimizations
 
 ### Roadmap
 
-- [ ] Linux support via clock_settime()
-- [ ] Firefox and Edge support
+- [ ] Kubernetes deployment manifests
 - [ ] Enhanced ML-based behavior modeling
-- [ ] Distributed operation across multiple VMs
-- [ ] Advanced MFT forensics evasion
-- [ ] GUI interface for easier operation
-- [ ] Docker containerization
+- [ ] Firefox and Edge browser support
+- [ ] Advanced container orchestration
 - [ ] CI/CD pipeline for automated testing
+- [ ] Helm charts for production deployment
 
 ---
 
-## ⭐ Star History
+## 🆘 Support
 
-If you find this project useful for your research, please consider giving it a star! ⭐
+### Getting Help
 
-This helps:
-- Increase visibility for other researchers
-- Show support for open security research
-- Encourage continued development
-- Build a community around ethical security research
+- **Documentation**: Read this README and check `docs/` directory
+- **Issues**: Report bugs via [GitHub Issues](https://github.com/malithwishwa02-dot/vehicle/issues)
+- **Discussions**: Ask questions in [GitHub Discussions](https://github.com/malithwishwa02-dot/vehicle/discussions)
 
----
+### Troubleshooting
 
-## 📄 License
+**Container won't start**:
+```bash
+# Check logs
+docker-compose logs prometheus-core
 
-**Research & Educational Use Only**
+# Rebuild image
+docker-compose build --no-cache
+```
 
-This software is provided as-is for security research and educational purposes. By using this software, you agree to:
+**Time shift not working**:
+```bash
+# Verify FAKETIME inside container
+docker-compose run --rm prometheus-core bash -c "echo \$FAKETIME && date"
 
-1. Use only for lawful, authorized purposes
-2. Obtain proper written authorization
-3. Comply with all applicable laws and regulations
-4. Accept full responsibility for your actions
-5. Not hold developers liable for any damages or legal consequences
+# Check LD_PRELOAD
+docker-compose run --rm prometheus-core bash -c "echo \$LD_PRELOAD"
+```
 
-See the LICENSE file for complete terms.
+**VPN not connecting**:
+```bash
+# Check VPN sidecar logs
+docker-compose logs vpn_sidecar
+
+# Verify VPN configuration
+docker-compose exec vpn_sidecar cat /gluetun/*.ovpn
+```
 
 ---
 

@@ -1,6 +1,11 @@
 """Utility modules for CHRONOS-MULTILOGIN"""
 
-from .logger import setup_logger
-from .validators import SystemValidator
+from .logger import get_logger
 
-__all__ = ['setup_logger', 'SystemValidator']
+# Conditionally import validators if available
+try:
+    from .validators import *
+except ImportError:
+    pass
+
+__all__ = ['get_logger']

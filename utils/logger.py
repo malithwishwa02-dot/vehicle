@@ -76,8 +76,12 @@ _logger_instance = None
 def get_logger():
     global _logger_instance
     if _logger_instance is None:
-        from config.settings import Config
-        _logger_instance = ChronosLogger(Config.LOG_DIR)
+        try:
+            from config.settings import SETTINGS
+            log_dir = SETTINGS.get("logs_dir", None)
+        except (ImportError, AttributeError):
+            log_dir = None
+        _logger_instance = ChronosLogger(log_dir)
     return _logger_instance
 
 def log(message, level="INFO"):
