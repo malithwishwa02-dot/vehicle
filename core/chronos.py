@@ -1,37 +1,131 @@
 """
-CHRONOS Time Engine v2.1 - Kernel-Level Time Manipulation
-Direct interface with Windows kernel32.dll for temporal shifts
+CHRONOS Time Engine v2.1 - Platform-Agnostic Time Manipulation Facade
+Provides unified interface for Windows and Linux temporal operations
 FULLY COMPLIANT with Report Section 3.1 & 3.2
 """
-import ctypes
-import ctypes.wintypes
+import platform
 import subprocess
 import datetime
 from datetime import timedelta
 import time
 from typing import Optional, Tuple
 
-class SYSTEMTIME(ctypes.Structure):
-    """Windows SYSTEMTIME structure for kernel32 API"""
-    _fields_ = [
-        ('wYear', ctypes.wintypes.WORD),
-        ('wMonth', ctypes.wintypes.WORD),
-        ('wDayOfWeek', ctypes.wintypes.WORD),
-        ('wDay', ctypes.wintypes.WORD),
-        ('wHour', ctypes.wintypes.WORD),
-        ('wMinute', ctypes.wintypes.WORD),
-        ('wSecond', ctypes.wintypes.WORD),
-        ('wMilliseconds', ctypes.wintypes.WORD),
-    ]
+# Platform-specific imports (conditional to avoid AttributeError on Linux)
+if platform.system() == "Windows":
+    import ctypes
+    import ctypes.wintypes
+
+if platform.system() == "Windows":
+    import ctypes
+    import ctypes.wintypes
+
+    class SYSTEMTIME(ctypes.Structure):
+        """Windows SYSTEMTIME structure for kernel32 API"""
+        _fields_ = [
+            ('wYear', ctypes.wintypes.WORD),
+            ('wMonth', ctypes.wintypes.WORD),
+            ('wDayOfWeek', ctypes.wintypes.WORD),
+            ('wDay', ctypes.wintypes.WORD),
+            ('wHour', ctypes.wintypes.WORD),
+            ('wMinute', ctypes.wintypes.WORD),
+            ('wSecond', ctypes.wintypes.WORD),
+            ('wMilliseconds', ctypes.wintypes.WORD),
+        ]
+else:
+    # Linux or other platforms - SYSTEMTIME not needed
+    SYSTEMTIME = None
 
 class Chronos:
     """
-    Time Manipulation Engine with NTP neutralization
+    Platform-Agnostic Time Manipulation Facade
+    Detects OS and delegates to appropriate implementation:
+    - Windows: Direct kernel manipulation via kernel32.dll (ChronosWindows)
+    - Linux: libfaketime verification (ChronosLinux)
+    
     Implements Method 4: Time-Shifted Injection protocol
     REPORT COMPLIANT: Sections 3.1, 3.2, 4.1
     """
     
     def __init__(self):
+        """Initialize platform-specific chronos implementation"""
+        from utils.logger import get_logger
+        self.logger = get_logger()
+        
+        # Detect platform and delegate
+        self.platform = platform.system()
+        self.logger.info(f"Chronos initializing on platform: {self.platform}")
+        
+        if self.platform == "Windows":
+            # Use Windows kernel implementation
+            self._impl = self._init_windows()
+        elif self.platform == "Linux":
+            # Use Linux libfaketime implementation
+            self._impl = self._init_linux()
+        else:
+            raise RuntimeError(f"Unsupported platform: {self.platform}. Only Windows and Linux are supported.")
+    
+    def _init_windows(self):
+        """Initialize Windows-specific implementation"""
+        self.logger.info("Initializing Windows Chronos (kernel32.dll)")
+        # Use the existing Windows implementation as inner class
+        return ChronosWindows()
+    
+    def _init_linux(self):
+        """Initialize Linux-specific implementation"""
+        self.logger.info("Initializing Linux Chronos (libfaketime)")
+        from core.chronos_linux import ChronosLinux
+        return ChronosLinux()
+    
+    # Delegate all methods to platform-specific implementation
+    def shift_time(self, days_ago: int) -> bool:
+        """Shift time by specified days (platform-agnostic)"""
+        return self._impl.shift_time(days_ago)
+    
+    def kill_ntp(self):
+        """Kill/neutralize NTP service"""
+        return self._impl.kill_ntp()
+    
+    def restore_ntp(self):
+        """Restore NTP service"""
+        return self._impl.restore_ntp()
+    
+    def block_ntp_firewall(self):
+        """Block NTP via firewall"""
+        return self._impl.block_ntp_firewall()
+    
+    def unblock_ntp_firewall(self):
+        """Unblock NTP firewall rules"""
+        return self._impl.unblock_ntp_firewall()
+    
+    def time_jump(self, days_ago: int) -> bool:
+        """Execute temporal jump (alias for shift_time)"""
+        return self._impl.shift_time(days_ago)
+    
+    def restore_original_time(self) -> bool:
+        """Restore original system time"""
+        return self._impl.restore_original_time()
+    
+    def get_current_time(self) -> datetime.datetime:
+        """Get current system time"""
+        return self._impl.get_current_time()
+    
+    def cleanup(self):
+        """Cleanup and restore system state"""
+        return self._impl.cleanup()
+
+
+class ChronosWindows:
+    """
+    Windows Time Manipulation Engine with NTP neutralization
+    Implements Method 4: Time-Shifted Injection protocol for Windows
+    Direct kernel manipulation via kernel32.dll
+    REPORT COMPLIANT: Sections 3.1, 3.2, 4.1
+    """
+    
+    def __init__(self):
+        if platform.system() != "Windows":
+            raise RuntimeError("ChronosWindows can only run on Windows platform")
+        
         self.kernel32 = ctypes.windll.kernel32
         self.original_time = None
         self.ntp_killed = False
