@@ -3,18 +3,27 @@ System validators and environment checks for CHRONOS-MULTILOGIN v2.0
 Ensures operational safety and prerequisites
 """
 
-import ctypes
 import platform
 import sys
 import subprocess
 import requests
 from typing import Tuple, Dict, Any
 
+# Conditional import for Windows-specific modules
+if platform.system() == "Windows":
+    import ctypes
+
 def is_admin() -> bool:
     """Check if script has Administrator privileges"""
     try:
-        return ctypes.windll.shell32.IsUserAnAdmin() != 0
-    except AttributeError:
+        if platform.system() == "Windows":
+            import ctypes
+            return ctypes.windll.shell32.IsUserAnAdmin() != 0
+        else:
+            # On Linux, check if running as root
+            import os
+            return os.geteuid() == 0
+    except (AttributeError, ImportError):
         return False
 
 def check_mla_connection() -> bool:
