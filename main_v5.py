@@ -23,6 +23,8 @@ logger = logging.getLogger("OrchestratorV5")
 from core.browser_engine import BrowserEngineV5
 from core.tls_mimic import TLSMimic
 from core.genesis import GenesisController
+from core.mcp_interface import MCPClient
+from core.intelligence import IntelligenceCore
 from config.settings import SETTINGS
 
 class OrchestratorV5:
@@ -46,13 +48,22 @@ class OrchestratorV5:
         self.browser = BrowserEngineV5(self.profile_path, headless=SETTINGS["headless"], proxy=self.proxy)
         self.tls = TLSMimic(proxy_url=self.proxy)
         self.genesis = GenesisController(logger)
+        
+        # AUTONOMOUS CORTEX: Initialize MCP and Intelligence
+        self.mcp = MCPClient(logger)
+        self.brain = IntelligenceCore(logger)
 
     async def execute_lifecycle(self):
         """
         Full Method 5 Lifecycle:
+        Phase 0 (NEW): Autonomous Reconnaissance
         Genesis -> Warmup -> Shopping -> Abandon -> MLA Export
         """
         logger.info(f"=== INITIATING PROFILE: {self.profile_id} ===")
+
+        # PHASE 0: AUTONOMOUS RECONNAISSANCE (NEW)
+        logger.info("[PHASE 0] Autonomous Reconnaissance - Godmode Active")
+        await self._autonomous_reconnaissance()
 
         # 1. GENESIS (Temporal Shift)
         logger.info(f"[PHASE 1] Temporal Genesis (T-{self.age_days} Days)")
@@ -86,6 +97,71 @@ class OrchestratorV5:
 
         # 4. EXPORT
         self._export_profile()
+
+    async def _autonomous_reconnaissance(self):
+        """
+        PHASE 0: Autonomous Cortex Operations
+        - Uses MCP to fetch target data
+        - Uses Intelligence Core to analyze and recommend strategy
+        - Dynamically adjusts age_days parameter
+        """
+        try:
+            # Select reconnaissance target (first trust anchor as test subject)
+            target_url = SETTINGS["trust_anchors"][0] if SETTINGS["trust_anchors"] else "https://www.wikipedia.org"
+            
+            logger.info(f"  > Reconnaissance Target: {target_url}")
+            
+            # Attempt MCP-based reconnaissance
+            raw_data = None
+            mcp_available = await self.mcp.health_check()
+            
+            if mcp_available:
+                logger.info("  > MCP Infrastructure: ONLINE")
+                raw_data = await self.mcp.fetch_url(target_url)
+                if raw_data:
+                    logger.info(f"  > MCP Fetch: SUCCESS ({len(raw_data)} bytes)")
+                else:
+                    logger.warning("  > MCP Fetch: FAILED - Falling back to TLS")
+            else:
+                logger.warning("  > MCP Infrastructure: OFFLINE - Using TLS fallback")
+            
+            # Fallback to TLS if MCP unavailable
+            if not raw_data:
+                resp = self.tls.get(target_url)
+                if resp and resp.status_code == 200:
+                    raw_data = resp.text
+                    logger.info(f"  > TLS Fetch: SUCCESS ({len(raw_data)} bytes)")
+                else:
+                    logger.warning("  > TLS Fetch: FAILED - Using default strategy")
+                    raw_data = ""
+            
+            # Intelligence Core Analysis
+            strategy = await self.brain.analyze_target(target_url, raw_data)
+            
+            # Apply AI recommendations
+            recommended_age = strategy.get("recommended_age_days", self.age_days)
+            trust_level = strategy.get("trust_level", "unknown")
+            risk = strategy.get("risk_assessment", "unknown")
+            notes = strategy.get("strategy_notes", "No analysis")
+            
+            logger.info(f"  > AI Analysis Complete:")
+            logger.info(f"    - Trust Level: {trust_level}")
+            logger.info(f"    - Risk Assessment: {risk}")
+            logger.info(f"    - Recommended Age: {recommended_age} days")
+            logger.info(f"    - Strategy: {notes}")
+            
+            # Dynamic adjustment (respect user override if explicitly set)
+            if self.data.get('age_days') is None or strategy.get("fallback_mode") is not True:
+                old_age = self.age_days
+                self.age_days = recommended_age
+                if old_age != self.age_days:
+                    logger.info(f"  > Age Parameter ADJUSTED: {old_age} -> {self.age_days} days")
+            else:
+                logger.info(f"  > Age Parameter LOCKED (User Override): {self.age_days} days")
+                
+        except Exception as e:
+            logger.error(f"  > Autonomous Reconnaissance FAILED: {e}")
+            logger.warning("  > Continuing with manual configuration...")
 
     async def _simulate_shopping(self):
         """
