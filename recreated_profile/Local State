@@ -1,0 +1,18 @@
+{
+  "profile": {
+    "info_cache": {
+      "Default": {
+        "name": "Your Mimic"
+      }
+    }
+  },
+  "os_crypt": {
+    "encrypted_key": "REPLACE-WITH-DPAPI-KEY"
+  },
+  "last_active_profiles": [
+    "Default"
+  ],
+  "on_device": {
+    "last_version": "143.0.7499.41"
+  }
+}

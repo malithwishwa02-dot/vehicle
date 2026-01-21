@@ -1,0 +1,2913 @@
+{
+  "ActorSafetyLists": {
+    "is_dir": true,
+    "size": 0
+  },
+  "AmountExtractionHeuristicRegexes": {
+    "is_dir": true,
+    "size": 0
+  },
+  "AutofillStates": {
+    "is_dir": true,
+    "size": 0
+  },
+  "BrowserMetrics": {
+    "is_dir": true,
+    "size": 0
+  },
+  "BrowserMetrics-spare.pma": {
+    "is_dir": false,
+    "size": 4194304
+  },
+  "CertificateRevocation": {
+    "is_dir": true,
+    "size": 0
+  },
+  "component_crx_cache": {
+    "is_dir": true,
+    "size": 0
+  },
+  "CookieReadinessList": {
+    "is_dir": true,
+    "size": 0
+  },
+  "Crashpad": {
+    "is_dir": true,
+    "size": 0
+  },
+  "Crowd Deny": {
+    "is_dir": true,
+    "size": 0
+  },
+  "Default": {
+    "is_dir": true,
+    "size": 40960
+  },
+  "extensions_crx_cache": {
+    "is_dir": true,
+    "size": 0
+  },
+  "FileTypePolicies": {
+    "is_dir": true,
+    "size": 0
+  },
+  "FirstPartySetsPreloaded": {
+    "is_dir": true,
+    "size": 0
+  },
+  "first_party_sets.db": {
+    "is_dir": false,
+    "size": 49152,
+    "sqlite_tables": {
+      "meta": 4
+    }
+  },
+  "first_party_sets.db-journal": {
+    "is_dir": false,
+    "size": 0,
+    "sqlite_tables": {}
+  },
+  "GraphiteDawnCache": {
+    "is_dir": true,
+    "size": 0
+  },
+  "GrShaderCache": {
+    "is_dir": true,
+    "size": 4096
+  },
+  "hyphen-data": {
+    "is_dir": true,
+    "size": 0
+  },
+  "Last Browser": {
+    "is_dir": false,
+    "size": 100
+  },
+  "Last Version": {
+    "is_dir": false,
+    "size": 13
+  },
+  "Local State": {
+    "is_dir": false,
+    "size": 7472
+  },
+  "Local Traces": {
+    "is_dir": true,
+    "size": 0
+  },
+  "MCF": {
+    "is_dir": false,
+    "size": 36
+  },
+  "MEIPreload": {
+    "is_dir": true,
+    "size": 0
+  },
+  "OnDeviceHeadSuggestModel": {
+    "is_dir": true,
+    "size": 0
+  },
+  "OpenCookieDatabase": {
+    "is_dir": true,
+    "size": 0
+  },
+  "OptimizationHints": {
+    "is_dir": true,
+    "size": 0
+  },
+  "OriginTrials": {
+    "is_dir": true,
+    "size": 0
+  },
+  "PKIMetadata": {
+    "is_dir": true,
+    "size": 0
+  },
+  "PrivacySandboxAttestationsPreloaded": {
+    "is_dir": true,
+    "size": 0
+  },
+  "ProbabilisticRevealTokenRegistry": {
+    "is_dir": true,
+    "size": 0
+  },
+  "Safe Browsing": {
+    "is_dir": true,
+    "size": 0
+  },
+  "SafetyTips": {
+    "is_dir": true,
+    "size": 0
+  },
+  "segmentation_platform": {
+    "is_dir": true,
+    "size": 0
+  },
+  "ShaderCache": {
+    "is_dir": true,
+    "size": 0
+  },
+  "SSLErrorAssistant": {
+    "is_dir": true,
+    "size": 0
+  },
+  "Subresource Filter": {
+    "is_dir": true,
+    "size": 0
+  },
+  "TpcdMetadata": {
+    "is_dir": true,
+    "size": 0
+  },
+  "TrustTokenKeyCommitments": {
+    "is_dir": true,
+    "size": 0
+  },
+  "Variations": {
+    "is_dir": false,
+    "size": 86
+  },
+  "WasmTtsEngine": {
+    "is_dir": true,
+    "size": 0
+  },
+  "WidevineCdm": {
+    "is_dir": true,
+    "size": 0
+  },
+  "ZxcvbnData": {
+    "is_dir": true,
+    "size": 0
+  },
+  "BrowserMetrics\\BrowserMetrics-6968E091-41CC.pma": {
+    "is_dir": false,
+    "size": 4194304
+  },
+  "component_crx_cache\\metadata.json": {
+    "is_dir": false,
+    "size": 13
+  },
+  "Crashpad\\attachments": {
+    "is_dir": true,
+    "size": 0
+  },
+  "Crashpad\\metadata": {
+    "is_dir": false,
+    "size": 0
+  },
+  "Crashpad\\reports": {
+    "is_dir": true,
+    "size": 0
+  },
+  "Crashpad\\settings.dat": {
+    "is_dir": false,
+    "size": 40
+  },
+  "Default\\Account Web Data": {
+    "is_dir": false,
+    "size": 77824
+  },
+  "Default\\Account Web Data-journal": {
+    "is_dir": false,
+    "size": 0
+  },
+  "Default\\Affiliation Database": {
+    "is_dir": false,
+    "size": 53248
+  },
+  "Default\\Affiliation Database-journal": {
+    "is_dir": false,
+    "size": 0
+  },
+  "Default\\AggregationService": {
+    "is_dir": false,
+    "size": 53248
+  },
+  "Default\\AggregationService-journal": {
+    "is_dir": false,
+    "size": 0
+  },
+  "Default\\AutofillAiModelCache": {
+    "is_dir": true,
+    "size": 0
+  },
+  "Default\\AutofillStrikeDatabase": {
+    "is_dir": true,
+    "size": 0
+  },
+  "Default\\blob_storage": {
+    "is_dir": true,
+    "size": 0
+  },
+  "Default\\BookmarkMergedSurfaceOrdering": {
+    "is_dir": false,
+    "size": 6
+  },
+  "Default\\BrowsingTopicsSiteData": {
+    "is_dir": false,
+    "size": 28672
+  },
+  "Default\\BrowsingTopicsSiteData-journal": {
+    "is_dir": false,
+    "size": 0
+  },
+  "Default\\BrowsingTopicsState": {
+    "is_dir": false,
+    "size": 181
+  },
+  "Default\\BudgetDatabase": {
+    "is_dir": true,
+    "size": 0
+  },
+  "Default\\Cache": {
+    "is_dir": true,
+    "size": 0
+  },
+  "Default\\chrome_cart_db": {
+    "is_dir": true,
+    "size": 0
+  },
+  "Default\\ClientCertificates": {
+    "is_dir": true,
+    "size": 0
+  },
+  "Default\\Code Cache": {
+    "is_dir": true,
+    "size": 0
+  },
+  "Default\\commerce_subscription_db": {
+    "is_dir": true,
+    "size": 0
+  },
+  "Default\\Conversions": {
+    "is_dir": false,
+    "size": 135168
+  },
+  "Default\\Conversions-journal": {
+    "is_dir": false,
+    "size": 0
+  },
+  "Default\\Cookies": {
+    "is_dir": false,
+    "size": 126976,
+    "sqlite_tables": {
+      "meta": 3
+    }
+  },
+  "Default\\Cookies-journal": {
+    "is_dir": false,
+    "size": 0
+  },
+  "Default\\DawnGraphiteCache": {
+    "is_dir": true,
+    "size": 0
+  },
+  "Default\\DawnWebGPUCache": {
+    "is_dir": true,
+    "size": 0
+  },
+  "Default\\DIPS": {
+    "is_dir": false,
+    "size": 4096
+  },
+  "Default\\DIPS-wal": {
+    "is_dir": false,
+    "size": 206032
+  },
+  "Default\\discounts_db": {
+    "is_dir": true,
+    "size": 0
+  },
+  "Default\\discount_infos_db": {
+    "is_dir": true,
+    "size": 0
+  },
+  "Default\\Extension Rules": {
+    "is_dir": true,
+    "size": 4096
+  },
+  "Default\\Extension Scripts": {
+    "is_dir": true,
+    "size": 4096
+  },
+  "Default\\Extension State": {
+    "is_dir": true,
+    "size": 4096
+  },
+  "Default\\Favicons": {
+    "is_dir": false,
+    "size": 53248
+  },
+  "Default\\Favicons-journal": {
+    "is_dir": false,
+    "size": 0
+  },
+  "Default\\Feature Engagement Tracker": {
+    "is_dir": true,
+    "size": 0
+  },
+  "Default\\GCM Store": {
+    "is_dir": true,
+    "size": 4096
+  },
+  "Default\\GPUCache": {
+    "is_dir": true,
+    "size": 0
+  },
+  "Default\\heavy_ad_intervention_opt_out.db": {
+    "is_dir": false,
+    "size": 16384
+  },
+  "Default\\heavy_ad_intervention_opt_out.db-journal": {
+    "is_dir": false,
+    "size": 0
+  },
+  "Default\\History": {
+    "is_dir": false,
+    "size": 229376,
+    "sqlite_tables": {
+      "meta": 4
+    }
+  },
+  "Default\\History-journal": {
+    "is_dir": false,
+    "size": 0
+  },
+  "Default\\InterestGroups": {
+    "is_dir": false,
+    "size": 4096
+  },
+  "Default\\InterestGroups-wal": {
+    "is_dir": false,
+    "size": 226632
+  },
+  "Default\\JumpListIconsRecentClosed": {
+    "is_dir": true,
+    "size": 0
+  },
+  "Default\\Local Storage": {
+    "is_dir": true,
+    "size": 0
+  },
+  "Default\\LOCK": {
+    "is_dir": false,
+    "size": 0
+  },
+  "Default\\LOG": {
+    "is_dir": false,
+    "size": 0
+  },
+  "Default\\LOG.old": {
+    "is_dir": false,
+    "size": 0
+  },
+  "Default\\Login Data": {
+    "is_dir": false,
+    "size": 40960,
+    "sqlite_tables": {
+      "meta": 3
+    }
+  },
+  "Default\\Login Data For Account": {
+    "is_dir": false,
+    "size": 40960
+  },
+  "Default\\Login Data For Account-journal": {
+    "is_dir": false,
+    "size": 0
+  },
+  "Default\\Login Data-journal": {
+    "is_dir": false,
+    "size": 0
+  },
+  "Default\\MediaDeviceSalts": {
+    "is_dir": false,
+    "size": 24576
+  },
+  "Default\\MediaDeviceSalts-journal": {
+    "is_dir": false,
+    "size": 0
+  },
+  "Default\\Network Action Predictor": {
+    "is_dir": false,
+    "size": 69632
+  },
+  "Default\\Network Action Predictor-journal": {
+    "is_dir": false,
+    "size": 0
+  },
+  "Default\\Network Persistent State": {
+    "is_dir": false,
+    "size": 29374
+  },
+  "Default\\optimization_guide_hint_cache_store": {
+    "is_dir": true,
+    "size": 0
+  },
+  "Default\\parcel_tracking_db": {
+    "is_dir": true,
+    "size": 0
+  },
+  "Default\\passkey_enclave_state": {
+    "is_dir": false,
+    "size": 66
+  },
+  "Default\\PersistentOriginTrials": {
+    "is_dir": true,
+    "size": 0
+  },
+  "Default\\Preferences": {
+    "is_dir": false,
+    "size": 17841
+  },
+  "Default\\PreferredApps": {
+    "is_dir": false,
+    "size": 33
+  },
+  "Default\\PrivateAggregation": {
+    "is_dir": false,
+    "size": 20480
+  },
+  "Default\\PrivateAggregation-journal": {
+    "is_dir": false,
+    "size": 0
+  },
+  "Default\\README": {
+    "is_dir": false,
+    "size": 164
+  },
+  "Default\\Reporting and NEL": {
+    "is_dir": false,
+    "size": 53248
+  },
+  "Default\\Reporting and NEL-journal": {
+    "is_dir": false,
+    "size": 0
+  },
+  "Default\\Safe Browsing Cookies": {
+    "is_dir": false,
+    "size": 20480
+  },
+  "Default\\Safe Browsing Cookies-journal": {
+    "is_dir": false,
+    "size": 0
+  },
+  "Default\\SCT Auditing Pending Reports": {
+    "is_dir": false,
+    "size": 2
+  },
+  "Default\\Secure Preferences": {
+    "is_dir": false,
+    "size": 9978
+  },
+  "Default\\Segmentation Platform": {
+    "is_dir": true,
+    "size": 4096
+  },
+  "Default\\ServerCertificate": {
+    "is_dir": false,
+    "size": 20480
+  },
+  "Default\\ServerCertificate-journal": {
+    "is_dir": false,
+    "size": 0
+  },
+  "Default\\Service Worker": {
+    "is_dir": true,
+    "size": 0
+  },
+  "Default\\Session Storage": {
+    "is_dir": true,
+    "size": 4096
+  },
+  "Default\\Sessions": {
+    "is_dir": true,
+    "size": 0
+  },
+  "Default\\Shared Dictionary": {
+    "is_dir": true,
+    "size": 0
+  },
+  "Default\\SharedStorage": {
+    "is_dir": false,
+    "size": 4096
+  },
+  "Default\\SharedStorage-wal": {
+    "is_dir": false,
+    "size": 193672
+  },
+  "Default\\shared_proto_db": {
+    "is_dir": true,
+    "size": 4096
+  },
+  "Default\\Shortcuts": {
+    "is_dir": false,
+    "size": 20480
+  },
+  "Default\\Shortcuts-journal": {
+    "is_dir": false,
+    "size": 0
+  },
+  "Default\\Site Characteristics Database": {
+    "is_dir": true,
+    "size": 4096
+  },
+  "Default\\Sync Data": {
+    "is_dir": true,
+    "size": 0
+  },
+  "Default\\Top Sites": {
+    "is_dir": false,
+    "size": 20480,
+    "sqlite_tables": {
+      "meta": 3
+    }
+  },
+  "Default\\Top Sites-journal": {
+    "is_dir": false,
+    "size": 0
+  },
+  "Default\\TransportSecurity": {
+    "is_dir": false,
+    "size": 692
+  },
+  "Default\\Trust Tokens": {
+    "is_dir": false,
+    "size": 36864
+  },
+  "Default\\Trust Tokens-journal": {
+    "is_dir": false,
+    "size": 0
+  },
+  "Default\\trusted_vault.pb": {
+    "is_dir": false,
+    "size": 84
+  },
+  "Default\\Web Data": {
+    "is_dir": false,
+    "size": 153600,
+    "sqlite_tables": {
+      "meta": 6
+    }
+  },
+  "Default\\Web Data-journal": {
+    "is_dir": false,
+    "size": 0
+  },
+  "Default\\WebStorage": {
+    "is_dir": true,
+    "size": 0
+  },
+  "extensions_crx_cache\\metadata.json": {
+    "is_dir": false,
+    "size": 13
+  },
+  "GraphiteDawnCache\\data_0": {
+    "is_dir": false,
+    "size": 8192
+  },
+  "GraphiteDawnCache\\data_1": {
+    "is_dir": false,
+    "size": 270336
+  },
+  "GraphiteDawnCache\\data_2": {
+    "is_dir": false,
+    "size": 8192
+  },
+  "GraphiteDawnCache\\data_3": {
+    "is_dir": false,
+    "size": 8192
+  },
+  "GraphiteDawnCache\\index": {
+    "is_dir": false,
+    "size": 262512
+  },
+  "GrShaderCache\\data_0": {
+    "is_dir": false,
+    "size": 45056
+  },
+  "GrShaderCache\\data_1": {
+    "is_dir": false,
+    "size": 270336
+  },
+  "GrShaderCache\\data_2": {
+    "is_dir": false,
+    "size": 8192
+  },
+  "GrShaderCache\\data_3": {
+    "is_dir": false,
+    "size": 4202496
+  },
+  "GrShaderCache\\f_000001": {
+    "is_dir": false,
+    "size": 20532
+  },
+  "GrShaderCache\\f_000002": {
+    "is_dir": false,
+    "size": 16700
+  },
+  "GrShaderCache\\f_000003": {
+    "is_dir": false,
+    "size": 17076
+  },
+  "GrShaderCache\\f_000004": {
+    "is_dir": false,
+    "size": 29976
+  },
+  "GrShaderCache\\f_000005": {
+    "is_dir": false,
+    "size": 19592
+  },
+  "GrShaderCache\\f_000006": {
+    "is_dir": false,
+    "size": 18052
+  },
+  "GrShaderCache\\f_000007": {
+    "is_dir": false,
+    "size": 18380
+  },
+  "GrShaderCache\\f_000008": {
+    "is_dir": false,
+    "size": 19808
+  },
+  "GrShaderCache\\f_000009": {
+    "is_dir": false,
+    "size": 19500
+  },
+  "GrShaderCache\\f_00000a": {
+    "is_dir": false,
+    "size": 16400
+  },
+  "GrShaderCache\\f_00000b": {
+    "is_dir": false,
+    "size": 19884
+  },
+  "GrShaderCache\\f_00000c": {
+    "is_dir": false,
+    "size": 16828
+  },
+  "GrShaderCache\\f_00000d": {
+    "is_dir": false,
+    "size": 17936
+  },
+  "GrShaderCache\\f_00000e": {
+    "is_dir": false,
+    "size": 18396
+  },
+  "GrShaderCache\\index": {
+    "is_dir": false,
+    "size": 262512
+  },
+  "segmentation_platform\\ukm_db": {
+    "is_dir": false,
+    "size": 61440
+  },
+  "segmentation_platform\\ukm_db-wal": {
+    "is_dir": false,
+    "size": 0
+  },
+  "ShaderCache\\data_0": {
+    "is_dir": false,
+    "size": 8192
+  },
+  "ShaderCache\\data_1": {
+    "is_dir": false,
+    "size": 270336
+  },
+  "ShaderCache\\data_2": {
+    "is_dir": false,
+    "size": 8192
+  },
+  "ShaderCache\\data_3": {
+    "is_dir": false,
+    "size": 8192
+  },
+  "ShaderCache\\index": {
+    "is_dir": false,
+    "size": 262512
+  },
+  "Subresource Filter\\Unindexed Rules": {
+    "is_dir": true,
+    "size": 0
+  },
+  "Default\\AutofillAiModelCache\\LOCK": {
+    "is_dir": false,
+    "size": 0
+  },
+  "Default\\AutofillAiModelCache\\LOG": {
+    "is_dir": false,
+    "size": 0
+  },
+  "Default\\AutofillAiModelCache\\LOG.old": {
+    "is_dir": false,
+    "size": 0
+  },
+  "Default\\AutofillStrikeDatabase\\LOCK": {
+    "is_dir": false,
+    "size": 0
+  },
+  "Default\\AutofillStrikeDatabase\\LOG": {
+    "is_dir": false,
+    "size": 0
+  },
+  "Default\\AutofillStrikeDatabase\\LOG.old": {
+    "is_dir": false,
+    "size": 0
+  },
+  "Default\\blob_storage\\d4f70d75-f2b9-4a48-8a1a-7d1a780837fa": {
+    "is_dir": true,
+    "size": 0
+  },
+  "Default\\BudgetDatabase\\LOCK": {
+    "is_dir": false,
+    "size": 0
+  },
+  "Default\\BudgetDatabase\\LOG": {
+    "is_dir": false,
+    "size": 0
+  },
+  "Default\\BudgetDatabase\\LOG.old": {
+    "is_dir": false,
+    "size": 0
+  },
+  "Default\\Cache\\Cache_Data": {
+    "is_dir": true,
+    "size": 32768
+  },
+  "Default\\Cache\\No_Vary_Search": {
+    "is_dir": true,
+    "size": 0
+  },
+  "Default\\chrome_cart_db\\LOCK": {
+    "is_dir": false,
+    "size": 0
+  },
+  "Default\\chrome_cart_db\\LOG": {
+    "is_dir": false,
+    "size": 0
+  },
+  "Default\\chrome_cart_db\\LOG.old": {
+    "is_dir": false,
+    "size": 0
+  },
+  "Default\\ClientCertificates\\LOCK": {
+    "is_dir": false,
+    "size": 0
+  },
+  "Default\\ClientCertificates\\LOG": {
+    "is_dir": false,
+    "size": 0
+  },
+  "Default\\ClientCertificates\\LOG.old": {
+    "is_dir": false,
+    "size": 0
+  },
+  "Default\\Code Cache\\js": {
+    "is_dir": true,
+    "size": 131072
+  },
+  "Default\\Code Cache\\wasm": {
+    "is_dir": true,
+    "size": 0
+  },
+  "Default\\commerce_subscription_db\\LOCK": {
+    "is_dir": false,
+    "size": 0
+  },
+  "Default\\commerce_subscription_db\\LOG": {
+    "is_dir": false,
+    "size": 0
+  },
+  "Default\\commerce_subscription_db\\LOG.old": {
+    "is_dir": false,
+    "size": 0
+  },
+  "Default\\DawnGraphiteCache\\data_0": {
+    "is_dir": false,
+    "size": 8192
+  },
+  "Default\\DawnGraphiteCache\\data_1": {
+    "is_dir": false,
+    "size": 270336
+  },
+  "Default\\DawnGraphiteCache\\data_2": {
+    "is_dir": false,
+    "size": 8192
+  },
+  "Default\\DawnGraphiteCache\\data_3": {
+    "is_dir": false,
+    "size": 8192
+  },
+  "Default\\DawnGraphiteCache\\index": {
+    "is_dir": false,
+    "size": 262512
+  },
+  "Default\\DawnWebGPUCache\\data_0": {
+    "is_dir": false,
+    "size": 8192
+  },
+  "Default\\DawnWebGPUCache\\data_1": {
+    "is_dir": false,
+    "size": 270336
+  },
+  "Default\\DawnWebGPUCache\\data_2": {
+    "is_dir": false,
+    "size": 8192
+  },
+  "Default\\DawnWebGPUCache\\data_3": {
+    "is_dir": false,
+    "size": 8192
+  },
+  "Default\\DawnWebGPUCache\\index": {
+    "is_dir": false,
+    "size": 262512
+  },
+  "Default\\discounts_db\\LOCK": {
+    "is_dir": false,
+    "size": 0
+  },
+  "Default\\discounts_db\\LOG": {
+    "is_dir": false,
+    "size": 0
+  },
+  "Default\\discounts_db\\LOG.old": {
+    "is_dir": false,
+    "size": 0
+  },
+  "Default\\discount_infos_db\\LOCK": {
+    "is_dir": false,
+    "size": 0
+  },
+  "Default\\discount_infos_db\\LOG": {
+    "is_dir": false,
+    "size": 0
+  },
+  "Default\\discount_infos_db\\LOG.old": {
+    "is_dir": false,
+    "size": 0
+  },
+  "Default\\Extension Rules\\000003.log": {
+    "is_dir": false,
+    "size": 114
+  },
+  "Default\\Extension Rules\\CURRENT": {
+    "is_dir": false,
+    "size": 16
+  },
+  "Default\\Extension Rules\\LOCK": {
+    "is_dir": false,
+    "size": 0
+  },
+  "Default\\Extension Rules\\LOG": {
+    "is_dir": false,
+    "size": 289
+  },
+  "Default\\Extension Rules\\MANIFEST-000001": {
+    "is_dir": false,
+    "size": 41
+  },
+  "Default\\Extension Scripts\\000003.log": {
+    "is_dir": false,
+    "size": 57
+  },
+  "Default\\Extension Scripts\\CURRENT": {
+    "is_dir": false,
+    "size": 16
+  },
+  "Default\\Extension Scripts\\LOCK": {
+    "is_dir": false,
+    "size": 0
+  },
+  "Default\\Extension Scripts\\LOG": {
+    "is_dir": false,
+    "size": 293
+  },
+  "Default\\Extension Scripts\\MANIFEST-000001": {
+    "is_dir": false,
+    "size": 41
+  },
+  "Default\\Extension State\\000003.log": {
+    "is_dir": false,
+    "size": 171
+  },
+  "Default\\Extension State\\CURRENT": {
+    "is_dir": false,
+    "size": 16
+  },
+  "Default\\Extension State\\LOCK": {
+    "is_dir": false,
+    "size": 0
+  },
+  "Default\\Extension State\\LOG": {
+    "is_dir": false,
+    "size": 330
+  },
+  "Default\\Extension State\\LOG.old": {
+    "is_dir": false,
+    "size": 330
+  },
+  "Default\\Extension State\\MANIFEST-000001": {
+    "is_dir": false,
+    "size": 41
+  },
+  "Default\\Feature Engagement Tracker\\AvailabilityDB": {
+    "is_dir": true,
+    "size": 0
+  },
+  "Default\\Feature Engagement Tracker\\EventDB": {
+    "is_dir": true,
+    "size": 0
+  },
+  "Default\\GCM Store\\000003.log": {
+    "is_dir": false,
+    "size": 1157
+  },
+  "Default\\GCM Store\\CURRENT": {
+    "is_dir": false,
+    "size": 16
+  },
+  "Default\\GCM Store\\Encryption": {
+    "is_dir": true,
+    "size": 4096
+  },
+  "Default\\GCM Store\\LOCK": {
+    "is_dir": false,
+    "size": 0
+  },
+  "Default\\GCM Store\\LOG": {
+    "is_dir": false,
+    "size": 318
+  },
+  "Default\\GCM Store\\LOG.old": {
+    "is_dir": false,
+    "size": 312
+  },
+  "Default\\GCM Store\\MANIFEST-000001": {
+    "is_dir": false,
+    "size": 41
+  },
+  "Default\\GPUCache\\data_0": {
+    "is_dir": false,
+    "size": 45056
+  },
+  "Default\\GPUCache\\data_1": {
+    "is_dir": false,
+    "size": 270336
+  },
+  "Default\\GPUCache\\data_2": {
+    "is_dir": false,
+    "size": 1056768
+  },
+  "Default\\GPUCache\\data_3": {
+    "is_dir": false,
+    "size": 8192
+  },
+  "Default\\GPUCache\\index": {
+    "is_dir": false,
+    "size": 262512
+  },
+  "Default\\Local Storage\\leveldb": {
+    "is_dir": true,
+    "size": 4096
+  },
+  "Default\\optimization_guide_hint_cache_store\\LOCK": {
+    "is_dir": false,
+    "size": 0
+  },
+  "Default\\optimization_guide_hint_cache_store\\LOG": {
+    "is_dir": false,
+    "size": 0
+  },
+  "Default\\optimization_guide_hint_cache_store\\LOG.old": {
+    "is_dir": false,
+    "size": 0
+  },
+  "Default\\parcel_tracking_db\\LOCK": {
+    "is_dir": false,
+    "size": 0
+  },
+  "Default\\parcel_tracking_db\\LOG": {
+    "is_dir": false,
+    "size": 0
+  },
+  "Default\\parcel_tracking_db\\LOG.old": {
+    "is_dir": false,
+    "size": 0
+  },
+  "Default\\PersistentOriginTrials\\LOCK": {
+    "is_dir": false,
+    "size": 0
+  },
+  "Default\\PersistentOriginTrials\\LOG": {
+    "is_dir": false,
+    "size": 0
+  },
+  "Default\\PersistentOriginTrials\\LOG.old": {
+    "is_dir": false,
+    "size": 0
+  },
+  "Default\\Segmentation Platform\\SegmentInfoDB": {
+    "is_dir": true,
+    "size": 0
+  },
+  "Default\\Segmentation Platform\\SignalDB": {
+    "is_dir": true,
+    "size": 0
+  },
+  "Default\\Segmentation Platform\\SignalStorageConfigDB": {
+    "is_dir": true,
+    "size": 0
+  },
+  "Default\\Service Worker\\Database": {
+    "is_dir": true,
+    "size": 4096
+  },
+  "Default\\Service Worker\\ScriptCache": {
+    "is_dir": true,
+    "size": 4096
+  },
+  "Default\\Session Storage\\000003.log": {
+    "is_dir": false,
+    "size": 18627
+  },
+  "Default\\Session Storage\\CURRENT": {
+    "is_dir": false,
+    "size": 16
+  },
+  "Default\\Session Storage\\LOCK": {
+    "is_dir": false,
+    "size": 0
+  },
+  "Default\\Session Storage\\LOG": {
+    "is_dir": false,
+    "size": 330
+  },
+  "Default\\Session Storage\\LOG.old": {
+    "is_dir": false,
+    "size": 330
+  },
+  "Default\\Session Storage\\MANIFEST-000001": {
+    "is_dir": false,
+    "size": 41
+  },
+  "Default\\Sessions\\Session_13412954540404948": {
+    "is_dir": false,
+    "size": 331069
+  },
+  "Default\\Sessions\\Session_13412958559153813": {
+    "is_dir": false,
+    "size": 646618
+  },
+  "Default\\Sessions\\Tabs": {
+    "is_dir": false,
+    "size": 800
+  },
+  "Default\\Shared Dictionary\\cache": {
+    "is_dir": true,
+    "size": 0
+  },
+  "Default\\Shared Dictionary\\db": {
+    "is_dir": false,
+    "size": 45056
+  },
+  "Default\\Shared Dictionary\\db-journal": {
+    "is_dir": false,
+    "size": 0
+  },
+  "Default\\shared_proto_db\\000003.log": {
+    "is_dir": false,
+    "size": 35257
+  },
+  "Default\\shared_proto_db\\CURRENT": {
+    "is_dir": false,
+    "size": 16
+  },
+  "Default\\shared_proto_db\\LOCK": {
+    "is_dir": false,
+    "size": 0
+  },
+  "Default\\shared_proto_db\\LOG": {
+    "is_dir": false,
+    "size": 330
+  },
+  "Default\\shared_proto_db\\LOG.old": {
+    "is_dir": false,
+    "size": 330
+  },
+  "Default\\shared_proto_db\\MANIFEST-000001": {
+    "is_dir": false,
+    "size": 41
+  },
+  "Default\\shared_proto_db\\metadata": {
+    "is_dir": true,
+    "size": 4096
+  },
+  "Default\\Site Characteristics Database\\000003.log": {
+    "is_dir": false,
+    "size": 190
+  },
+  "Default\\Site Characteristics Database\\CURRENT": {
+    "is_dir": false,
+    "size": 16
+  },
+  "Default\\Site Characteristics Database\\LOCK": {
+    "is_dir": false,
+    "size": 0
+  },
+  "Default\\Site Characteristics Database\\LOG": {
+    "is_dir": false,
+    "size": 358
+  },
+  "Default\\Site Characteristics Database\\LOG.old": {
+    "is_dir": false,
+    "size": 358
+  },
+  "Default\\Site Characteristics Database\\MANIFEST-000001": {
+    "is_dir": false,
+    "size": 41
+  },
+  "Default\\Sync Data\\LevelDB": {
+    "is_dir": true,
+    "size": 4096
+  },
+  "Default\\WebStorage\\QuotaManager": {
+    "is_dir": false,
+    "size": 40960
+  },
+  "Default\\WebStorage\\QuotaManager-journal": {
+    "is_dir": false,
+    "size": 8720
+  },
+  "Default\\Sync Data\\LevelDB\\000003.log": {
+    "is_dir": false,
+    "size": 118
+  },
+  "Default\\Sync Data\\LevelDB\\CURRENT": {
+    "is_dir": false,
+    "size": 16
+  },
+  "Default\\Sync Data\\LevelDB\\LOCK": {
+    "is_dir": false,
+    "size": 0
+  },
+  "Default\\Sync Data\\LevelDB\\LOG": {
+    "is_dir": false,
+    "size": 334
+  },
+  "Default\\Sync Data\\LevelDB\\LOG.old": {
+    "is_dir": false,
+    "size": 334
+  },
+  "Default\\Sync Data\\LevelDB\\MANIFEST-000001": {
+    "is_dir": false,
+    "size": 41
+  },
+  "Default\\shared_proto_db\\metadata\\000003.log": {
+    "is_dir": false,
+    "size": 1220
+  },
+  "Default\\shared_proto_db\\metadata\\CURRENT": {
+    "is_dir": false,
+    "size": 16
+  },
+  "Default\\shared_proto_db\\metadata\\LOCK": {
+    "is_dir": false,
+    "size": 0
+  },
+  "Default\\shared_proto_db\\metadata\\LOG": {
+    "is_dir": false,
+    "size": 348
+  },
+  "Default\\shared_proto_db\\metadata\\LOG.old": {
+    "is_dir": false,
+    "size": 348
+  },
+  "Default\\shared_proto_db\\metadata\\MANIFEST-000001": {
+    "is_dir": false,
+    "size": 41
+  },
+  "Default\\Shared Dictionary\\cache\\7c58b561cd4cd561_0": {
+    "is_dir": false,
+    "size": 65437
+  },
+  "Default\\Shared Dictionary\\cache\\index": {
+    "is_dir": false,
+    "size": 24
+  },
+  "Default\\Shared Dictionary\\cache\\index-dir": {
+    "is_dir": true,
+    "size": 0
+  },
+  "Default\\Shared Dictionary\\cache\\index-dir\\the-real-index": {
+    "is_dir": false,
+    "size": 72
+  },
+  "Default\\Service Worker\\Database\\000003.log": {
+    "is_dir": false,
+    "size": 2750
+  },
+  "Default\\Service Worker\\Database\\CURRENT": {
+    "is_dir": false,
+    "size": 16
+  },
+  "Default\\Service Worker\\Database\\LOCK": {
+    "is_dir": false,
+    "size": 0
+  },
+  "Default\\Service Worker\\Database\\LOG": {
+    "is_dir": false,
+    "size": 346
+  },
+  "Default\\Service Worker\\Database\\LOG.old": {
+    "is_dir": false,
+    "size": 346
+  },
+  "Default\\Service Worker\\Database\\MANIFEST-000001": {
+    "is_dir": false,
+    "size": 41
+  },
+  "Default\\Service Worker\\ScriptCache\\2cc80dabc69f58b6_0": {
+    "is_dir": false,
+    "size": 472
+  },
+  "Default\\Service Worker\\ScriptCache\\4cb013792b196a35_0": {
+    "is_dir": false,
+    "size": 10353
+  },
+  "Default\\Service Worker\\ScriptCache\\4cb013792b196a35_1": {
+    "is_dir": false,
+    "size": 7153
+  },
+  "Default\\Service Worker\\ScriptCache\\f1cdccba37924bda_0": {
+    "is_dir": false,
+    "size": 22787
+  },
+  "Default\\Service Worker\\ScriptCache\\f1cdccba37924bda_1": {
+    "is_dir": false,
+    "size": 63849
+  },
+  "Default\\Service Worker\\ScriptCache\\index": {
+    "is_dir": false,
+    "size": 24
+  },
+  "Default\\Service Worker\\ScriptCache\\index-dir": {
+    "is_dir": true,
+    "size": 0
+  },
+  "Default\\Service Worker\\ScriptCache\\index-dir\\the-real-index": {
+    "is_dir": false,
+    "size": 120
+  },
+  "Default\\Segmentation Platform\\SegmentInfoDB\\LOCK": {
+    "is_dir": false,
+    "size": 0
+  },
+  "Default\\Segmentation Platform\\SegmentInfoDB\\LOG": {
+    "is_dir": false,
+    "size": 0
+  },
+  "Default\\Segmentation Platform\\SegmentInfoDB\\LOG.old": {
+    "is_dir": false,
+    "size": 0
+  },
+  "Default\\Segmentation Platform\\SignalDB\\LOCK": {
+    "is_dir": false,
+    "size": 0
+  },
+  "Default\\Segmentation Platform\\SignalDB\\LOG": {
+    "is_dir": false,
+    "size": 0
+  },
+  "Default\\Segmentation Platform\\SignalDB\\LOG.old": {
+    "is_dir": false,
+    "size": 0
+  },
+  "Default\\Segmentation Platform\\SignalStorageConfigDB\\LOCK": {
+    "is_dir": false,
+    "size": 0
+  },
+  "Default\\Segmentation Platform\\SignalStorageConfigDB\\LOG": {
+    "is_dir": false,
+    "size": 0
+  },
+  "Default\\Segmentation Platform\\SignalStorageConfigDB\\LOG.old": {
+    "is_dir": false,
+    "size": 0
+  },
+  "Default\\Local Storage\\leveldb\\000003.log": {
+    "is_dir": false,
+    "size": 49061
+  },
+  "Default\\Local Storage\\leveldb\\CURRENT": {
+    "is_dir": false,
+    "size": 16
+  },
+  "Default\\Local Storage\\leveldb\\LOCK": {
+    "is_dir": false,
+    "size": 0
+  },
+  "Default\\Local Storage\\leveldb\\LOG": {
+    "is_dir": false,
+    "size": 342
+  },
+  "Default\\Local Storage\\leveldb\\LOG.old": {
+    "is_dir": false,
+    "size": 342
+  },
+  "Default\\Local Storage\\leveldb\\MANIFEST-000001": {
+    "is_dir": false,
+    "size": 41
+  },
+  "Default\\GCM Store\\Encryption\\000003.log": {
+    "is_dir": false,
+    "size": 0
+  },
+  "Default\\GCM Store\\Encryption\\CURRENT": {
+    "is_dir": false,
+    "size": 16
+  },
+  "Default\\GCM Store\\Encryption\\LOCK": {
+    "is_dir": false,
+    "size": 0
+  },
+  "Default\\GCM Store\\Encryption\\LOG": {
+    "is_dir": false,
+    "size": 340
+  },
+  "Default\\GCM Store\\Encryption\\LOG.old": {
+    "is_dir": false,
+    "size": 340
+  },
+  "Default\\GCM Store\\Encryption\\MANIFEST-000001": {
+    "is_dir": false,
+    "size": 41
+  },
+  "Default\\Feature Engagement Tracker\\AvailabilityDB\\LOCK": {
+    "is_dir": false,
+    "size": 0
+  },
+  "Default\\Feature Engagement Tracker\\AvailabilityDB\\LOG": {
+    "is_dir": false,
+    "size": 0
+  },
+  "Default\\Feature Engagement Tracker\\AvailabilityDB\\LOG.old": {
+    "is_dir": false,
+    "size": 0
+  },
+  "Default\\Feature Engagement Tracker\\EventDB\\LOCK": {
+    "is_dir": false,
+    "size": 0
+  },
+  "Default\\Feature Engagement Tracker\\EventDB\\LOG": {
+    "is_dir": false,
+    "size": 0
+  },
+  "Default\\Feature Engagement Tracker\\EventDB\\LOG.old": {
+    "is_dir": false,
+    "size": 0
+  },
+  "Default\\Code Cache\\js\\0308d4ca895bec91_0": {
+    "is_dir": false,
+    "size": 1269
+  },
+  "Default\\Code Cache\\js\\0549f0672cb595a6_0": {
+    "is_dir": false,
+    "size": 216
+  },
+  "Default\\Code Cache\\js\\065f5fc129b72a75_0": {
+    "is_dir": false,
+    "size": 255
+  },
+  "Default\\Code Cache\\js\\07e81a71a889df12_0": {
+    "is_dir": false,
+    "size": 236
+  },
+  "Default\\Code Cache\\js\\0800e644c3cf952d_0": {
+    "is_dir": false,
+    "size": 226
+  },
+  "Default\\Code Cache\\js\\09a7c915d3e19e07_0": {
+    "is_dir": false,
+    "size": 3669
+  },
+  "Default\\Code Cache\\js\\09b9729d8bd13be6_0": {
+    "is_dir": false,
+    "size": 352
+  },
+  "Default\\Code Cache\\js\\0b3a65d8b62272b0_0": {
+    "is_dir": false,
+    "size": 357040
+  },
+  "Default\\Code Cache\\js\\0cdd290046788cdc_0": {
+    "is_dir": false,
+    "size": 236
+  },
+  "Default\\Code Cache\\js\\0e53b5425258ffc2_0": {
+    "is_dir": false,
+    "size": 247
+  },
+  "Default\\Code Cache\\js\\0fba68ec7a57bc1e_0": {
+    "is_dir": false,
+    "size": 208
+  },
+  "Default\\Code Cache\\js\\106cb9704d2d47af_0": {
+    "is_dir": false,
+    "size": 288
+  },
+  "Default\\Code Cache\\js\\10e8875f102a7249_0": {
+    "is_dir": false,
+    "size": 216
+  },
+  "Default\\Code Cache\\js\\13061fea9b9f0571_0": {
+    "is_dir": false,
+    "size": 312
+  },
+  "Default\\Code Cache\\js\\135a9e73b7a29232_0": {
+    "is_dir": false,
+    "size": 252
+  },
+  "Default\\Code Cache\\js\\14bdec23db5ae15b_0": {
+    "is_dir": false,
+    "size": 970
+  },
+  "Default\\Code Cache\\js\\151203d7fd295688_0": {
+    "is_dir": false,
+    "size": 16681
+  },
+  "Default\\Code Cache\\js\\157ac5dc69855318_0": {
+    "is_dir": false,
+    "size": 1158
+  },
+  "Default\\Code Cache\\js\\16054fb8da8736bb_0": {
+    "is_dir": false,
+    "size": 234888
+  },
+  "Default\\Code Cache\\js\\17994fd2f802ab25_0": {
+    "is_dir": false,
+    "size": 4810
+  },
+  "Default\\Code Cache\\js\\17d0869a8118f157_0": {
+    "is_dir": false,
+    "size": 239
+  },
+  "Default\\Code Cache\\js\\19128e2ac166ebb1_0": {
+    "is_dir": false,
+    "size": 18920
+  },
+  "Default\\Code Cache\\js\\191c26457b1d8ca1_0": {
+    "is_dir": false,
+    "size": 236
+  },
+  "Default\\Code Cache\\js\\1b13cddeb969ef02_0": {
+    "is_dir": false,
+    "size": 291
+  },
+  "Default\\Code Cache\\js\\1b2aa2e710017da6_0": {
+    "is_dir": false,
+    "size": 155256
+  },
+  "Default\\Code Cache\\js\\1b661cc9331a8d51_0": {
+    "is_dir": false,
+    "size": 2475
+  },
+  "Default\\Code Cache\\js\\1e240e6622872d30_0": {
+    "is_dir": false,
+    "size": 216
+  },
+  "Default\\Code Cache\\js\\2073ca70bf92cadd_0": {
+    "is_dir": false,
+    "size": 221
+  },
+  "Default\\Code Cache\\js\\208858426f96f3e6_0": {
+    "is_dir": false,
+    "size": 216
+  },
+  "Default\\Code Cache\\js\\21157baa3e7c8a1b_0": {
+    "is_dir": false,
+    "size": 236
+  },
+  "Default\\Code Cache\\js\\215cf211df6b3a0f_0": {
+    "is_dir": false,
+    "size": 33800
+  },
+  "Default\\Code Cache\\js\\21adca4d7da8c190_0": {
+    "is_dir": false,
+    "size": 209
+  },
+  "Default\\Code Cache\\js\\220591e6d8cc75ea_0": {
+    "is_dir": false,
+    "size": 229
+  },
+  "Default\\Code Cache\\js\\24b7a8a86d1ecb70_0": {
+    "is_dir": false,
+    "size": 394
+  },
+  "Default\\Code Cache\\js\\25e32d54b3b3f429_0": {
+    "is_dir": false,
+    "size": 276
+  },
+  "Default\\Code Cache\\js\\26fc593d4e90eed7_0": {
+    "is_dir": false,
+    "size": 29136
+  },
+  "Default\\Code Cache\\js\\279953a200288966_0": {
+    "is_dir": false,
+    "size": 284
+  },
+  "Default\\Code Cache\\js\\27d93733a9ab7961_0": {
+    "is_dir": false,
+    "size": 107352
+  },
+  "Default\\Code Cache\\js\\2912f53cb6ffe1b3_0": {
+    "is_dir": false,
+    "size": 1241
+  },
+  "Default\\Code Cache\\js\\29a74e49429a5faa_0": {
+    "is_dir": false,
+    "size": 1718
+  },
+  "Default\\Code Cache\\js\\2aabb207417f4317_0": {
+    "is_dir": false,
+    "size": 241
+  },
+  "Default\\Code Cache\\js\\2ab9a9f4077ae2ff_0": {
+    "is_dir": false,
+    "size": 232
+  },
+  "Default\\Code Cache\\js\\2cece8d9152d4628_0": {
+    "is_dir": false,
+    "size": 25216
+  },
+  "Default\\Code Cache\\js\\2f34f6f422b5e3e8_0": {
+    "is_dir": false,
+    "size": 256
+  },
+  "Default\\Code Cache\\js\\31dcbd1ac05eef5e_0": {
+    "is_dir": false,
+    "size": 284
+  },
+  "Default\\Code Cache\\js\\32883ca66d8f72ef_0": {
+    "is_dir": false,
+    "size": 216
+  },
+  "Default\\Code Cache\\js\\3324c0ef6ddf8f62_0": {
+    "is_dir": false,
+    "size": 1732
+  },
+  "Default\\Code Cache\\js\\336a68eaaf209f48_0": {
+    "is_dir": false,
+    "size": 309
+  },
+  "Default\\Code Cache\\js\\346511d33d0e8ef7_0": {
+    "is_dir": false,
+    "size": 1021
+  },
+  "Default\\Code Cache\\js\\349237db107e3b29_0": {
+    "is_dir": false,
+    "size": 236
+  },
+  "Default\\Code Cache\\js\\354a1aa4ddb47b93_0": {
+    "is_dir": false,
+    "size": 253
+  },
+  "Default\\Code Cache\\js\\35d10836bf1cab6b_0": {
+    "is_dir": false,
+    "size": 3964064
+  },
+  "Default\\Code Cache\\js\\3653004befb613c5_0": {
+    "is_dir": false,
+    "size": 226
+  },
+  "Default\\Code Cache\\js\\36bcd11e43703d5a_0": {
+    "is_dir": false,
+    "size": 42848
+  },
+  "Default\\Code Cache\\js\\37e7e7b3443fc7d8_0": {
+    "is_dir": false,
+    "size": 956
+  },
+  "Default\\Code Cache\\js\\389cf13cafa2b619_0": {
+    "is_dir": false,
+    "size": 365
+  },
+  "Default\\Code Cache\\js\\396925d9888ba3b3_0": {
+    "is_dir": false,
+    "size": 263
+  },
+  "Default\\Code Cache\\js\\3b1c754f1bb14e34_0": {
+    "is_dir": false,
+    "size": 1075
+  },
+  "Default\\Code Cache\\js\\3b2e876543067efa_0": {
+    "is_dir": false,
+    "size": 1127
+  },
+  "Default\\Code Cache\\js\\3b5f7bf775ae2a48_0": {
+    "is_dir": false,
+    "size": 298
+  },
+  "Default\\Code Cache\\js\\3d4e7aafde83a621_0": {
+    "is_dir": false,
+    "size": 22248
+  },
+  "Default\\Code Cache\\js\\3df4bc23da5f3634_0": {
+    "is_dir": false,
+    "size": 971128
+  },
+  "Default\\Code Cache\\js\\3eb32b8c85072f15_0": {
+    "is_dir": false,
+    "size": 1806
+  },
+  "Default\\Code Cache\\js\\3ee281364330e2ed_0": {
+    "is_dir": false,
+    "size": 426832
+  },
+  "Default\\Code Cache\\js\\420910217c4512b9_0": {
+    "is_dir": false,
+    "size": 365
+  },
+  "Default\\Code Cache\\js\\438ab0246dff0d58_0": {
+    "is_dir": false,
+    "size": 258
+  },
+  "Default\\Code Cache\\js\\439e6088e94bc3ee_0": {
+    "is_dir": false,
+    "size": 360
+  },
+  "Default\\Code Cache\\js\\4724671d263781e4_0": {
+    "is_dir": false,
+    "size": 272
+  },
+  "Default\\Code Cache\\js\\47601f4f1a520b20_0": {
+    "is_dir": false,
+    "size": 126856
+  },
+  "Default\\Code Cache\\js\\47d7aaaf0031896e_0": {
+    "is_dir": false,
+    "size": 1584
+  },
+  "Default\\Code Cache\\js\\491b77ac64f8db80_0": {
+    "is_dir": false,
+    "size": 209
+  },
+  "Default\\Code Cache\\js\\4984c2e3075e18a7_0": {
+    "is_dir": false,
+    "size": 1967
+  },
+  "Default\\Code Cache\\js\\4a43a9c840b9e00a_0": {
+    "is_dir": false,
+    "size": 225
+  },
+  "Default\\Code Cache\\js\\531eb341c1c43824_0": {
+    "is_dir": false,
+    "size": 233
+  },
+  "Default\\Code Cache\\js\\55bc89ce3e824887_0": {
+    "is_dir": false,
+    "size": 213
+  },
+  "Default\\Code Cache\\js\\55df2977e6ea822a_0": {
+    "is_dir": false,
+    "size": 1605
+  },
+  "Default\\Code Cache\\js\\55ee4c1bb2d3fe8a_0": {
+    "is_dir": false,
+    "size": 216
+  },
+  "Default\\Code Cache\\js\\56273b00a9697359_0": {
+    "is_dir": false,
+    "size": 256
+  },
+  "Default\\Code Cache\\js\\57dd3ce31cbe1920_0": {
+    "is_dir": false,
+    "size": 78576
+  },
+  "Default\\Code Cache\\js\\58c14d83a584f559_0": {
+    "is_dir": false,
+    "size": 1262
+  },
+  "Default\\Code Cache\\js\\5a04d0cd48729d6e_0": {
+    "is_dir": false,
+    "size": 206
+  },
+  "Default\\Code Cache\\js\\5aae6217238bb1d6_0": {
+    "is_dir": false,
+    "size": 216
+  },
+  "Default\\Code Cache\\js\\5c832df3c35271f7_0": {
+    "is_dir": false,
+    "size": 316
+  },
+  "Default\\Code Cache\\js\\5caed5450c36e3d7_0": {
+    "is_dir": false,
+    "size": 35464
+  },
+  "Default\\Code Cache\\js\\5d24f9ef9bf46e2e_0": {
+    "is_dir": false,
+    "size": 365
+  },
+  "Default\\Code Cache\\js\\627fbbfdeb2d7c0a_0": {
+    "is_dir": false,
+    "size": 1744
+  },
+  "Default\\Code Cache\\js\\62ed0388ee1a7890_0": {
+    "is_dir": false,
+    "size": 216
+  },
+  "Default\\Code Cache\\js\\64257b65583d13eb_0": {
+    "is_dir": false,
+    "size": 216
+  },
+  "Default\\Code Cache\\js\\6482f9aa1414c504_0": {
+    "is_dir": false,
+    "size": 874
+  },
+  "Default\\Code Cache\\js\\68748a750f693b70_0": {
+    "is_dir": false,
+    "size": 230
+  },
+  "Default\\Code Cache\\js\\69014a2f61d6d3d4_0": {
+    "is_dir": false,
+    "size": 272
+  },
+  "Default\\Code Cache\\js\\6915785127d0b927_0": {
+    "is_dir": false,
+    "size": 367
+  },
+  "Default\\Code Cache\\js\\69465ad8d3cbc0ca_0": {
+    "is_dir": false,
+    "size": 246
+  },
+  "Default\\Code Cache\\js\\69ebdaada80b04ec_0": {
+    "is_dir": false,
+    "size": 445112
+  },
+  "Default\\Code Cache\\js\\6a5828b68b24e449_0": {
+    "is_dir": false,
+    "size": 1903
+  },
+  "Default\\Code Cache\\js\\6aa8454ea173ea41_0": {
+    "is_dir": false,
+    "size": 285
+  },
+  "Default\\Code Cache\\js\\6b0f7c259cf5b0b3_0": {
+    "is_dir": false,
+    "size": 322
+  },
+  "Default\\Code Cache\\js\\6d1cbdb795ba0ab0_0": {
+    "is_dir": false,
+    "size": 210
+  },
+  "Default\\Code Cache\\js\\6d667292cffbef35_0": {
+    "is_dir": false,
+    "size": 324
+  },
+  "Default\\Code Cache\\js\\6f236043ca83fdb9_0": {
+    "is_dir": false,
+    "size": 239
+  },
+  "Default\\Code Cache\\js\\6f37b34cfc8a3734_0": {
+    "is_dir": false,
+    "size": 225
+  },
+  "Default\\Code Cache\\js\\6fa3b177081f5c12_0": {
+    "is_dir": false,
+    "size": 163696
+  },
+  "Default\\Code Cache\\js\\70711657cd6a1c70_0": {
+    "is_dir": false,
+    "size": 273
+  },
+  "Default\\Code Cache\\js\\73c2258da2a1b621_0": {
+    "is_dir": false,
+    "size": 19224
+  },
+  "Default\\Code Cache\\js\\73e51a6e6c9e2e17_0": {
+    "is_dir": false,
+    "size": 287
+  },
+  "Default\\Code Cache\\js\\76c6c21d193531ef_0": {
+    "is_dir": false,
+    "size": 377
+  },
+  "Default\\Code Cache\\js\\77b0a86c68ce3588_0": {
+    "is_dir": false,
+    "size": 216
+  },
+  "Default\\Code Cache\\js\\7813f9940ef6f3d8_0": {
+    "is_dir": false,
+    "size": 962
+  },
+  "Default\\Code Cache\\js\\78be345d428a4f19_0": {
+    "is_dir": false,
+    "size": 363720
+  },
+  "Default\\Code Cache\\js\\796f34ee2bea9170_0": {
+    "is_dir": false,
+    "size": 262
+  },
+  "Default\\Code Cache\\js\\7a02aa59ff61288b_0": {
+    "is_dir": false,
+    "size": 229
+  },
+  "Default\\Code Cache\\js\\7ad33dece23a47b0_0": {
+    "is_dir": false,
+    "size": 1167
+  },
+  "Default\\Code Cache\\js\\7b719a6744b9d36b_0": {
+    "is_dir": false,
+    "size": 239
+  },
+  "Default\\Code Cache\\js\\7c52d846384afb13_0": {
+    "is_dir": false,
+    "size": 365
+  },
+  "Default\\Code Cache\\js\\7d24b6a4f1fb0f7d_0": {
+    "is_dir": false,
+    "size": 289
+  },
+  "Default\\Code Cache\\js\\7dfb0a29ec7fc025_0": {
+    "is_dir": false,
+    "size": 229
+  },
+  "Default\\Code Cache\\js\\7ffcd6722c2e41d4_0": {
+    "is_dir": false,
+    "size": 248
+  },
+  "Default\\Code Cache\\js\\809616d68ad0e31a_0": {
+    "is_dir": false,
+    "size": 539176
+  },
+  "Default\\Code Cache\\js\\80aa686d425cd00d_0": {
+    "is_dir": false,
+    "size": 1180
+  },
+  "Default\\Code Cache\\js\\81e93665af4aeb3d_0": {
+    "is_dir": false,
+    "size": 1711
+  },
+  "Default\\Code Cache\\js\\8659f481af308e7e_0": {
+    "is_dir": false,
+    "size": 209
+  },
+  "Default\\Code Cache\\js\\87e5f15eaef1818f_0": {
+    "is_dir": false,
+    "size": 789
+  },
+  "Default\\Code Cache\\js\\88bfcbf5f27525fe_0": {
+    "is_dir": false,
+    "size": 236
+  },
+  "Default\\Code Cache\\js\\8bb285963376814f_0": {
+    "is_dir": false,
+    "size": 1718
+  },
+  "Default\\Code Cache\\js\\8bc6b756f4a1ac3e_0": {
+    "is_dir": false,
+    "size": 1705
+  },
+  "Default\\Code Cache\\js\\8c1550f14070362d_0": {
+    "is_dir": false,
+    "size": 216
+  },
+  "Default\\Code Cache\\js\\8e3064df4a6163bb_0": {
+    "is_dir": false,
+    "size": 257
+  },
+  "Default\\Code Cache\\js\\8efffac23f2d4972_0": {
+    "is_dir": false,
+    "size": 334
+  },
+  "Default\\Code Cache\\js\\8fc13831faae6c91_0": {
+    "is_dir": false,
+    "size": 246
+  },
+  "Default\\Code Cache\\js\\9048dff3123b089e_0": {
+    "is_dir": false,
+    "size": 233
+  },
+  "Default\\Code Cache\\js\\93542d559858cb86_0": {
+    "is_dir": false,
+    "size": 273
+  },
+  "Default\\Code Cache\\js\\93f0a8f47e94473c_0": {
+    "is_dir": false,
+    "size": 1018
+  },
+  "Default\\Code Cache\\js\\95bb17c12c1ce81a_0": {
+    "is_dir": false,
+    "size": 207
+  },
+  "Default\\Code Cache\\js\\97ee1d791ba04c48_0": {
+    "is_dir": false,
+    "size": 1301
+  },
+  "Default\\Code Cache\\js\\9ca7afc475db6524_0": {
+    "is_dir": false,
+    "size": 445112
+  },
+  "Default\\Code Cache\\js\\9d4f225ff9f3ca94_0": {
+    "is_dir": false,
+    "size": 230
+  },
+  "Default\\Code Cache\\js\\9e4367232001c165_0": {
+    "is_dir": false,
+    "size": 210
+  },
+  "Default\\Code Cache\\js\\a14cd3289f5b2b76_0": {
+    "is_dir": false,
+    "size": 340648
+  },
+  "Default\\Code Cache\\js\\a41047a78c89c39c_0": {
+    "is_dir": false,
+    "size": 240
+  },
+  "Default\\Code Cache\\js\\a5223a53d38b5916_0": {
+    "is_dir": false,
+    "size": 247
+  },
+  "Default\\Code Cache\\js\\a578d1d3c17ab521_0": {
+    "is_dir": false,
+    "size": 230
+  },
+  "Default\\Code Cache\\js\\a5bc39f7055a8234_0": {
+    "is_dir": false,
+    "size": 216
+  },
+  "Default\\Code Cache\\js\\a62362d5f21b160f_0": {
+    "is_dir": false,
+    "size": 3693
+  },
+  "Default\\Code Cache\\js\\a71923982d4ae72d_0": {
+    "is_dir": false,
+    "size": 226
+  },
+  "Default\\Code Cache\\js\\a73e011e2ca1fda7_0": {
+    "is_dir": false,
+    "size": 334064
+  },
+  "Default\\Code Cache\\js\\a81dc128471a60e6_0": {
+    "is_dir": false,
+    "size": 259
+  },
+  "Default\\Code Cache\\js\\a8b18da328eb035e_0": {
+    "is_dir": false,
+    "size": 1315
+  },
+  "Default\\Code Cache\\js\\a8b6c4269254a25d_0": {
+    "is_dir": false,
+    "size": 320
+  },
+  "Default\\Code Cache\\js\\a91cf6b470dede27_0": {
+    "is_dir": false,
+    "size": 216
+  },
+  "Default\\Code Cache\\js\\aa0bfde630062d32_0": {
+    "is_dir": false,
+    "size": 1806
+  },
+  "Default\\Code Cache\\js\\aa94e5d734d536c6_0": {
+    "is_dir": false,
+    "size": 223
+  },
+  "Default\\Code Cache\\js\\aaf97daf46d374e8_0": {
+    "is_dir": false,
+    "size": 8777
+  },
+  "Default\\Code Cache\\js\\ac8d1f01b335681e_0": {
+    "is_dir": false,
+    "size": 237
+  },
+  "Default\\Code Cache\\js\\aec07389523ccc0e_0": {
+    "is_dir": false,
+    "size": 298
+  },
+  "Default\\Code Cache\\js\\aef6d6de0b9b81b9_0": {
+    "is_dir": false,
+    "size": 1873
+  },
+  "Default\\Code Cache\\js\\afca94be2ec84ef1_0": {
+    "is_dir": false,
+    "size": 360
+  },
+  "Default\\Code Cache\\js\\b14c38783fc75144_0": {
+    "is_dir": false,
+    "size": 216
+  },
+  "Default\\Code Cache\\js\\b3ca57bceb837582_0": {
+    "is_dir": false,
+    "size": 1735
+  },
+  "Default\\Code Cache\\js\\b4d0fd56eaf1d019_0": {
+    "is_dir": false,
+    "size": 4103
+  },
+  "Default\\Code Cache\\js\\b58166bf96d707b8_0": {
+    "is_dir": false,
+    "size": 1803
+  },
+  "Default\\Code Cache\\js\\b71290451d74ca66_0": {
+    "is_dir": false,
+    "size": 1738
+  },
+  "Default\\Code Cache\\js\\bb6967f84ad018d5_0": {
+    "is_dir": false,
+    "size": 44880
+  },
+  "Default\\Code Cache\\js\\bb869267c2c9e4c4_0": {
+    "is_dir": false,
+    "size": 237
+  },
+  "Default\\Code Cache\\js\\bc7ef22f059b1f6d_0": {
+    "is_dir": false,
+    "size": 216
+  },
+  "Default\\Code Cache\\js\\bd051b2252b94eda_0": {
+    "is_dir": false,
+    "size": 1235
+  },
+  "Default\\Code Cache\\js\\bf62cc8bc7443942_0": {
+    "is_dir": false,
+    "size": 304072
+  },
+  "Default\\Code Cache\\js\\bf6c72c41944bb94_0": {
+    "is_dir": false,
+    "size": 378
+  },
+  "Default\\Code Cache\\js\\bfd8f13ab9634460_0": {
+    "is_dir": false,
+    "size": 612
+  },
+  "Default\\Code Cache\\js\\bff48f02a8f8d61f_0": {
+    "is_dir": false,
+    "size": 45592
+  },
+  "Default\\Code Cache\\js\\c08a32c7c5ae0c8f_0": {
+    "is_dir": false,
+    "size": 216
+  },
+  "Default\\Code Cache\\js\\c0c4a7590d7397c2_0": {
+    "is_dir": false,
+    "size": 263
+  },
+  "Default\\Code Cache\\js\\c1beca48c351d6fa_0": {
+    "is_dir": false,
+    "size": 918
+  },
+  "Default\\Code Cache\\js\\c211cb71f974bb34_0": {
+    "is_dir": false,
+    "size": 235
+  },
+  "Default\\Code Cache\\js\\c33e1943b647d274_0": {
+    "is_dir": false,
+    "size": 288
+  },
+  "Default\\Code Cache\\js\\c3ae911608f27568_0": {
+    "is_dir": false,
+    "size": 163608
+  },
+  "Default\\Code Cache\\js\\c549556a384a8f27_0": {
+    "is_dir": false,
+    "size": 225
+  },
+  "Default\\Code Cache\\js\\c6c2f225012375c9_0": {
+    "is_dir": false,
+    "size": 600
+  },
+  "Default\\Code Cache\\js\\c82c08f93a5da1e0_0": {
+    "is_dir": false,
+    "size": 235
+  },
+  "Default\\Code Cache\\js\\c84c8dad9b1f4060_0": {
+    "is_dir": false,
+    "size": 1765
+  },
+  "Default\\Code Cache\\js\\ca8d5263edee01c1_0": {
+    "is_dir": false,
+    "size": 1967
+  },
+  "Default\\Code Cache\\js\\cb636109dc1347f0_0": {
+    "is_dir": false,
+    "size": 168136
+  },
+  "Default\\Code Cache\\js\\cbd5f13aaf795a5e_0": {
+    "is_dir": false,
+    "size": 4648
+  },
+  "Default\\Code Cache\\js\\cc552167d742cc61_0": {
+    "is_dir": false,
+    "size": 32320
+  },
+  "Default\\Code Cache\\js\\cd285e5880bc2cdb_0": {
+    "is_dir": false,
+    "size": 214
+  },
+  "Default\\Code Cache\\js\\cd98fa4519815f1d_0": {
+    "is_dir": false,
+    "size": 363720
+  },
+  "Default\\Code Cache\\js\\ce4030b20d5fe334_0": {
+    "is_dir": false,
+    "size": 65832
+  },
+  "Default\\Code Cache\\js\\d069e5783adfb022_0": {
+    "is_dir": false,
+    "size": 1777
+  },
+  "Default\\Code Cache\\js\\d0c2259df0ad368f_0": {
+    "is_dir": false,
+    "size": 216
+  },
+  "Default\\Code Cache\\js\\d14a638492cdc598_0": {
+    "is_dir": false,
+    "size": 216
+  },
+  "Default\\Code Cache\\js\\d47cdda205b14a7b_0": {
+    "is_dir": false,
+    "size": 250
+  },
+  "Default\\Code Cache\\js\\d5554740dcfe29d6_0": {
+    "is_dir": false,
+    "size": 1095
+  },
+  "Default\\Code Cache\\js\\d57c2f595c06fe79_0": {
+    "is_dir": false,
+    "size": 201
+  },
+  "Default\\Code Cache\\js\\d800073a9c8c87ad_0": {
+    "is_dir": false,
+    "size": 67912
+  },
+  "Default\\Code Cache\\js\\d80db65fe6ff4e78_0": {
+    "is_dir": false,
+    "size": 250
+  },
+  "Default\\Code Cache\\js\\d8a3342ed832e8e5_0": {
+    "is_dir": false,
+    "size": 216
+  },
+  "Default\\Code Cache\\js\\d8a5017b360d310c_0": {
+    "is_dir": false,
+    "size": 216
+  },
+  "Default\\Code Cache\\js\\d8d334436d9153c5_0": {
+    "is_dir": false,
+    "size": 244896
+  },
+  "Default\\Code Cache\\js\\d8fb45745caaf52c_0": {
+    "is_dir": false,
+    "size": 360
+  },
+  "Default\\Code Cache\\js\\da7c77ddb552ac24_0": {
+    "is_dir": false,
+    "size": 240
+  },
+  "Default\\Code Cache\\js\\df2db86ec0c3b16d_0": {
+    "is_dir": false,
+    "size": 243
+  },
+  "Default\\Code Cache\\js\\df863bea1e7b42b6_0": {
+    "is_dir": false,
+    "size": 242
+  },
+  "Default\\Code Cache\\js\\e18655891eab2b56_0": {
+    "is_dir": false,
+    "size": 387
+  },
+  "Default\\Code Cache\\js\\e2063aeaa5488ea6_0": {
+    "is_dir": false,
+    "size": 1289
+  },
+  "Default\\Code Cache\\js\\e2b6014363a8ef89_0": {
+    "is_dir": false,
+    "size": 99152
+  },
+  "Default\\Code Cache\\js\\e3cdd98534d0bee2_0": {
+    "is_dir": false,
+    "size": 216
+  },
+  "Default\\Code Cache\\js\\e3f92ef3d9530206_0": {
+    "is_dir": false,
+    "size": 1252
+  },
+  "Default\\Code Cache\\js\\e6398162e2e9f8e0_0": {
+    "is_dir": false,
+    "size": 1783
+  },
+  "Default\\Code Cache\\js\\e91675cd45f22ee0_0": {
+    "is_dir": false,
+    "size": 231
+  },
+  "Default\\Code Cache\\js\\e9d778e3839e4863_0": {
+    "is_dir": false,
+    "size": 366976
+  },
+  "Default\\Code Cache\\js\\e9ea2570e75f1f1d_0": {
+    "is_dir": false,
+    "size": 280
+  },
+  "Default\\Code Cache\\js\\eaa0b537367f0747_0": {
+    "is_dir": false,
+    "size": 100272
+  },
+  "Default\\Code Cache\\js\\ebff7c7d9c54ec35_0": {
+    "is_dir": false,
+    "size": 262
+  },
+  "Default\\Code Cache\\js\\ed22c7bd66703cc2_0": {
+    "is_dir": false,
+    "size": 924
+  },
+  "Default\\Code Cache\\js\\f19280cf708a3288_0": {
+    "is_dir": false,
+    "size": 284
+  },
+  "Default\\Code Cache\\js\\f2355871d544cbd9_0": {
+    "is_dir": false,
+    "size": 209
+  },
+  "Default\\Code Cache\\js\\f2aa83efa5878f22_0": {
+    "is_dir": false,
+    "size": 241
+  },
+  "Default\\Code Cache\\js\\f4dc1e84a3ae3264_0": {
+    "is_dir": false,
+    "size": 4339
+  },
+  "Default\\Code Cache\\js\\f5275ef4a6186a98_0": {
+    "is_dir": false,
+    "size": 139080
+  },
+  "Default\\Code Cache\\js\\f5cff1ba53979c33_0": {
+    "is_dir": false,
+    "size": 235
+  },
+  "Default\\Code Cache\\js\\f6998196a734d7f0_0": {
+    "is_dir": false,
+    "size": 212
+  },
+  "Default\\Code Cache\\js\\f6f53ce7b74ebd3b_0": {
+    "is_dir": false,
+    "size": 288
+  },
+  "Default\\Code Cache\\js\\f6fe4e11a08582ea_0": {
+    "is_dir": false,
+    "size": 216
+  },
+  "Default\\Code Cache\\js\\f7c1aed3ff90fd18_0": {
+    "is_dir": false,
+    "size": 20920
+  },
+  "Default\\Code Cache\\js\\f863c5be34bab0f4_0": {
+    "is_dir": false,
+    "size": 529608
+  },
+  "Default\\Code Cache\\js\\f892cf11ced2be70_0": {
+    "is_dir": false,
+    "size": 304
+  },
+  "Default\\Code Cache\\js\\f8951d6ab46bfe31_0": {
+    "is_dir": false,
+    "size": 237
+  },
+  "Default\\Code Cache\\js\\f8b66e73724c859d_0": {
+    "is_dir": false,
+    "size": 216
+  },
+  "Default\\Code Cache\\js\\fcd6516c8268f559_0": {
+    "is_dir": false,
+    "size": 248
+  },
+  "Default\\Code Cache\\js\\fe8b7ca011cc9644_0": {
+    "is_dir": false,
+    "size": 301
+  },
+  "Default\\Code Cache\\js\\index": {
+    "is_dir": false,
+    "size": 24
+  },
+  "Default\\Code Cache\\js\\index-dir": {
+    "is_dir": true,
+    "size": 0
+  },
+  "Default\\Code Cache\\wasm\\index": {
+    "is_dir": false,
+    "size": 24
+  },
+  "Default\\Code Cache\\wasm\\index-dir": {
+    "is_dir": true,
+    "size": 0
+  },
+  "Default\\Code Cache\\wasm\\index-dir\\the-real-index": {
+    "is_dir": false,
+    "size": 48
+  },
+  "Default\\Code Cache\\js\\index-dir\\the-real-index": {
+    "is_dir": false,
+    "size": 3984
+  },
+  "Default\\Cache\\Cache_Data\\data_0": {
+    "is_dir": false,
+    "size": 81920
+  },
+  "Default\\Cache\\Cache_Data\\data_1": {
+    "is_dir": false,
+    "size": 794624
+  },
+  "Default\\Cache\\Cache_Data\\data_2": {
+    "is_dir": false,
+    "size": 3153920
+  },
+  "Default\\Cache\\Cache_Data\\data_3": {
+    "is_dir": false,
+    "size": 8396800
+  },
+  "Default\\Cache\\Cache_Data\\f_000004": {
+    "is_dir": false,
+    "size": 39375
+  },
+  "Default\\Cache\\Cache_Data\\f_000009": {
+    "is_dir": false,
+    "size": 76099
+  },
+  "Default\\Cache\\Cache_Data\\f_00000a": {
+    "is_dir": false,
+    "size": 171411
+  },
+  "Default\\Cache\\Cache_Data\\f_00000b": {
+    "is_dir": false,
+    "size": 102342
+  },
+  "Default\\Cache\\Cache_Data\\f_00000d": {
+    "is_dir": false,
+    "size": 42298
+  },
+  "Default\\Cache\\Cache_Data\\f_00000e": {
+    "is_dir": false,
+    "size": 157673
+  },
+  "Default\\Cache\\Cache_Data\\f_00000f": {
+    "is_dir": false,
+    "size": 39516
+  },
+  "Default\\Cache\\Cache_Data\\f_000010": {
+    "is_dir": false,
+    "size": 494661
+  },
+  "Default\\Cache\\Cache_Data\\f_000011": {
+    "is_dir": false,
+    "size": 61465
+  },
+  "Default\\Cache\\Cache_Data\\f_000012": {
+    "is_dir": false,
+    "size": 73066
+  },
+  "Default\\Cache\\Cache_Data\\f_000013": {
+    "is_dir": false,
+    "size": 80336
+  },
+  "Default\\Cache\\Cache_Data\\f_000014": {
+    "is_dir": false,
+    "size": 17628
+  },
+  "Default\\Cache\\Cache_Data\\f_000015": {
+    "is_dir": false,
+    "size": 76192
+  },
+  "Default\\Cache\\Cache_Data\\f_000016": {
+    "is_dir": false,
+    "size": 26749
+  },
+  "Default\\Cache\\Cache_Data\\f_000017": {
+    "is_dir": false,
+    "size": 28997
+  },
+  "Default\\Cache\\Cache_Data\\f_000018": {
+    "is_dir": false,
+    "size": 37790
+  },
+  "Default\\Cache\\Cache_Data\\f_000019": {
+    "is_dir": false,
+    "size": 25410
+  },
+  "Default\\Cache\\Cache_Data\\f_00001a": {
+    "is_dir": false,
+    "size": 28580
+  },
+  "Default\\Cache\\Cache_Data\\f_000033": {
+    "is_dir": false,
+    "size": 208272
+  },
+  "Default\\Cache\\Cache_Data\\f_00003c": {
+    "is_dir": false,
+    "size": 109640
+  },
+  "Default\\Cache\\Cache_Data\\f_00003e": {
+    "is_dir": false,
+    "size": 26497
+  },
+  "Default\\Cache\\Cache_Data\\f_000042": {
+    "is_dir": false,
+    "size": 16916
+  },
+  "Default\\Cache\\Cache_Data\\f_000044": {
+    "is_dir": false,
+    "size": 55750
+  },
+  "Default\\Cache\\Cache_Data\\f_000045": {
+    "is_dir": false,
+    "size": 31099
+  },
+  "Default\\Cache\\Cache_Data\\f_000053": {
+    "is_dir": false,
+    "size": 37092
+  },
+  "Default\\Cache\\Cache_Data\\f_000054": {
+    "is_dir": false,
+    "size": 71065
+  },
+  "Default\\Cache\\Cache_Data\\f_000055": {
+    "is_dir": false,
+    "size": 39395
+  },
+  "Default\\Cache\\Cache_Data\\f_000056": {
+    "is_dir": false,
+    "size": 28579
+  },
+  "Default\\Cache\\Cache_Data\\f_000057": {
+    "is_dir": false,
+    "size": 19358
+  },
+  "Default\\Cache\\Cache_Data\\f_000058": {
+    "is_dir": false,
+    "size": 36624
+  },
+  "Default\\Cache\\Cache_Data\\f_000059": {
+    "is_dir": false,
+    "size": 27282
+  },
+  "Default\\Cache\\Cache_Data\\f_00005a": {
+    "is_dir": false,
+    "size": 95040
+  },
+  "Default\\Cache\\Cache_Data\\f_00005b": {
+    "is_dir": false,
+    "size": 68602
+  },
+  "Default\\Cache\\Cache_Data\\f_00005c": {
+    "is_dir": false,
+    "size": 72804
+  },
+  "Default\\Cache\\Cache_Data\\f_00005d": {
+    "is_dir": false,
+    "size": 105818
+  },
+  "Default\\Cache\\Cache_Data\\f_00005e": {
+    "is_dir": false,
+    "size": 83108
+  },
+  "Default\\Cache\\Cache_Data\\f_00005f": {
+    "is_dir": false,
+    "size": 74130
+  },
+  "Default\\Cache\\Cache_Data\\f_000060": {
+    "is_dir": false,
+    "size": 133900
+  },
+  "Default\\Cache\\Cache_Data\\f_000061": {
+    "is_dir": false,
+    "size": 177288
+  },
+  "Default\\Cache\\Cache_Data\\f_000062": {
+    "is_dir": false,
+    "size": 168478
+  },
+  "Default\\Cache\\Cache_Data\\f_000063": {
+    "is_dir": false,
+    "size": 168578
+  },
+  "Default\\Cache\\Cache_Data\\f_000064": {
+    "is_dir": false,
+    "size": 178066
+  },
+  "Default\\Cache\\Cache_Data\\f_000065": {
+    "is_dir": false,
+    "size": 221800
+  },
+  "Default\\Cache\\Cache_Data\\f_000066": {
+    "is_dir": false,
+    "size": 213072
+  },
+  "Default\\Cache\\Cache_Data\\f_000067": {
+    "is_dir": false,
+    "size": 215326
+  },
+  "Default\\Cache\\Cache_Data\\f_000068": {
+    "is_dir": false,
+    "size": 266916
+  },
+  "Default\\Cache\\Cache_Data\\f_000069": {
+    "is_dir": false,
+    "size": 22056
+  },
+  "Default\\Cache\\Cache_Data\\f_00006a": {
+    "is_dir": false,
+    "size": 23392
+  },
+  "Default\\Cache\\Cache_Data\\f_00006b": {
+    "is_dir": false,
+    "size": 36204
+  },
+  "Default\\Cache\\Cache_Data\\f_00006c": {
+    "is_dir": false,
+    "size": 40128
+  },
+  "Default\\Cache\\Cache_Data\\f_00006d": {
+    "is_dir": false,
+    "size": 128352
+  },
+  "Default\\Cache\\Cache_Data\\f_00006e": {
+    "is_dir": false,
+    "size": 39393
+  },
+  "Default\\Cache\\Cache_Data\\f_00006f": {
+    "is_dir": false,
+    "size": 17168
+  },
+  "Default\\Cache\\Cache_Data\\f_000070": {
+    "is_dir": false,
+    "size": 157169
+  },
+  "Default\\Cache\\Cache_Data\\f_000071": {
+    "is_dir": false,
+    "size": 22184
+  },
+  "Default\\Cache\\Cache_Data\\f_000072": {
+    "is_dir": false,
+    "size": 141453
+  },
+  "Default\\Cache\\Cache_Data\\f_000073": {
+    "is_dir": false,
+    "size": 121219
+  },
+  "Default\\Cache\\Cache_Data\\f_000074": {
+    "is_dir": false,
+    "size": 136513
+  },
+  "Default\\Cache\\Cache_Data\\f_000075": {
+    "is_dir": false,
+    "size": 76031
+  },
+  "Default\\Cache\\Cache_Data\\f_000076": {
+    "is_dir": false,
+    "size": 61465
+  },
+  "Default\\Cache\\Cache_Data\\f_000077": {
+    "is_dir": false,
+    "size": 73066
+  },
+  "Default\\Cache\\Cache_Data\\f_000078": {
+    "is_dir": false,
+    "size": 20134
+  },
+  "Default\\Cache\\Cache_Data\\f_000079": {
+    "is_dir": false,
+    "size": 53056
+  },
+  "Default\\Cache\\Cache_Data\\f_00007a": {
+    "is_dir": false,
+    "size": 50128
+  },
+  "Default\\Cache\\Cache_Data\\f_00007b": {
+    "is_dir": false,
+    "size": 18364
+  },
+  "Default\\Cache\\Cache_Data\\f_00007c": {
+    "is_dir": false,
+    "size": 56208
+  },
+  "Default\\Cache\\Cache_Data\\f_00007d": {
+    "is_dir": false,
+    "size": 106189
+  },
+  "Default\\Cache\\Cache_Data\\f_00007e": {
+    "is_dir": false,
+    "size": 67520
+  },
+  "Default\\Cache\\Cache_Data\\f_00007f": {
+    "is_dir": false,
+    "size": 22111
+  },
+  "Default\\Cache\\Cache_Data\\f_000080": {
+    "is_dir": false,
+    "size": 123416
+  },
+  "Default\\Cache\\Cache_Data\\f_000081": {
+    "is_dir": false,
+    "size": 46171
+  },
+  "Default\\Cache\\Cache_Data\\f_000082": {
+    "is_dir": false,
+    "size": 57199
+  },
+  "Default\\Cache\\Cache_Data\\f_000083": {
+    "is_dir": false,
+    "size": 104868
+  },
+  "Default\\Cache\\Cache_Data\\f_000084": {
+    "is_dir": false,
+    "size": 16909
+  },
+  "Default\\Cache\\Cache_Data\\f_000085": {
+    "is_dir": false,
+    "size": 25371
+  },
+  "Default\\Cache\\Cache_Data\\f_000086": {
+    "is_dir": false,
+    "size": 167489
+  },
+  "Default\\Cache\\Cache_Data\\f_000087": {
+    "is_dir": false,
+    "size": 138420
+  },
+  "Default\\Cache\\Cache_Data\\f_000088": {
+    "is_dir": false,
+    "size": 104650
+  },
+  "Default\\Cache\\Cache_Data\\f_000089": {
+    "is_dir": false,
+    "size": 127505
+  },
+  "Default\\Cache\\Cache_Data\\f_00008a": {
+    "is_dir": false,
+    "size": 72399
+  },
+  "Default\\Cache\\Cache_Data\\f_00008b": {
+    "is_dir": false,
+    "size": 34123
+  },
+  "Default\\Cache\\Cache_Data\\f_00008c": {
+    "is_dir": false,
+    "size": 78784
+  },
+  "Default\\Cache\\Cache_Data\\f_00008d": {
+    "is_dir": false,
+    "size": 89277
+  },
+  "Default\\Cache\\Cache_Data\\f_00008e": {
+    "is_dir": false,
+    "size": 30361
+  },
+  "Default\\Cache\\Cache_Data\\f_00008f": {
+    "is_dir": false,
+    "size": 17659
+  },
+  "Default\\Cache\\Cache_Data\\f_000090": {
+    "is_dir": false,
+    "size": 22845
+  },
+  "Default\\Cache\\Cache_Data\\f_000091": {
+    "is_dir": false,
+    "size": 22004
+  },
+  "Default\\Cache\\Cache_Data\\f_000092": {
+    "is_dir": false,
+    "size": 90112
+  },
+  "Default\\Cache\\Cache_Data\\f_000093": {
+    "is_dir": false,
+    "size": 119996
+  },
+  "Default\\Cache\\Cache_Data\\f_000094": {
+    "is_dir": false,
+    "size": 323362
+  },
+  "Default\\Cache\\Cache_Data\\f_000095": {
+    "is_dir": false,
+    "size": 401160
+  },
+  "Default\\Cache\\Cache_Data\\f_000096": {
+    "is_dir": false,
+    "size": 33339
+  },
+  "Default\\Cache\\Cache_Data\\f_000097": {
+    "is_dir": false,
+    "size": 17053
+  },
+  "Default\\Cache\\Cache_Data\\f_000098": {
+    "is_dir": false,
+    "size": 198011
+  },
+  "Default\\Cache\\Cache_Data\\f_000099": {
+    "is_dir": false,
+    "size": 38456
+  },
+  "Default\\Cache\\Cache_Data\\f_00009a": {
+    "is_dir": false,
+    "size": 95045
+  },
+  "Default\\Cache\\Cache_Data\\f_00009b": {
+    "is_dir": false,
+    "size": 71561
+  },
+  "Default\\Cache\\Cache_Data\\f_00009c": {
+    "is_dir": false,
+    "size": 107664
+  },
+  "Default\\Cache\\Cache_Data\\f_00009d": {
+    "is_dir": false,
+    "size": 147249
+  },
+  "Default\\Cache\\Cache_Data\\f_00009e": {
+    "is_dir": false,
+    "size": 73378
+  },
+  "Default\\Cache\\Cache_Data\\f_00009f": {
+    "is_dir": false,
+    "size": 274624
+  },
+  "Default\\Cache\\Cache_Data\\f_0000a0": {
+    "is_dir": false,
+    "size": 168442
+  },
+  "Default\\Cache\\Cache_Data\\f_0000a1": {
+    "is_dir": false,
+    "size": 20758
+  },
+  "Default\\Cache\\Cache_Data\\f_0000a2": {
+    "is_dir": false,
+    "size": 41413
+  },
+  "Default\\Cache\\Cache_Data\\f_0000a3": {
+    "is_dir": false,
+    "size": 17525
+  },
+  "Default\\Cache\\Cache_Data\\f_0000a4": {
+    "is_dir": false,
+    "size": 48320
+  },
+  "Default\\Cache\\Cache_Data\\f_0000a5": {
+    "is_dir": false,
+    "size": 16746
+  },
+  "Default\\Cache\\Cache_Data\\f_0000a6": {
+    "is_dir": false,
+    "size": 22351
+  },
+  "Default\\Cache\\Cache_Data\\f_0000a7": {
+    "is_dir": false,
+    "size": 63066
+  },
+  "Default\\Cache\\Cache_Data\\f_0000a8": {
+    "is_dir": false,
+    "size": 25546
+  },
+  "Default\\Cache\\Cache_Data\\f_0000a9": {
+    "is_dir": false,
+    "size": 18902
+  },
+  "Default\\Cache\\Cache_Data\\f_0000aa": {
+    "is_dir": false,
+    "size": 467744
+  },
+  "Default\\Cache\\Cache_Data\\f_0000ab": {
+    "is_dir": false,
+    "size": 30472
+  },
+  "Default\\Cache\\Cache_Data\\f_0000ac": {
+    "is_dir": false,
+    "size": 40728
+  },
+  "Default\\Cache\\Cache_Data\\f_0000ad": {
+    "is_dir": false,
+    "size": 23539
+  },
+  "Default\\Cache\\Cache_Data\\f_0000ae": {
+    "is_dir": false,
+    "size": 56536
+  },
+  "Default\\Cache\\Cache_Data\\f_0000af": {
+    "is_dir": false,
+    "size": 23843
+  },
+  "Default\\Cache\\Cache_Data\\f_0000b0": {
+    "is_dir": false,
+    "size": 33760
+  },
+  "Default\\Cache\\Cache_Data\\f_0000b1": {
+    "is_dir": false,
+    "size": 25922
+  },
+  "Default\\Cache\\Cache_Data\\f_0000b2": {
+    "is_dir": false,
+    "size": 18642
+  },
+  "Default\\Cache\\Cache_Data\\f_0000b3": {
+    "is_dir": false,
+    "size": 45760
+  },
+  "Default\\Cache\\Cache_Data\\f_0000b4": {
+    "is_dir": false,
+    "size": 17970
+  },
+  "Default\\Cache\\Cache_Data\\f_0000b5": {
+    "is_dir": false,
+    "size": 35022
+  },
+  "Default\\Cache\\Cache_Data\\f_0000b6": {
+    "is_dir": false,
+    "size": 16656
+  },
+  "Default\\Cache\\Cache_Data\\f_0000b7": {
+    "is_dir": false,
+    "size": 31760
+  },
+  "Default\\Cache\\Cache_Data\\f_0000b8": {
+    "is_dir": false,
+    "size": 23239
+  },
+  "Default\\Cache\\Cache_Data\\f_0000b9": {
+    "is_dir": false,
+    "size": 42191
+  },
+  "Default\\Cache\\Cache_Data\\f_0000ba": {
+    "is_dir": false,
+    "size": 45049
+  },
+  "Default\\Cache\\Cache_Data\\f_0000bb": {
+    "is_dir": false,
+    "size": 25214
+  },
+  "Default\\Cache\\Cache_Data\\f_0000bc": {
+    "is_dir": false,
+    "size": 30182
+  },
+  "Default\\Cache\\Cache_Data\\f_0000bd": {
+    "is_dir": false,
+    "size": 16537
+  },
+  "Default\\Cache\\Cache_Data\\f_0000be": {
+    "is_dir": false,
+    "size": 126839
+  },
+  "Default\\Cache\\Cache_Data\\f_0000bf": {
+    "is_dir": false,
+    "size": 127710
+  },
+  "Default\\Cache\\Cache_Data\\f_0000c0": {
+    "is_dir": false,
+    "size": 34650
+  },
+  "Default\\Cache\\Cache_Data\\index": {
+    "is_dir": false,
+    "size": 262512
+  },
+  "Default\\Cache\\No_Vary_Search\\journal.baj": {
+    "is_dir": false,
+    "size": 4
+  },
+  "Default\\Cache\\No_Vary_Search\\snapshot.baf": {
+    "is_dir": false,
+    "size": 20
+  }
+}
