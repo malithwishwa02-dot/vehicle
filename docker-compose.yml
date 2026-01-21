@@ -3,8 +3,6 @@
 # Implements Network Sidecar Pattern for IP Rotation
 # ==============================================================================
 
-version: '3.8'
-
 services:
   # ===========================================================================
   # VPN Sidecar Service - Network Isolation & IP Rotation

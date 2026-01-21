@@ -15,10 +15,6 @@ if platform.system() == "Windows":
     import ctypes
     import ctypes.wintypes
 
-if platform.system() == "Windows":
-    import ctypes
-    import ctypes.wintypes
-
     class SYSTEMTIME(ctypes.Structure):
         """Windows SYSTEMTIME structure for kernel32 API"""
         _fields_ = [
