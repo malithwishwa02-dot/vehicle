@@ -16,6 +16,9 @@ class IntelligenceCore:
     Interfaces with OpenAI API to analyze targets and generate strategies.
     """
     
+    # Configuration constants
+    MAX_CONTENT_SAMPLE_LENGTH = 2000  # Maximum content length to send to AI
+    
     def __init__(self, logger: logging.Logger = None):
         """
         Initialize Intelligence Core with OpenAI client.
@@ -54,7 +57,7 @@ class IntelligenceCore:
         
         try:
             # Truncate raw_data to avoid token limits
-            data_sample = raw_data[:2000] if raw_data else "No data available"
+            data_sample = raw_data[:self.MAX_CONTENT_SAMPLE_LENGTH] if raw_data else "No data available"
             
             # Construct analysis prompt
             prompt = f"""You are an autonomous browser fingerprinting strategist analyzing a target website.
@@ -98,9 +101,16 @@ Respond ONLY with valid JSON, no additional text."""
             
             # Handle potential markdown code blocks
             if content.startswith("```"):
-                # Extract JSON from markdown code block
+                # Extract JSON from markdown code block (more robust parsing)
                 lines = content.split("\n")
-                content = "\n".join(lines[1:-1]) if len(lines) > 2 else content
+                if len(lines) > 2:
+                    # Remove first and last lines (markdown delimiters)
+                    content = "\n".join(lines[1:-1])
+                # If only 2 lines or less, try to extract content
+                elif len(lines) == 2:
+                    content = lines[1] if lines[1] else "{}"
+                else:
+                    content = "{}"
             
             strategy = json.loads(content)
             

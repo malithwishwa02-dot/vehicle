@@ -151,7 +151,11 @@ class OrchestratorV5:
             logger.info(f"    - Strategy: {notes}")
             
             # Dynamic adjustment (respect user override if explicitly set)
-            if self.data.get('age_days') is None or strategy.get("fallback_mode") is not True:
+            # Only adjust if user didn't explicitly set age_days AND we're not in fallback mode
+            user_set_age = self.data.get('age_days') is not None
+            in_fallback_mode = strategy.get('fallback_mode') == True
+            
+            if not user_set_age and not in_fallback_mode:
                 old_age = self.age_days
                 self.age_days = recommended_age
                 if old_age != self.age_days:

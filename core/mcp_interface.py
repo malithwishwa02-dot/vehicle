@@ -52,6 +52,7 @@ class MCPClient:
         Returns:
             Result dictionary or None on failure
         """
+        # Security: Validate server against whitelist
         if server not in self.servers:
             self.logger.error(f"[MCP] Unknown server: {server}")
             return None
