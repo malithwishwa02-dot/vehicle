@@ -1,0 +1,16 @@
+{
+  "profile_root": "d:/vehicle/37ab1612-c285-4314-b32a-6a06d35d6d84",
+  "inventory": "d:/vehicle/inventory.json",
+  "exports": {
+    "cookies_csv": "d:/vehicle/reproduce_profile/exports/cookies.csv",
+    "logins_csv": "d:/vehicle/reproduce_profile/exports/logins.csv",
+    "autofill_csv": "d:/vehicle/reproduce_profile/exports/autofill.csv",
+    "credit_cards_csv": "d:/vehicle/reproduce_profile/exports/credit_cards.csv",
+    "addresses_csv": "d:/vehicle/reproduce_profile/exports/addresses.csv",
+    "raw_files_dir": "d:/vehicle/reproduce_profile/exports/raw_files"
+  },
+  "dumps_dir": "d:/vehicle/reproduce_profile/dumps/",
+  "scaffold_script": "d:/vehicle/reproduce_profile/scripts/recreate_profile_scaffold.py",
+  "decryption_script": "d:/vehicle/reproduce_profile/scripts/decrypt_profile.py",
+  "notes": "Passwords and v10 AES cookie blobs remain encrypted (DPAPI-wrapped key in Local State). See README.md for steps to decrypt safely."
+}
