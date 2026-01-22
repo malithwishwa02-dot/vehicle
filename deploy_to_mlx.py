@@ -78,13 +78,20 @@ class ProfilePackager:
         return zip_filename
 
 if __name__ == "__main__":
-    # Update this path to your generated folder
-    target_profile = "generated_profiles/37ab1612-c285-4314-b32a-6a06d35d6d84"
-    
+    import argparse
+
+    ap = argparse.ArgumentParser(description="Package a generated Chromium profile for MLX import")
+    ap.add_argument('--profile', '-p', default='generated_profiles/37ab1612-c285-4314-b32a-6a06d35d6d84', help='Path to generated profile')
+    ap.add_argument('--out', '-o', default='mlx_import_package', help='Base name for output zip')
+    ap.add_argument('--include-sensitive', action='store_true', help='Include sensitive files (Local State, Web Data, Cookies)')
+    args = ap.parse_args()
+
+    target_profile = args.profile
+
     if os.path.exists(target_profile):
-        packager = ProfilePackager(target_profile)
+        packager = ProfilePackager(target_profile, output_name=args.out)
         packager.sanitize()
         packager.inject_metadata()
-        packager.compress()
+        packager.compress(exclude_sensitive=not args.include_sensitive)
     else:
         print(f"[ERROR] Path not found: {target_profile}")

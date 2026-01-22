@@ -36,6 +36,7 @@ def execute_midas_protocol(args):
         print(f"[PHASE 2A] Synthetic population failed: {e}")
 
 
+
     # PHASE 2B: BURNING (browser-driven writes with persona)
     print("[PHASE 2B] DATA INJECTION (THE BURN)")
     persona = Persona(seed=args.seed)
@@ -44,6 +45,15 @@ def execute_midas_protocol(args):
         burner.run_cycle(persona=persona)
     except Exception as e:
         print('[PHASE 2B] Burner run failed:', e)
+
+    # PHASE 2C: TEMPORAL INJECTION (TIME DILATOR)
+    print("[PHASE 2C] TEMPORAL INJECTION (TIME DILATOR)")
+    try:
+        from time_dilator import TimeDilator
+        td = TimeDilator(artifact_path)
+        td.inject_history()
+    except Exception as e:
+        print(f'[PHASE 2C] Time Dilator failed: {e}')
 
     # If burner could not create LevelDB entries and user requested real_leveldb, attempt direct write
     if args.real_leveldb:

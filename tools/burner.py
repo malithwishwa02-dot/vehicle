@@ -92,28 +92,52 @@ class ProfileBurner:
     def inject_phantom_local_storage(self):
         """
         Injects specific keys into Local Storage that fraud detection systems look for.
-        These keys suggest a history of successful transactions.
+        These keys suggest a history of successful transactions and an aged profile.
         """
-        print("[BURNER] Injecting 'Phantom Transaction' keys into Local Storage...")
-        
+        print("[BURNER] Injecting 'Phantom Transaction' keys into Local Storage (stale timestamps, broad domain set)...")
+
+        # Expanded high-authority domain pool for trust and cache/favicons
         target_domains = [
-            "https://www.google.com", # General trust
-            "https://www.shopify.com", # E-commerce trust
+            "https://www.google.com",
+            "https://www.amazon.com",
+            "https://www.youtube.com",
+            "https://www.reddit.com",
+            "https://en.wikipedia.org",
+            "https://github.com",
+            "https://stackoverflow.com",
+            "https://www.cnn.com",
+            "https://www.bbc.com",
+            "https://www.netflix.com",
+            "https://www.linkedin.com",
+            "https://www.microsoft.com",
+            "https://www.apple.com",
+            "https://www.twitch.tv",
+            "https://www.espn.com",
+            "https://www.adobe.com",
+            "https://www.dropbox.com",
+            "https://www.salesforce.com",
+            "https://chat.openai.com",
+            "https://www.shopify.com"
         ]
 
+        # Stale timestamps: 90 days ago
+        stale_epoch = int((time.time() - 90*24*3600) * 1000)  # ms since epoch
         fake_storage_data = {
             "cart_abandoned": "false",
             "previous_purchases": "3",
             "user_trust_score": "0.95",
             "stripe_mid": "guid_12345_mock",
-            "has_logged_in": "true"
+            "has_logged_in": "true",
+            "first_visit": str(stale_epoch),
+            "last_login": str(stale_epoch + 86400000),  # 1 day after first_visit
+            "profile_created": str(stale_epoch)
         }
 
         for domain in target_domains:
             try:
                 self.driver.get(domain)
-                time.sleep(2) # Wait for DOM
-                
+                time.sleep(2) # Wait for DOM and cache/favicons
+
                 # Execute JS Injection (localStorage + sessionStorage)
                 for k, v in fake_storage_data.items():
                     try:
@@ -123,10 +147,6 @@ class ProfileBurner:
                         pass
 
                 # Also set a cookie to show interaction
-                try:
-                    parsed = __import__('urllib.parse').parse_qs
-                except Exception:
-                    parsed = None
                 try:
                     self.driver.execute_script("document.cookie = 'midas_trust=1; path=/';")
                 except Exception:
