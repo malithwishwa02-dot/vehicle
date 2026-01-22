@@ -1,5 +1,5 @@
 nodriver==0.28
-curl_cffi==0.5.10
+curl_cffi==0.14.0
 numpy==1.26.0
 cryptography==41.0.3
 flask==3.0.0
