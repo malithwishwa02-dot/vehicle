@@ -99,3 +99,12 @@ cache/
 docs/_build/
 docs/_static/
 docs/_templates/
+
+# Generated profiles created by runtime
+generated_profiles/
+# Specific golden profile (local runtime)
+generated_profiles/37ab1612-c285-4314-b32a-6a06d35d6d84/
+
+# Environment files
+.env
+.env.local

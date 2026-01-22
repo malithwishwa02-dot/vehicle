@@ -1,0 +1,11 @@
+# CODEOWNERS
+# Update the following to match your organization's reviewers / security team.
+# Example:
+# * @your-org/your-security-team
+
+# Default owners (replace with a real team)
+* @your-org/your-team
+
+# Security sensitive paths
+SECURITY.md @your-org/security-team
+.deploy/** @your-org/security-team
