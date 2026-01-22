@@ -18,6 +18,37 @@ from webdriver_manager.chrome import ChromeDriverManager
 from core.identity import Persona
 
 class ProfileBurner:
+        def burn_downloads(self, download_url=None, filename=None):
+            """
+            Triggers a real download in the browser to create a download artifact, then deletes the file.
+            """
+            import tempfile, os
+            print("[BURNER] Simulating a real download...")
+            download_url = download_url or "https://www.google.com/images/branding/googlelogo/2x/googlelogo_light_color_92x30dp.png"
+            filename = filename or "google_logo.png"
+            # Set Chrome prefs for download
+            temp_dir = tempfile.gettempdir()
+            options = self.driver.options if hasattr(self.driver, 'options') else None
+            if options:
+                prefs = {"download.default_directory": temp_dir, "download.prompt_for_download": False}
+                options.add_experimental_option("prefs", prefs)
+            self.driver.get(download_url)
+            import time
+            time.sleep(2)
+            # Simulate user clicking download
+            try:
+                self.driver.execute_script(f"window.location.href='{download_url}';")
+                time.sleep(3)
+            except Exception:
+                pass
+            # Clean up file
+            file_path = os.path.join(temp_dir, filename)
+            if os.path.exists(file_path):
+                try:
+                    os.remove(file_path)
+                    print(f"  > Downloaded and deleted: {file_path}")
+                except Exception:
+                    pass
     def __init__(self, profile_path, persona=None):
         self.profile_path = profile_path
         self.driver = None

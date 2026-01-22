@@ -13,6 +13,7 @@ from tools.burner import ProfileBurner
 from core.identity import Persona
 
 import argparse
+import random
 
 def execute_midas_protocol(args):
     print("==========================================================")
@@ -51,9 +52,48 @@ def execute_midas_protocol(args):
     try:
         from time_dilator import TimeDilator
         td = TimeDilator(artifact_path)
-        td.inject_history()
+        td.inject_history(days_back=args.age_days, target_entries=2000, seed=args.seed)
     except Exception as e:
         print(f'[PHASE 2C] Time Dilator failed: {e}')
+
+    # PHASE 2D: COMMERCE INJECTION (Golden Chain + Downloads)
+    if args.inject_purchases and args.inject_purchases > 0:
+        print(f"[PHASE 2D] COMMERCE INJECTION: Injecting {args.inject_purchases} purchase funnel(s)")
+        try:
+            from core.commerce_injector import inject_golden_chain, inject_download
+            from datetime import datetime, timedelta
+            for i in range(args.inject_purchases):
+                order = f"ORD-{random.randint(10000,99999)}"
+                t0 = datetime.now() - timedelta(minutes=(i*10))
+                inject_golden_chain(os.path.join(artifact_path, 'Default', 'History'), 'https://target-site.com', order, t0=t0)
+                inject_download(os.path.join(artifact_path, 'Default', 'History'), order, t0=t0)
+        except Exception as e:
+            print(f'[PHASE 2D] Commerce injection failed: {e}')
+
+    # PHASE 2E: ENRICHMENT (Top Sites, Autofill, Shortcuts, Local Storage)
+    if args.enrich:
+        print('[PHASE 2E] ENRICHMENT: Running post-processing enrichment scripts')
+        try:
+            from tools.top_sites_sync import sync_top_sites
+            from tools.autofill_entropy import inject_autofill
+            from tools.shortcuts_gen import generate_shortcuts
+            from tools.state_architect import generate_all
+            from tools.leveldb_writer import write_local_storage
+
+            history_db = os.path.join(artifact_path, 'Default', 'History')
+            top_sites_db = os.path.join(artifact_path, 'Default', 'Top Sites')
+            web_data_db = os.path.join(artifact_path, 'Default', 'Web Data')
+            shortcuts_path = os.path.join(artifact_path, 'Default', 'Shortcuts')
+            leveldb_dir = os.path.join(artifact_path, 'Default', 'Local Storage', 'leveldb')
+
+            sync_top_sites(history_db, top_sites_db)
+            inject_autofill(web_data_db)
+            generate_shortcuts(shortcuts_path)
+            keys = generate_all()
+            ok = write_local_storage(leveldb_dir, keys)
+            print(f"  > Enrichment completed. LevelDB write ok={ok}")
+        except Exception as e:
+            print(f'[PHASE 2E] Enrichment failed: {e}')
 
     # If burner could not create LevelDB entries and user requested real_leveldb, attempt direct write
     if args.real_leveldb:
@@ -137,6 +177,8 @@ if __name__ == "__main__":
     ap.add_argument('--real-leveldb', action='store_true', help='Attempt real LevelDB write using plyvel if available')
     ap.add_argument('--age-days', type=int, default=180, help='Approximate age in days for timestamps')
     ap.add_argument('--seed', type=int, default=42, help='RNG seed for deterministic generation')
+    ap.add_argument('--inject-purchases', type=int, default=0, help='Number of purchase funnels to inject via Commerce Injector')
+    ap.add_argument('--enrich', action='store_true', help='Run enrichment steps (top sites, autofill, shortcuts, local storage)')
     args = ap.parse_args()
     execute_midas_protocol(args)
 
