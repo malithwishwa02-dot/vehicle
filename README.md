@@ -24,6 +24,35 @@
 
 ---
 
+## 🚦 Running from main.py (Local Python)
+
+### 1. **Install Python 3.8+**
+- Ensure you have Python 3.8 or newer installed on your system.
+
+### 2. **Install Dependencies**
+```bash
+pip install -r requirements.txt
+```
+
+### 3. **Configure Inputs**
+- Edit inputs.yaml to set your desired profile parameters (output directory, persona, proxy, etc.).
+
+### 4. **Run the Main Pipeline**
+```bash
+python main.py --config config/inputs.yaml
+```
+- This will:
+  - Scaffold a new browser profile folder
+  - Inject persona/address data
+  - Generate historical browser history
+  - Run the encrypted "burner" module for runtime injections
+
+### 5. **Output**
+- Generated profiles will be saved in the directory specified by `profile.output_dir` in inputs.yaml.
+- Each run prints the location and UUID of the generated profile.
+
+---
+
 ## 🎯 Overview
 
 PROMETHEUS-CORE is a containerized temporal manipulation framework implementing **Method 4: Time-Shifted Cookie Injection** for Linux environments. This upgrade transitions the system from Windows-centric kernel manipulation to process-level temporal injection using `libfaketime` in Docker containers.

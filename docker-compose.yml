@@ -1,79 +1,22 @@
-# ==============================================================================
-# PROMETHEUS-CORE Docker Compose Configuration
-# Implements Network Sidecar Pattern for IP Rotation
-# ==============================================================================
+version: '3.8'
 
 services:
-  # ===========================================================================
-  # VPN Sidecar Service - Network Isolation & IP Rotation
-  # ===========================================================================
-  vpn_sidecar:
-    image: qmcgaw/gluetun:latest
-    container_name: prometheus-vpn-sidecar
-    cap_add:
-      - NET_ADMIN
-    environment:
-      # VPN Provider configuration (customize as needed)
-      - VPN_SERVICE_PROVIDER=custom
-      - VPN_TYPE=openvpn
-      # Firewall settings
-      - FIREWALL_OUTBOUND_SUBNETS=192.168.0.0/16,172.16.0.0/12
-      # Health check
-      - HEALTH_VPN_DURATION_INITIAL=10s
+  backend:
+    build: ./prometheus_v3
+    container_name: prometheus_core
+    ports:
+      - "5000:5000"
     volumes:
-      # Mount VPN configuration files here
-      - ./vpn-config:/gluetun
-    networks:
-      - prometheus-network
-    restart: unless-stopped
-    healthcheck:
-      test: ["CMD", "curl", "-f", "https://api.ipify.org"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+      - ./prometheus_v3/output:/app/output
+    restart: always
 
-  # ===========================================================================
-  # PROMETHEUS-CORE Service - Main Application
-  # ===========================================================================
-  prometheus-core:
-    build:
-      context: .
+  frontend:
+    build: 
+      context: ./genesis_gui
       dockerfile: Dockerfile
-    container_name: prometheus-core
+    container_name: prometheus_gui
+    ports:
+      - "3000:3000"
     depends_on:
-      vpn_sidecar:
-        condition: service_healthy
-    # Use VPN sidecar's network stack for IP rotation
-    network_mode: "service:vpn_sidecar"
-    environment:
-      # Time manipulation settings
-      - GENESIS_OFFSET_DAYS=90
-      - FAKETIME_DONT_FAKE_MONOTONIC=1
-      # Application settings
-      - PYTHONUNBUFFERED=1
-      - LOG_LEVEL=INFO
-    volumes:
-      # Persist profiles and data
-      - ./profiles:/app/profiles
-      - ./logs:/app/logs
-      - ./config:/app/config
-      # Share /tmp for inter-container communication if needed
-      - /tmp:/tmp
-    cap_add:
-      # Required for iptables if needed within container
-      - NET_ADMIN
-    privileged: false
-    restart: unless-stopped
-    # Override command if needed
-    # command: python -u main_v5.py --age 90
-
-networks:
-  prometheus-network:
-    driver: bridge
-    ipam:
-      config:
-        - subnet: 172.20.0.0/16
-
-volumes:
-  vpn-config:
-    driver: local
+      - backend
+    restart: always
