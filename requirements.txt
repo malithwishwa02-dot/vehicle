@@ -1,4 +1,4 @@
-nodriver==0.28
+nodriver==0.48.1
 curl_cffi==0.5.10
 numpy==1.26.0
 cryptography==41.0.3
