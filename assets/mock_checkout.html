@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html>
+<body>
+    <!-- Hidden form to trigger Chrome's "Save Card" heuristic -->
+    <form id="payment-form" action="/submit" method="POST">
+        <input type="text" id="cc_name" name="name" autocomplete="cc-name">
+        <input type="text" id="cc_num" name="cardnumber" autocomplete="cc-number">
+        <input type="text" id="cc_exp" name="cc-exp" autocomplete="cc-exp">
+        <input type="text" id="cc_cvc" name="cvc" autocomplete="cc-csc">
+        <button type="submit" id="submit_btn">Pay</button>
+    </form>
+</body>
+</html>

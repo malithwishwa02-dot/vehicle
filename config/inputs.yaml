@@ -1,0 +1,22 @@
+profile:
+  output_dir: generated_profiles
+  count: 1
+  age_days: 180
+persona:
+  name: "John Doe"
+  address: "123 Main St"
+  city: "New York"
+  state: "NY"
+  zip: "10001"
+  country: "US"
+proxy:
+  type: http
+  host: "127.0.0.1"
+  port: 8080
+  username: ""
+  password: ""
+credit_card:
+  cardholder: "John Doe"
+  number: "4111111111111111"
+  expiry: "12/30"
+  cvc: "123"
