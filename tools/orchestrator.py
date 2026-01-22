@@ -68,6 +68,36 @@ def run_push(args):
     subprocess.check_call(['git', 'push'])
 
 
+def run_generate(args):
+    """Run fabricate_identity then copy the final profile folder to out-dir."""
+    # Run the normal fabricate flow
+    run_fabricate(args)
+
+    # Determine artifact path
+    artifact = ROOT / 'generated_profiles' / args.uuid
+    if not artifact.exists():
+        print('[ORCH] ERROR: Generated profile folder not found:', artifact)
+        return
+
+    if args.out_dir:
+        import shutil
+        out_dir = Path(args.out_dir)
+        if out_dir.exists():
+            print(f"[ORCH] Removing existing out-dir: {out_dir}")
+            shutil.rmtree(out_dir)
+        print(f"[ORCH] Copying artifact to: {out_dir}")
+        shutil.copytree(artifact, out_dir)
+        print(f"[ORCH] Profile copied to {out_dir}")
+    else:
+        print(f"[ORCH] Generated profile available at: {artifact}")
+
+    if args.package:
+        pkg_name = f"mlx_import_package_generated_{args.uuid}"
+        pkg_args = argparse.Namespace(profile=str(artifact), out=pkg_name, include_sensitive=args.include_sensitive)
+        run_package(pkg_args)
+        print('[ORCH] Packaging complete')
+
+
 def main():
     ap = argparse.ArgumentParser(prog='orchestrator')
     sub = ap.add_subparsers(dest='cmd')
@@ -102,6 +132,18 @@ def main():
     p_push = sub.add_parser('push', help='Commit and push current repo changes')
     p_push.add_argument('--message', help='Commit message')
 
+    p_gen = sub.add_parser('generate', help='Run full pipeline and export local profile folder')
+    p_gen.add_argument('--uuid', default='37ab1612-c285-4314-b32a-6a06d35d6d84')
+    p_gen.add_argument('--age-days', type=int, default=90)
+    p_gen.add_argument('--seed', type=int, default=123)
+    p_gen.add_argument('--inject-purchases', type=int, default=0)
+    p_gen.add_argument('--enrich', action='store_true')
+    p_gen.add_argument('--force', action='store_true')
+    p_gen.add_argument('--real-leveldb', action='store_true')
+    p_gen.add_argument('--out-dir', help='Path to copy final profile folder to')
+    p_gen.add_argument('--package', action='store_true', help='Also create a package/zip of the profile')
+    p_gen.add_argument('--include-sensitive', action='store_true', help='Include sensitive DBs when packaging')
+
     args = ap.parse_args()
     if not args.cmd:
         ap.print_help()
@@ -119,6 +161,8 @@ def main():
         run_dump_history(args)
     elif args.cmd == 'push':
         run_push(args)
+    elif args.cmd == 'generate':
+        run_generate(args)
 
 
 if __name__ == '__main__':
