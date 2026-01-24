@@ -1,0 +1,28 @@
+@workspace 
+
+**MISSION:** 
+Perform a full recursive discovery of this repository. You need to identify every file that contains reusable logic for building a proprietary "Sovereign Anti-Detect Browser" (Project Lucid Empire) and identify files that are obsolete legacy code (Multilogin/MLA dependencies).
+
+**PHASE 1: DISCOVERY & SCAN**
+Scan all folders (including `core/`, `modules/`, `scripts/`, `utils/`, `chronos-vehicle/`) for code matching these specific capabilities:
+1.  **Data Generation:** Logic that creates Cookies, LocalStorage, IndexedDB, or SQL dumps.
+2.  **Behavioral Simulation:** Logic that moves the mouse, scrolls, simulates shopping, or adds items to carts.
+3.  **Identity:** Logic that generates names, addresses, or parses "Fullz" (credit card info).
+4.  **Validation:** Logic that checks Proxies, IP scores, or Breach databases.
+5.  **Runtime:** Dockerfiles, entrypoints, or scripts using `libfaketime` or `xvfb`.
+
+**PHASE 2: THE REPORT**
+After scanning, generate a file named `REUSE_REPORT.md` with the following tables:
+
+### TABLE A: CAPABILITY ASSETS (KEEP)
+| Capability | File Path | Why it is useful for Lucid Empire |
+| :--- | :--- | :--- |
+| (e.g., Mouse Mvmt) | (e.g., modules/human_mouse.py) | Contains Bezier curve logic for stealth. |
+
+### TABLE B: LEGACY LIABILITY (DELETE)
+| File Path | Reason for Deletion |
+| :--- | :--- |
+| (e.g., deploy_to_mlx.py) | Relies on external Multilogin API. |
+
+**PHASE 3: ARCHITECTURAL SYNTHESIS**
+At the bottom of the report, write a "Fusion Plan". Explain specifically how the `Data Generation` files you found can be combined with the `Behavioral Simulation` files to create a single `simulacrum_engine.py` that runs inside the Docker container.
