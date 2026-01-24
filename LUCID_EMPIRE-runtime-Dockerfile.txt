@@ -1,0 +1,17 @@
+FROM python:3.11-slim
+
+# 1. Install Time Shifting & Headless Tools RUN apt-get update && apt-get install -y \
+libfaketime \ xvfb \
+wget \ gnupg \
+&& rm -rf /var/lib/apt/lists/*
+
+# 2. Install Modified Engine Dependencies COPY requirements.txt .
+RUN pip install -r requirements.txt
+
+# 3. Setup Environment WORKDIR /app
+ENV LD_PRELOAD=/usr/lib/x86_64-linux-gnu/faketime/libfaketime.so.1 ENV FAKETIME_DONT_RESET=1
+
+# 4. Copy the Engine COPY ./engine /app/engine COPY ./core /app/core
+
+# 5. Entrypoint
+CMD ["python3", "/app/core/browser_launcher.py"]

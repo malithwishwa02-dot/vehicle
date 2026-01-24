@@ -1,0 +1,30 @@
+#!/bin/bash
+echo "[*] INITIATING LUCID EMPIRE ARCHITECTURE..."
+
+# 1. Create the Sovereign Directory Structure
+mkdir -p LUCID_EMPIRE/{core,engine,interface,runtime,storage/profiles}
+
+# 2. MIGRATE CRITICAL CAPABILITIES (The "Keep" List)
+# We accept the following files from the old repo as the 'Source of Truth'
+
+# -> Behavior & Commerce Logic
+cp modules/human_mouse.py LUCID_EMPIRE/core/mouse.py
+cp core/commerce_injector.py LUCID_EMPIRE/core/commerce.py cp core/tls_mimic.py LUCID_EMPIRE/core/tls.py
+cp core/network_lock.py LUCID_EMPIRE/core/netlock.py
+
+# -> Data Injection (The Burner Tool is critical for LevelDB) cp tools/burner.py LUCID_EMPIRE/core/burner.py
+cp tools/leveldb_writer.py LUCID_EMPIRE/core/leveldb_writer.py
+
+# -> History & Cookies
+cp tools/dump_history.py LUCID_EMPIRE/core/sql_injector.py cp level9_cookie_gen.py LUCID_EMPIRE/core/cookie_gen.py
+
+# -> Interface (Dashboard)
+cp templates/dashboard.html LUCID_EMPIRE/interface/index.html
+
+# 3. CREATE RUNTIME DEFINITIONS (Docker)
+# We start fresh with a sovereign Dockerfile to avoid legacy bloat touch LUCID_EMPIRE/runtime/Dockerfile
+
+# 4. INITIALIZE PYTHON PACKAGES
+touch LUCID_EMPIRE/core/	init	.py
+
+echo "[+] MIGRATION COMPLETE. OLD REPO IS OBSOLETE." echo "[+] NEW WORKSPACE: ./LUCID_EMPIRE"

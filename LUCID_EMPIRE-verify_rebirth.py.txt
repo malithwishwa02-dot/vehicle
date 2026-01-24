@@ -1,0 +1,10 @@
+import os
+
+required = [
+"core/simulacrum.py", "core/burner.py", "core/mouse.py", "interface/index.html", "runtime/Dockerfile", "app.py"
+]
+
+print("Verifying LUCID EMPIRE Rebirth...") for f in required:
+if os.path.exists(f): print(f"[OK] {f}")
+else:
+print(f"[FAIL] {f} - REBIRTH INCOMPLETE")

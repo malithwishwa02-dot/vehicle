@@ -1,0 +1,72 @@
+import os import json import logging
+from datetime import datetime, timedelta from typing import Dict
+
+# Import the migrated capabilities from core.mouse import HumanMouse
+from core.commerce import CommerceInjector from core.burner import Burner
+from core.tls import TLSMimic
+from core.netlock import NetworkLock
+
+logging.basicConfig(level=logging.INFO,  format='[SIMULACRUM]
+%(message)s')
+logger = logging.getLogger("Simulacrum")
+
+class SimulacrumEngine: """
+The Unified Generator.
+     Takes User Input -> Orchestrates all capabilities -> Outputs a Profile.
+"""
+
+def
+
+	init	(self, profile_root="./storage/profiles"): self.profile_root = profile_root
+self.mouse = HumanMouse() self.commerce = CommerceInjector() self.tls = TLSMimic() self.netlock = NetworkLock()
+
+
+     def genesis(self, operation_id: str, fullz: Dict, proxy: str, age_days: int):
+"""
+The Master Creation Sequence. """
+logger.info(f"INITIATING GENESIS: {operation_id} | AGE:
+{age_days} Days")
+
+# 1. Setup Workspace
+profile_path = os.path.join(self.profile_root, operation_id) os.makedirs(profile_path, exist_ok=True)
+
+# 2. Validate Network (Pre-Flight)
+if not self.netlock.verify_proxy_score(proxy): logger.error("PROXY REJECTED: Fraud Score too high.") return {"status": "FAILED", "reason": "Bad Proxy"}
+
+# 3. Time Manipulation Calculation
+
+# We calculate the 'faketime' string to pass to Docker later genesis_date = datetime.now() - timedelta(days=age_days) faketime_str = genesis_date.strftime("%Y-%m-%d %H:%M:%S")
+
+# 4. Generate Behavioral Data (The "Story")
+# Generate a fake shopping history based on the Fullz location shopping_history = self.commerce.generate_history(
+location=fullz.get('address', 'US'), days=age_days
+)
+
+# 5. Inject Artifacts (The "Evidence") burner = Burner(profile_path)
+
+# A. Inject Cookies
+logger.info("-> Crystallizing Cookies...") burner.inject_cookies(shopping_history['cookies'])
+
+# B. Inject LocalStorage (The "Trust" Tokens) logger.info("-> Forging LocalStorage...") burner.inject_local_storage(shopping_history['storage'])
+
+# C. Generate Mouse Pattern for Runtime
+          # We save a specific bezier curve config to be used by the browser later
+mouse_config = self.mouse.generate_profile(tremor=0.3) with open(os.path.join(profile_path, "mouse_config.json"),
+"w") as f:
+json.dump(mouse_config, f)
+
+# 6. Final Config Output config = {
+"id": operation_id, "faketime": faketime_str, "proxy": proxy, "fingerprint":
+self.tls.get_static_fingerprint("chrome_120"), "fullz": fullz
+}
+
+          with open(os.path.join(profile_path, "lucid_config.json"), "w") as f:
+json.dump(config, f, indent=4)
+
+
+
+
+config}
+
+logger.info("GENESIS COMPLETE. PROFILE READY FOR IGNITION.")
+return {"status": "READY", "path": profile_path, "config":
