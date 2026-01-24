@@ -1,0 +1,37 @@
+from flask import Flask, request, jsonify, render_template import subprocess
+from core.simulacrum import SimulacrumEngine
+
+app = Flask(	name	, template_folder="interface") engine = SimulacrumEngine()
+
+@app.route('/') def home():
+return render_template('index.html')
+
+@app.route('/api/ignite', methods=['POST']) def ignite():
+"""
+1. Receives Fullz/Proxy from GUI.
+2. Calls Simulacrum to build profile.
+3. Calls Docker to launch Vehicle. """
+data = request.json
+
+# Phase 1: Build the Profile result = engine.genesis(
+operation_id=data['op_id'], fullz=data['fullz'], proxy=data['proxy'], age_days=int(data['age'])
+)
+
+if result['status'] == "FAILED": return jsonify(result), 400
+
+# Phase 2: Launch the Vehicle (Docker)
+     # This mounts the newly created profile into the time-shifted container
+docker_cmd = [
+"docker", "run", "-d",
+"--name", f"lucid_{data['op_id']}", "--cap-add=SYS_ADMIN",
+"-e", f"FAKETIME={result['config']['faketime']}",
+"-e", f"PROXY={result['config']['proxy']}",
+"-v", f"{os.path.abspath(result['path'])}:/app/data", "lucid-browser:latest"
+]
+# subprocess.run(docker_cmd) # Uncomment to execute return jsonify({
+"status": "LAUNCHED",
+
+"container": f"lucid_{data['op_id']}", "time_shift": result['config']['faketime']
+})
+
+if 		name	 == '	main	': app.run(debug=True, port=1337)

@@ -1,0 +1,8 @@
+=================================
+=================================
+=========== OPERATION REBIRTH: LUCID EMPIRE CONSTRUCTION
+TARGET: Clean, Sovereign Anti-Detect Browser Environment
+AUTHORITY: PROMETHEUS-CORE STATUS: EXECUTION READY
+INSTRUCTIONS FOR THE AGENT: You are to restructure the messy 'vehicle.git' repository into the 'LUCID_EMPIRE' architecture. Follow these steps strictly to create a operational,
+self-contained system.
+--- STEP 1: EXECUTE ARCHITECTURAL CLEANUP --- Run this bash script to create the new structure and migrate ONLY the essential assets.
