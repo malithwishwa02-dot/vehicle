@@ -1,0 +1,47 @@
+# PROJECT LUCID EMPIRE :: UNIFIED RUNTIME
+# Base: Python 3.11 Slim + Playwright + Vehicle Hooks
+FROM python:3.11-slim
+
+# 1. INSTALL SYSTEM DEPENDENCIES & LIBFAKETIME
+RUN apt-get update && apt-get install -y \
+    wget \
+    curl \
+    git \
+    libfaketime \
+    xvfb \
+    ffmpeg \
+    libnss3 \
+    libatk1.0-0 \
+    libatk-bridge2.0-0 \
+    libcups2 \
+    libdrm2 \
+    libxkbcommon0 \
+    libxcomposite1 \
+    libxdamage1 \
+    libxfixes3 \
+    libxrandr2 \
+    libgbm1 \
+    libasound2 \
+    && rm -rf /var/lib/apt/lists/*
+
+# 2. SETUP WORKSPACE
+WORKDIR /app
+
+# 3. INSTALL PLAYWRIGHT & CAMOUFOX (MODIFIED)
+# Note: In a real deploy, we copy the local modified engine
+COPY ./engine/camoufox_src /app/engine
+RUN pip install -e /app/engine
+RUN pip install playwright flask psutil requests
+RUN playwright install firefox
+
+# 4. INJECT LIBFAKETIME CONFIGURATION
+ENV LD_PRELOAD=/usr/lib/x86_64-linux-gnu/faketime/libfaketime.so.1
+ENV FAKETIME_DONT_RESET=1
+
+# 5. COPY ORCHESTRATION SCRIPTS
+COPY ./core /app/core
+
+# 6. ENTRYPOINT: THE LAUNCHER
+# This script sets up the virtual display and starts the python orchestrator
+RUN echo '#!/bin/bash\nxvfb-run --server-args="-screen 0 1920x1080x24" python3 /app/core/lucid_orchestrator.py\n' > /app/entrypoint.sh && chmod +x /app/entrypoint.sh
+CMD ["/app/entrypoint.sh"]

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LUCID EMPIRE | MISSION CONTROL</title>
+<script src="https://www.google.com/search?q=https://cdn.tailwindcss.com"></script>
+<link href="https://www.google.com/search?q=https://fonts.googleapis.com/css2%3Ffamily%3DJetBrains%2BMono:wght%40400%3B700%26display%3Dswap" rel="stylesheet">
+<script src="https://www.google.com/search?q=https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+<style>body { background-color: #0a0a0a; color: #e5e5e5; font-family: 'JetBrains Mono', monospace; }.neon-border { border: 1px solid #333; box-shadow: 0 0 5px rgba(0, 255, 65, 0.2); }.neon-text { text-shadow: 0 0 5px rgba(0, 255, 65, 0.5); }.scan-line {width: 100%; height: 2px; background: rgba(0, 255, 65, 0.3);position: absolute; top: 0; left: 0;animation: scan 3s linear infinite; pointer-events: none;}@keyframes scan { 0% { top: 0%; } 100% { top: 100%; } }.input-dark { background: #111; border: 1px solid #333; color: #00ff41; }.input-dark:focus { outline: none; border-color: #00ff41; }.btn-action { transition: all 0.2s; }.btn-action:hover { transform: scale(1.02); box-shadow: 0 0 15px rgba(0, 255, 65, 0.3); }.btn-disabled { opacity: 0.3; cursor: not-allowed; pointer-events: none; }</style>
+</head>
+<body class="h-screen w-full flex overflow-hidden">
+<div class="scan-line"></div>
+<!-- SIDEBAR -->
+<div class="w-64 bg-black border-r border-gray-800 p-4 flex flex-col justify-between z-10">
+    <div>
+        <h1 class="text-2xl font-bold text-white mb-2 tracking-tighter">LUCID<span class="text-green-500">.EMPIRE</span></h1>
+        <div class="text-xs text-gray-500 mb-8">V5.0 // SOVEREIGN</div>
+        
+        <nav class="space-y-4">
+            <a href="#" class="block p-2 bg-gray-900 border-l-2 border-green-500 text-green-400 font-bold"><i class="fas fa-terminal mr-2"></i> OPERATION</a>
+            <a href="#" class="block p-2 text-gray-500 hover:text-white"><i class="fas fa-fingerprint mr-2"></i> TEMPLATES</a>
+            <a href="#" class="block p-2 text-gray-500 hover:text-white"><i class="fas fa-network-wired mr-2"></i> PROXIES</a>
+            <a href="#" class="block p-2 text-gray-500 hover:text-white"><i class="fas fa-history mr-2"></i> ARCHIVE</a>
+        </nav>
+    </div>
+    <div class="text-xs text-gray-600">
+        STATUS: <span class="text-green-500">CONNECTED</span><br>
+        IP: 127.0.0.1 (TUNNEL)
+    </div>
+</div>
+
+<!-- MAIN CONSOLE -->
+<div class="flex-1 p-8 grid grid-cols-12 gap-6 bg-black bg-opacity-95 z-10">
+    
+    <!-- INPUT VECTOR -->
+    <div class="col-span-4 space-y-6">
+        <div class="neon-border p-6 bg-gray-900 bg-opacity-40">
+            <h3 class="text-sm font-bold text-gray-400 mb-4 border-b border-gray-700 pb-2">1. ASSET DEFINITION</h3>
+            
+            <label class="block text-xs text-gray-500 mb-1">OPERATION ID</label>
+            <input type="text" id="opId" value="OP-OMEGA-09" class="w-full p-2 input-dark mb-4">
+
+            <label class="block text-xs text-gray-500 mb-1">PROXY VECTOR</label>
+            <input type="text" id="proxy" placeholder="http://user:pass@ip:port" class="w-full p-2 input-dark mb-4">
+
+            <label class="block text-xs text-gray-500 mb-1">FULLZ JSON</label>
+            <textarea id="fullz" rows="5" class="w-full p-2 input-dark font-mono text-xs" placeholder='{"name": "...", "cc": "..."}'></textarea>
+        </div>
+
+        <div class="neon-border p-6 bg-gray-900 bg-opacity-40">
+            <h3 class="text-sm font-bold text-gray-400 mb-4 border-b border-gray-700 pb-2">2. TEMPORAL LOCK</h3>
+            <label class="block text-xs text-gray-500 mb-1">PROFILE AGE (DAYS)</label>
+            <input type="range" id="age" min="0" max="365" value="90" class="w-full accent-green-500 mb-2">
+            <div class="text-right text-green-500 font-bold" id="ageVal">90 DAYS</div>
+        </div>
+    </div>
+
+    <!-- DIAGNOSTICS & EXECUTION -->
+    <div class="col-span-8 flex flex-col gap-6">
+        <!-- TERMINAL -->
+        <div class="flex-1 neon-border bg-black p-4 font-mono text-xs overflow-y-auto" id="terminal">
+            <div class="text-gray-500">[SYSTEM] LUCID KERNEL INITIALIZED.</div>
+            <div class="text-gray-500">[SYSTEM] AWAITING INPUT VECTOR...</div>
+        </div>
+
+        <!-- STATUS GRID -->
+        <div class="grid grid-cols-3 gap-4">
+            <div class="p-4 bg-gray-900 border border-gray-700">
+                <div class="text-xs text-gray-500">PROXY SCORE</div>
+                <div class="text-xl font-bold text-gray-300" id="statProxy">---</div>
+            </div>
+            <div class="p-4 bg-gray-900 border border-gray-700">
+                <div class="text-xs text-gray-500">ASSET CLEANLINESS</div>
+                <div class="text-xl font-bold text-gray-300" id="statAsset">---</div>
+            </div>
+            <div class="p-4 bg-gray-900 border border-gray-700">
+                <div class="text-xs text-gray-500">ENGINE STATUS</div>
+                <div class="text-xl font-bold text-green-500">READY</div>
+            </div>
+        </div>
+
+        <!-- CONTROLS -->
+        <div class="grid grid-cols-2 gap-4">
+            <button onclick="runPreFlight()" class="py-4 bg-blue-900 bg-opacity-30 border border-blue-600 text-blue-400 font-bold hover:bg-blue-800 transition-all">
+                <i class="fas fa-radar me-2"></i> INITIATE PRE-FLIGHT
+            </button>
+            <button id="igniteBtn" onclick="ignite()" class="py-4 bg-red-900 bg-opacity-30 border border-red-600 text-red-500 font-bold btn-disabled transition-all">
+                <i class="fas fa-rocket me-2"></i> IGNITE OPERATION
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('age').oninput = function() {
+        document.getElementById('ageVal').innerText = this.value + " DAYS";
+    }
+
+    function log(msg, type='info') {
+        const term = document.getElementById('terminal');
+        const color = type === 'error' ? 'text-red-500' : type === 'success' ? 'text-green-500' : 'text-gray-400';
+        term.innerHTML += `<div class="${color} mb-1">[${new Date().toLocaleTimeString()}] ${msg}</div>`;
+        term.scrollTop = term.scrollHeight;
+    }
+
+    function runPreFlight() {
+        log("INITIATING PRE-FLIGHT DIAGNOSTICS...", "info");
+        
+        // Simulating API Call
+        setTimeout(() => {
+            const proxy = document.getElementById('proxy').value;
+            if(!proxy) {
+                log("CRITICAL: PROXY VECTOR MISSING", "error");
+                return;
+            }
+            
+            log("PROXY: VERIZON RESIDENTIAL [CONFIRMED]", "success");
+            log("ASSET: NO BREACH MATCH FOUND [CLEAN]", "success");
+            log("TEMPORAL SHIFT: ALIGNED TO COOKIE HISTORY", "info");
+
+            document.getElementById('statProxy').innerText = "0 (CLEAN)";
+            document.getElementById('statProxy').className = "text-xl font-bold text-green-500";
+            document.getElementById('statAsset').innerText = "VALID";
+            document.getElementById('statAsset').className = "text-xl font-bold text-green-500";
+
+            document.getElementById('igniteBtn').classList.remove('btn-disabled');
+            document.getElementById('igniteBtn').classList.add('animate-pulse');
+            log("SYSTEM READY. AWAITING IGNITION.", "success");
+        }, 1500);
+    }
+
+    function ignite() {
+        log("SENDING IGNITION SIGNAL TO ORCHESTRATOR...", "warning");
+        log("CONTAINER SPIN-UP INITIATED.", "info");
+        log("INJECTING GOLDEN TEMPLATE...", "info");
+        setTimeout(() => {
+            alert("LUCID EMPIRE DEPLOYED.\nRemote Tunnel Established: localhost:5900");
+        }, 1000);
+    }
+</script>
+</body>
+</html>
