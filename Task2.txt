@@ -1,0 +1,191 @@
+OPERATIONAL DIRECTIVE: LUCID EMPIRE FULL CONSTRUCTION PROTOCOL
+> AUTHORITY: PROMETHEUS-CORE (Dva.12)
+> STATUS: EXECUTION READY
+> TARGET: LOCAL WORKSPACE
+
+You are authorized to execute the complete genesis sequence. This protocol takes you from a blank terminal to a compiled, modified, sovereign browser environment.
+
+This is a Single-Flow Execution Plan. Follow the phases sequentially.
+
+PHASE 1: WORKSPACE INITIALIZATION & CLONING
+Objective: Establish the directory structure and acquire the raw assets.
+
+1.  Create the Citadel Directory:
+    mkdir -p LUCID-EMPIRE/engine
+    mkdir -p LUCID-EMPIRE/docker
+    mkdir -p LUCID-EMPIRE/core
+    mkdir -p LUCID-EMPIRE/dashboard
+    cd LUCID-EMPIRE
+
+2.  Clone the Raw Engine (Camoufox):
+    We clone into engine/camoufox_src.
+    git clone https://github.com/daijro/camoufox.git engine/camoufox_src
+
+3.  Clone the Vehicle Runtime (Reference Only):
+    We need this for reference, but we will build our own Dockerfile.
+    git clone https://github.com/malithwishwa02-dot/vehicle.git vehicle_reference
+
+PHASE 2: SURGICAL MODIFICATION ("THE LOBOTOMY")
+Objective: Remove the "BrowserForge" randomization engine from Camoufox to enforce deterministic control.
+
+TARGET FILE: engine/camoufox_src/camoufox/sync_api.py
+
+1.  Open the file in your editor (VS Code/Nano).
+
+2.  LOCATE & DELETE the import line (approx line 5-10):
+    from browserforge.fingerprints import FingerprintGenerator
+
+3.  LOCATE the init method of the Camoufox class.
+    Find this block:
+    if fingerprint is None:
+        self.fingerprint = FingerprintGenerator().generate()
+
+4.  REPLACE that entire block with this Sovereign Logic:
+[LUCID EMPIRE MODIFICATION]
+REASON: Sovereignty Enforcement. No random generation allowed.
+    if fingerprint is None:
+        raise ValueError("LUCID_KERNEL_PANIC: No Identity Profile provided. Randomization protocols are disabled.")
+If a path string is provided (e.g., "profiles/iphone13.json"), load it.
+    if isinstance(fingerprint, str):
+        import json
+        with open(fingerprint, 'r') as f:
+            self.fingerprint = json.load(f)
+    else:
+        self.fingerprint = fingerprint
+
+5.  SAVE the file.
+
+PHASE 3: THE RUNTIME DEFINITION (Dockerfile)
+Objective: Create the container that fuses the modified browser with the Time-Shift capability (libfaketime).
+
+1.  Create file: docker/Dockerfile.sovereign
+2.  Insert Content:
+
+LUCID EMPIRE: SOVEREIGN RUNTIME v1.0
+FROM python:3.11-slim-bookworm
+
+1. INSTALL SYSTEM DEPENDENCIES & LIBFAKETIME
+RUN apt-get update && apt-get install -y \
+    wget curl git build-essential \
+    libfaketime \
+    xvfb ffmpeg \
+    libnss3 libatk1.0-0 libatk-bridge2.0-0 libcups2 libdrm2 \
+    libxkbcommon0 libxcomposite1 libxdamage1 libxfixes3 libxrandr2 \
+    libgbm1 libasound2 libgl1-mesa-glx \
+    && rm -rf /var/lib/apt/lists/*
+
+2. SETUP WORKSPACE
+WORKDIR /app
+
+3. INSTALL MODIFIED ENGINE (Camoufox)
+We copy the local source you just modified
+COPY ./engine/camoufox_src /app/engine
+Install in editable mode
+RUN pip install -e /app/engine
+RUN pip install playwright flask psutil requests
+RUN playwright install firefox
+
+4. CONFIGURE TEMPORAL LOCK (Libfaketime)
+This forces the container to respect the FAKETIME env var
+ENV LD_PRELOAD=/usr/lib/x86_64-linux-gnu/faketime/libfaketime.so.1
+ENV FAKETIME_DONT_RESET=1
+
+5. COPY ORCHESTRATION CORE
+COPY ./core /app/core
+
+6. ENTRYPOINT LAUNCHER
+Starts Xvfb (Virtual Display) and the Orchestrator
+RUN echo '#!/bin/bash\nxvfb-run --server-args="-screen 0 1920x1080x24" python3 /app/core/lucid_orchestrator.py\n' > /app/entrypoint.sh && chmod +x /app/entrypoint.sh
+
+CMD ["/app/entrypoint.sh"]
+
+PHASE 4: THE ORCHESTRATOR (Python Control)
+Objective: The script inside the container that listens for commands and launches the browser.
+
+1.  Create file: core/lucid_orchestrator.py
+2.  Insert Content:
+
+import os
+import json
+import logging
+from flask import Flask, request, jsonify
+from camoufox.sync_api import Camoufox
+
+app = Flask(name)
+logging.basicConfig(level=logging.INFO)
+
+@app.route('/status', methods=['GET'])
+def status():
+    return jsonify({"system": "LUCID EMPIRE", "status": "ONLINE", "time_lock": os.environ.get("FAKETIME", "REALTIME")})
+
+@app.route('/launch_ghost', methods=['POST'])
+def launch_ghost():
+    data = request.json
+    target_url = data.get('url', 'https://whoer.net')
+1. Load the Golden Template (Fingerprint)
+In production, this comes from the database. Here we mock it.
+    fingerprint_payload = {
+        "navigator": {
+            "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+            "platform": "Win32",
+            "language": "en-US"
+        },
+        "screen": {"width": 1920, "height": 1080}
+... Expanded fingerprint data goes here
+    }
+
+    try:
+        logging.info(f"IGNITING GHOST BROWSER -> {target_url}")
+2. Launch Modified Camoufox
+Note: We pass the dict directly. The modified code accepts it.
+        with Camoufox(fingerprint=fingerprint_payload, headless=False) as browser:
+            page = browser.new_page()
+            page.goto(target_url)
+Keep alive for X seconds or until signal
+            import time
+            time.sleep(60) 
+            
+            title = page.title()
+            
+        return jsonify({"status": "SUCCESS", "title": title})
+
+    except Exception as e:
+        return jsonify({"status": "CRITICAL_FAILURE", "error": str(e)})
+
+if name == 'main':
+Listen on all interfaces so the Host can talk to the Container
+    app.run(host='0.0.0.0', port=5000)
+
+PHASE 5: THE BUILD & DEPLOY
+Objective: Compile the Docker image and verify the modification works.
+
+1.  Build the Sovereign Image:
+    docker build -t lucid-empire:v1 -f docker/Dockerfile.sovereign .
+
+2.  Run the Container (Test Mode):
+    We inject a Fake Time of 90 days ago (-90d).
+    docker run -d \
+      --name lucid_test_01 \
+      -p 5000:5000 \
+      -e FAKETIME="-90d" \
+      lucid-empire:v1
+
+3.  Verify Temporal Lock:
+    docker exec lucid_test_01 date
+    Result should be 90 days in the past.
+
+4.  Trigger the Browser (The "Smoke Test"):
+    From your host machine terminal:
+    curl -X POST http://localhost:5000/launch_ghost \
+      -H "Content-Type: application/json" \
+      -d '{"url": "https://browserleaks.com/canvas"}'
+
+EXPECTED OUTCOME
+
+If the modification was successful:
+1.  The Python code inside the container will receive the JSON fingerprint.
+2.  It WILL NOT attempt to import browserforge (which would fail or trigger randomness).
+3.  It WILL launch Firefox with the static properties defined in lucid_orchestrator.py.
+4.  The system date inside the browser execution context will match the FAKETIME env var.
+
+> TASK COMPLETE. LUCID EMPIRE IS ARCHITECTED.
