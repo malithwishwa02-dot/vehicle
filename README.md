@@ -1,12 +1,85 @@
-# PROMETHEUS-CORE: Linux Temporal Manipulation Framework
-## Ubuntu 24.04 Docker Implementation
+git clone https://github.com/your-org/lucid-empire.git
+docker build -t lucid-browser:v5 -f LUCID-EMPIRE/runtime/Dockerfile .
 
-[![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
-[![Platform](https://img.shields.io/badge/platform-Linux%20%7C%20Docker-green.svg)](https://www.docker.com/)
-[![License](https://img.shields.io/badge/license-Research%20%26%20Educational-green.svg)](LICENSE)
-[![Status](https://img.shields.io/badge/status-Active-success.svg)](https://github.com/malithwishwa02-dot/vehicle)
+# 👁️ LUCID EMPIRE: Windows Native Anti-Detect Infrastructure
+**Version:** 6.0 (Windows Native)  |  **Architecture:** PyInstaller EXE + Python + Camoufox
 
-⚠️ **LEGAL DISCLAIMER**: This repository contains security research tools for educational and authorized testing purposes only. Unauthorized use for fraudulent activities is strictly prohibited and illegal.
+Lucid Empire is a self-hosted, sovereign browser environment for high-value identity simulation. Version 6.0 pivots to a fully native Windows executable—no Docker, no Linux required. All time, network, and process isolation is handled natively on Windows for maximum usability and undetectability.
+
+---
+
+## 🚀 Key Capabilities (Windows v6.0)
+
+- **Time Travel (Aging):** Launches browser with historical system time using RunAsDate (DLL injection, no global clock change)
+- **Network Lock:** All browser traffic is forced through a user-supplied SOCKS5 proxy (no iptables, no VPN required)
+- **Profile Generation:** Realistic browser profiles (cookies, history, autofill, local storage) generated in AppData\Local\LucidEmpire\profiles
+- **Biometric Mimicry:** Human mouse movement simulation to defeat behavioral biometrics
+- **One-Click Operation:** Single EXE launches dashboard, profile generator, and browser in a native window
+
+---
+
+## 🛠️ Installation & Quick Start (Windows)
+
+### Prerequisites
+- Windows 10/11 (x64)
+- Python 3.11+ (for building only)
+- Git
+- [RunAsDate.exe (NirSoft, x64)](https://www.nirsoft.net/utils/run_as_date.html)
+
+### Quick Start (End User)
+
+1. Download or build `LucidEmpire.exe` (see below for build instructions)
+2. Double-click `LucidEmpire.exe`
+3. The Mission Control dashboard will open in a native window
+4. Enter your Proxy, Identity, and desired profile age
+5. Click IGNITE
+6. The system will:
+  - Generate a browser profile in AppData
+  - Launch Camoufox/Firefox with historical time via RunAsDate
+
+---
+
+## 🏗️ Building Lucid Empire EXE (Developer)
+
+1. **Clone the Repository**
+  ```bash
+  git clone https://github.com/your-org/lucid-empire.git
+  cd lucid-empire
+  ```
+2. **Run Windows Setup Script**
+  ```bat
+  setup_windows.bat
+  ```
+  - Installs Python dependencies
+  - Installs Playwright and downloads Firefox
+  - Prompts you to copy the Firefox binary and RunAsDate.exe into `bin/`
+3. **Build the EXE**
+  ```bat
+  pyinstaller build_exe.spec
+  ```
+  - Output: `dist/LucidEmpire.exe`
+
+---
+
+## 🧪 Verification
+A safe forensic verification suite is included to prove key capabilities without performing destructive or external actions.
+
+Run the suite:
+
+```bash
+python -m pytest -q tests/verify_sovereignty.py
+```
+
+For a quick demo (safe-by-default):
+
+```bash
+./scripts/one_click_demo.sh --check
+```
+
+---
+
+## ⚖️ Safety & Ethics
+This repository contains capabilities that, if misused, could facilitate abusive or fraudulent activities. Use only in authorized environments for testing, research, or defensive assessments. Consult legal counsel and your organisation's policy before use.
 
 ---
 
@@ -15,7 +88,7 @@
 - [Overview](#-overview)
 - [Architecture](#-architecture)
 - [Quick Start](#-quick-start)
-- [Docker Setup](#-docker-setup)
+- [Windows Build](#-building-lucid-empire-exe-developer)
 - [Configuration](#-configuration)
 - [Usage](#-usage)
 - [Technical Details](#-technical-details)
@@ -24,15 +97,59 @@
 
 ---
 
-## 🚦 Running from main.py (Local Python)
+## 🏁 Windows Native Architecture
 
-### 1. **Install Python 3.8+**
-- Ensure you have Python 3.8 or newer installed on your system.
+See `WINDOWS_TRANSFORMATION_PROTOCOL.md` for a full migration and build guide.
 
-### 2. **Install Dependencies**
-```bash
-pip install -r requirements.txt
+| Capability   | Linux (Old)         | Windows Native (New)           |
+|-------------|---------------------|-------------------------------|
+| Runtime     | Docker Container    | PyInstaller Executable (One-File) |
+| Time Travel | libfaketime (LD_PRELOAD) | RunAsDate (DLL Injection) |
+| Network     | iptables / TUN Interface | Internal SOCKS5 Tunneling     |
+| Paths       | /app/storage/...    | AppData\Local\LucidEmpire\storage\... |
+| Browser     | Headless Linux Firefox | Headed Windows Firefox (Camoufox) |
+
+---
+
+## 🆕 What's New in v6.0 (Windows)
+
+- No Docker or Linux required—fully native Windows EXE
+- Time travel via RunAsDate (per-process, undetectable)
+- All browser traffic routed through user-supplied SOCKS5 proxy
+- Profiles stored in AppData for true Windows stealth
+- One-click dashboard and browser launch
+
+---
+
+## 🧩 File Structure (Key Windows Files)
+
 ```
+vehicle/
+├── windows/
+│   ├── lucid_launcher.py      # Main Windows entrypoint (Flask + PyWebView)
+│   ├── time_hook.py          # (Optional) DLL injection logic
+├── build_exe.spec           # PyInstaller build config
+├── setup_windows.bat        # Automated Windows setup script
+├── bin/                     # Place RunAsDate.exe and Firefox here
+├── core/                    # Core logic (profile, simulation, injection)
+├── modules/                 # Behavior, mouse, etc.
+├── tools/                   # Data injection, LevelDB, etc.
+├── interface/               # Dashboard HTML/JS
+```
+
+---
+
+## 🆘 Support
+
+- **Documentation**: See `WINDOWS_TRANSFORMATION_PROTOCOL.md` and comments in `windows/`
+- **Issues**: Report bugs via [GitHub Issues](https://github.com/malithwishwa02-dot/vehicle/issues)
+- **Discussions**: Ask questions in [GitHub Discussions](https://github.com/malithwishwa02-dot/vehicle/discussions)
+
+---
+
+**Made with 🔐 by Security Researchers, for Security Researchers**
+
+**Remember**: With great power comes great responsibility. Use ethically, test responsibly, research legally.
 
 ### 3. **Configure Inputs**
 - Edit inputs.yaml to set your desired profile parameters (output directory, persona, proxy, etc.).
@@ -506,7 +623,8 @@ Users must comply with all applicable laws including but not limited to:
 
 ### Getting Help
 
-- **Documentation**: Read this README and check `docs/` directory
+- **Documentation**: Read this README and check `docs/` (see `docs/CI_WINDOWS.md` for Windows build notes)
+- **CI / Build**: A GitHub Actions workflow `/.github/workflows/windows-build.yml` builds `LucidEmpire.exe` on `windows-latest`. To allow CI to automatically bundle `RunAsDate.exe`, set the repository secret `RUN_AS_DATE_URL` to a direct download URL (use with caution; verify the binary). Local helper scripts (`scripts/fetch_runasdate.ps1` and `scripts/copy_playwright_firefox.ps1`) make bundling easier on Windows hosts.
 - **Issues**: Report bugs via [GitHub Issues](https://github.com/malithwishwa02-dot/vehicle/issues)
 - **Discussions**: Ask questions in [GitHub Discussions](https://github.com/malithwishwa02-dot/vehicle/discussions)
 

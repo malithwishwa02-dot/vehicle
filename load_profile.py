@@ -11,13 +11,15 @@ from pathlib import Path
 import argparse
 
 
-def load_profile(profile_id: str, proxy_url: str = None):
+def load_profile(profile_id: str, proxy_url: str = None, launch: bool = True, force_windows: bool = False):
     """
     Load a generated profile for manual takeover.
     
     Args:
         profile_id: Profile directory name or path
         proxy_url: Proxy URL (uses config if not provided)
+        launch: If False, do not actually spawn the browser; return commands for inspection
+        force_windows: If True, behave as-if running on Windows (for testing)
     """
     
     # Find profile path
@@ -83,8 +85,11 @@ def load_profile(profile_id: str, proxy_url: str = None):
             break
     
     if not chrome_exe:
-        print("[!] Chrome not found. Install Google Chrome.")
-        return False
+        if not launch:
+            chrome_exe = 'chrome'  # placeholder for tests/dry-run
+        else:
+            print("[!] Chrome not found. Install Google Chrome.")
+            return False
     
     # Launch command
     cmd = [
@@ -109,9 +114,44 @@ def load_profile(profile_id: str, proxy_url: str = None):
     
     print("\n[*] Opening Chrome...")
     
+    # Build runasdate wrapper if on Windows
+    runner_exe = None
+    runas_cmd = None
     try:
-        # Launch Chrome
-        subprocess.Popen(cmd)
+        import platform
+        is_windows = (platform.system() == 'Windows') or force_windows
+    except Exception:
+        is_windows = bool(force_windows)
+
+    if is_windows:
+        # Look for bundled RunAsDate first
+        candidates = [Path('bin') / 'RunAsDate.exe', Path('RunAsDate.exe')]
+        for c in candidates:
+            if c.exists():
+                runner_exe = str(c)
+                break
+        if runner_exe and metadata_file.exists():
+            try:
+                meta = json.loads(metadata_file.read_text())
+                faketime = meta.get('faketime')
+                if faketime:
+                    date_part, time_part = faketime.split(' ')
+                    runas_cmd = f'"{runner_exe}" /immediate /movetime /date {date_part} /time {time_part} "{chrome_exe}" '
+            except Exception:
+                runas_cmd = None
+
+    if not launch:
+        return {'cmd': cmd, 'runner': runner_exe, 'runas_cmd': runas_cmd}
+
+    try:
+        # Launch Chrome (optionally via RunAsDate on Windows)
+        if runas_cmd:
+            # Append args to the runas string
+            args_str = ' '.join([f'--user-data-dir="{profile_path}"'] + ([f'--proxy-server={proxy_url}'] if proxy_url else []))
+            full_cmd = runas_cmd + args_str
+            subprocess.Popen(full_cmd, shell=True)
+        else:
+            subprocess.Popen(cmd)
         
         print("[+] Chrome launched successfully")
         print("\nProfile is ready for manual takeover!")
