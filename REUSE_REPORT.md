@@ -20,6 +20,9 @@ This audit identifies files to KEEP (capability assets) and files that are LEGAC
 | Proxy & network validation | core/tls_mimic.py, cortex_agent.py, core/pipeline.py | Proxy connectivity checks, IP scoring, and TLS mimicry to validate network vectors. |
 | Runtime & container hooks | Dockerfile, docker/Dockerfile.sovereign, LUCID-EMPIRE/docker/Dockerfile.sovereign, entrypoint.sh, core/lucid_orchestrator.py | Docker build definitions with libfaketime & Xvfb support and orchestrator entrypoints for container runtime. |
 | Profile construction & skeleton | core/constructor.py, tools/state_architect.py | Structural profile creation and shop-specific LocalStorage keys (Shopify/Stripe) for commerce fidelity. |
+| LevelDB & LocalStorage tooling | tools/leveldb_writer.py, scripts/run_enrichment.py, scripts/inject_localstorage_direct.py | Implements direct LevelDB writes and simulated snapshots (`local_storage_simulated.json/.txt`) for reliable artifact presence (fallback when plyvel not available). |
+| Burner & Shopping Simulation | tools/burner.py, RUN_PROMETHEUS.py, prometheus_v3/app.py | Injects autofill & credit-card placeholders into localStorage, simulates shopping/checkout flows and writes LevelDB/SQLite artifacts to profiles. |
+| Enrichment & Validation scripts | fabricate_identity.py, scripts/run_enrichment.py, LUCID-EMPIRE/vehicle_reference/tests/test_fabricate_exact_profile.py | Scripts and tests to enrich profiles and validate presence of LevelDB snapshots and cookies; useful for CI/QA to ensure artifact completeness. |
 
 ---
 
