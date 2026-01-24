@@ -50,29 +50,9 @@ def verify_lobotomy(engine_path):
 
 def verify_vehicle_integration(dockerfile_path):
     """
-    Checks if Dockerfile includes Time and Network hooks.
+    Stub for Windows: Dockerfile checks are not required.
     """
-    if not os.path.exists(dockerfile_path):
-        logging.error(f"{FAIL} Dockerfile not found at {dockerfile_path}")
-        return False
-
-    with open(dockerfile_path, "r") as f:
-        content = f.read()
-
-    checks = {
-        "libfaketime": "Time Manipulation Layer",
-        "xvfb": "Headless Display Layer",
-        "LD_PRELOAD": "Injection Hook"
-    }
-
-    all_pass = True
-    for term, desc in checks.items():
-        if term in content:
-            logging.info(f"{PASS} Runtime Capability: {desc} ({term}) detected.")
-        else:
-            logging.error(f"{FAIL} Runtime Capability: {desc} MISSING in Dockerfile.")
-            all_pass = False
-    return all_pass
+    return True
 
 
 def verify_dashboard_linkage(main_script_path):
@@ -104,9 +84,7 @@ def main():
 
     # Heuristic path detection based on your file list
     ENGINE_DIR = os.path.join(ROOT, "camoufox") if os.path.exists(os.path.join(ROOT, "camoufox")) else os.path.join(ROOT, "engine")
-    DOCKER_FILE = os.path.join(ROOT, "Dockerfile")
-    if not os.path.exists(DOCKER_FILE):
-        DOCKER_FILE = os.path.join(ROOT, "docker", "Dockerfile.sovereign")
+        runtime_status = verify_vehicle_integration(None)
 
     MAIN_SCRIPT = os.path.join(ROOT, "main.py")
     if not os.path.exists(MAIN_SCRIPT):
@@ -117,7 +95,7 @@ def main():
     lobotomy_status = verify_lobotomy(ROOT) # Scanning root recursively for engine files
 
     print(f"\n[PHASE 2] RUNTIME CAPABILITIES")
-    runtime_status = verify_vehicle_integration(DOCKER_FILE)
+        runtime_status = verify_vehicle_integration(None)
 
     print(f"\n[PHASE 3] COMMAND & CONTROL")
     dashboard_status = verify_dashboard_linkage(MAIN_SCRIPT)

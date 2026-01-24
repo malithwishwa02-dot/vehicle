@@ -29,7 +29,17 @@ def generate_all():
     keys = {}
     keys.update(generate_stripe_keys())
     keys.update(generate_shopify_keys())
+    # Add a stable KLA id
     keys["__kla_id"] = generate_kla_id()
+    # Ensure some prefixed/legacy keys are present for compatibility with burner expectations
+    # (e.g., __stripe_mid is used by some downstream checks)
+    if 'stripe_mid' in keys:
+        keys['__stripe_mid'] = keys['stripe_mid']
+    # Add commerce and autofill placeholders to make non-burner simulated snapshots plausible
+    keys.setdefault('completed_checkout', 'true')
+    keys.setdefault('last_order_id', 'order_98765')
+    keys.setdefault('autofill_name', 'John Doe')
+    keys.setdefault('cc_number', '4111111111111111')
     return keys
 
 if __name__ == "__main__":

@@ -159,6 +159,7 @@ class ProfileBurner:
             "previous_purchases": "3",
             "user_trust_score": "0.95",
             "stripe_mid": "guid_12345_mock",
+            "__stripe_mid": "guid_12345_mock",
             "has_logged_in": "true",
             "first_visit": str(stale_epoch),
             "last_login": str(stale_epoch + 86400000),  # 1 day after first_visit
@@ -307,6 +308,12 @@ class ProfileBurner:
                     "previous_purchases": "3",
                     "user_trust_score": "0.95",
                     "stripe_mid": "guid_12345_mock",
+                    "__stripe_mid": "guid_12345_mock",
+                    "shopify_checkout_token": "tok_shopify_12345",
+                    "completed_checkout": "true",
+                    "last_order_id": "order_98765",
+                    "autofill_name": "John Doe",
+                    "cc_number": "4111111111111111",
                     "has_logged_in": "true"
                 }
             leveldb_dir = os.path.join(self.profile_path, 'Default', 'Local Storage', 'leveldb')
