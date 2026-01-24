@@ -9,7 +9,7 @@ requests==2.31.0
 selenium==4.16.0
 colorama==0.4.6
 pyautogui==0.9.54
-bezier==2023.7.28
+bezier==2024.6.20
 scapy==2.5.0
 mcp>=1.23.0
 openai==1.12.0
