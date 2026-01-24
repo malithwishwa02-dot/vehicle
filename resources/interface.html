@@ -1,0 +1,47 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>LUCID EMPIRE</title>
+  <style>
+    body { background: #000; color: #0f0; font-family: monospace; padding: 50px; }
+    .box { border: 1px solid #0f0; padding: 20px; margin-bottom: 20px; }
+    input { background: #111; border: 1px solid #0f0; color: #fff; padding: 10px; width: 100%; box-sizing: border-box; margin-bottom: 10px; }
+    button { background: #0f0; color: #000; padding: 15px; width: 100%; border: none; font-weight: bold; cursor: pointer; }
+    button:hover { background: #fff; }
+  </style>
+</head>
+<body>
+  <h1>👁️ LUCID EMPIRE</h1>
+  <div class="box">
+    <h3>1. TARGET CONFIGURATION</h3>
+    <input type="text" id="op_id" placeholder="OPERATION ID (e.g. OP-ALPHA)">
+    <input type="text" id="proxy" placeholder="PROXY (http://user:pass@ip:port)">
+  </div>
+  <div class="box">
+    <h3>2. TEMPORAL STASIS (AGING)</h3>
+    <input type="number" id="age" value="90" placeholder="PROFILE AGE (DAYS)">
+  </div>
+  <button onclick="ignite()">IGNITE BROWSER</button>
+  <div id="log" style="margin-top: 20px; color: #fff;"></div>
+  <script>
+    async function ignite() {
+      const id = document.getElementById('op_id').value || 'OP-DEMO-01';
+      const age = document.getElementById('age').value || 90;
+      const proxy = document.getElementById('proxy').value || null;
+      document.getElementById('log').innerText = "SENDING IGNITION COMMAND...";
+      try {
+        const res = await fetch('/api/ignite', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({id, age, proxy})
+        });
+        const data = await res.json();
+        document.getElementById('log').innerText = JSON.stringify(data);
+      } catch (err) {
+        document.getElementById('log').innerText = 'Error: ' + err;
+      }
+    }
+  </script>
+</body>
+</html>
