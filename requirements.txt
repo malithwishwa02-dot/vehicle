@@ -2,7 +2,7 @@ nodriver==0.28
 curl_cffi==0.5.10
 numpy==1.26.0
 cryptography==41.0.3
-flask==3.0.0
+flask==3.1.2
 pyyaml==6.0.1
 fake-useragent==1.4.0
 requests==2.31.0
